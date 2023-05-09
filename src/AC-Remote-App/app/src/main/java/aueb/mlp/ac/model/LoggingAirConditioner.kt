@@ -4,43 +4,70 @@ import android.util.Log
 
 class LoggingAirConditioner: AirConditioner {
 
+    override var on: Boolean = true
+        private set
     override var temperature: Int = 25
         private set
 
     override var acMode: ACMode = ACMode.HEAT
         private set
 
+    override var acFan: ACFan = ACFan.NORMAL
+        private set
+
+    override var blinds: ACBlinds = ACBlinds.OFF
+        private set
+
+    override var ecoMode: Boolean = false
+        private set
     // ...
 
+    override fun toggleOnOff() {
+        this.on = !this.on
+    }
     override fun incrementTemperature(): Boolean {
-        temperature += 1
-        val moreThan30 = temperature > 30
+        this.temperature += 1
+        val moreThan30 = this.temperature > 30
 
         if (moreThan30)
-            temperature = 30
+            this.temperature = 30
 
-        log("temperature", temperature)
+        log("temperature", this.temperature)
 
         return !moreThan30
     }
 
     override fun decrementTemperature(): Boolean {
-        temperature -= 1
-        val lessThan18 = temperature < 18
+        this.temperature -= 1
+        val lessThan18 = this.temperature < 18
 
         if (lessThan18)
-            temperature = 18
+            this.temperature = 18
 
-        log("temperature", temperature)
+        log("temperature", this.temperature)
 
         return !lessThan18
     }
 
     override fun setMode(acMode: ACMode) {
         this.acMode = acMode
-        log("mode", acMode)
+        log("mode", this.acMode)
     }
 
+    override fun setFan(acFan: ACFan) {
+        this.acFan = acFan
+        log("fan", this.acFan)
+    }
+
+    override fun setBlinds(blinds: ACBlinds) {
+        this.blinds = blinds
+        log("blinds", this.blinds)
+    }
+
+    override fun toggleEcoMode() {
+        this.ecoMode = !this.ecoMode
+        log("Eco mode", this.ecoMode)
+    }
     // ...
 
     private fun <T> log(variable: String, value: T) {
