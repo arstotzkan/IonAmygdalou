@@ -57,6 +57,24 @@ fun ButtonWithText(
 }
 
 @Composable
+fun ButtonWithMediumText(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = ACShapes.medium,
+        border = null,
+        contentPadding = PaddingValues(8.dp),
+    ) {
+        MediumText(text = text)
+    }
+}
+@Composable
 fun ButtonWithIcon(
     @DrawableRes id: Int,
     alt: String,
