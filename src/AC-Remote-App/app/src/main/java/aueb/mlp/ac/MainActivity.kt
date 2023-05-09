@@ -206,8 +206,8 @@ fun MainScreenContent(
                     onClick = { onModeChanged("COLD") },
                 )
                 ButtonWithMediumText(
-                        text = "DRY",
-                onClick = { onModeChanged("DRY") },
+                    text = "DRY",
+                    onClick = { onModeChanged("DRY") },
                 )
                 ButtonWithMediumText(
                     text = "AUTO",
