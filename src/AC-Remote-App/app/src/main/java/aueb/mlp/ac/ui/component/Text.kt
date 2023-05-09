@@ -38,6 +38,16 @@ fun LargeText(
 }
 
 @Composable
+fun MediumText(
+    text: String,
+) {
+    Text(
+        text = text,
+        style = ACTypography.bodyMedium,
+    )
+}
+
+@Composable
 fun ErrorLabel(
     text: String,
 ) {
