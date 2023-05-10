@@ -10,6 +10,8 @@ import aueb.mlp.ac.model.ACMode
 import aueb.mlp.ac.model.ACBlinds
 import aueb.mlp.ac.model.AirConditioner
 import aueb.mlp.ac.model.OneTimeAlarm
+import aueb.mlp.ac.model.RepeatedAlarm
+import aueb.mlp.ac.model.WeeklySchedule
 
 class MainActivityViewModel(
     private val airConditioner: AirConditioner,
@@ -116,24 +118,55 @@ class MainActivityViewModel(
     }
 
     fun toggleTurnOnAlarm() {
-
+        airConditioner.turnOnAlarm.toggleOnOff()
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOnAlarm.copy(
+                on = !uiState.turnOnAlarm.on,
+            ),
+        )
     }
 
     fun toggleTurnOffAlarm() {
-
+        airConditioner.turnOffAlarm.toggleOnOff()
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOffAlarm.copy(
+                on = !uiState.turnOffAlarm.on,
+            ),
+        )
     }
 
     fun setTurnOnAlarmTime(hours: Int, minutes: Int) {
+        if (hours in (0..23 ) && minutes in (0..59 )){
+            airConditioner.turnOnAlarm.setTime(hours, minutes)
+            uiState = uiState.copy(
+                turnOnAlarm = uiState.turnOnAlarm.copy(
+                    hours = hours,
+                    minutes = minutes
+                ),
+            )
+        } else {
+            RuntimeException("Invalid arguements");
+        }
 
     }
 
     fun setTurnOffAlarmTime(hours: Int, minutes: Int) {
-
+        if (hours in (0..23 ) && minutes in (0..59 )){
+            airConditioner.turnOffAlarm.setTime(hours, minutes)
+            uiState = uiState.copy(
+                turnOnAlarm = uiState.turnOffAlarm.copy(
+                    hours = hours,
+                    minutes = minutes
+                ),
+            )
+        } else {
+            RuntimeException("Invalid arguements");
+        }
     }
 
     fun setTurnOnAlarmRepeatToOneTime() {
         airConditioner.setTurnOnAlarm(
-            OneTimeAlarm(airConditioner.turnOnAlarm)
+            OneTimeAlarm(airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes) //TODO: make new constructor work
         )
 
         uiState = uiState.copy(
@@ -144,16 +177,57 @@ class MainActivityViewModel(
     }
 
     fun setTurnOnAlarmRepeatToEveryday() {
+        airConditioner.setTurnOnAlarm(
+            RepeatedAlarm(airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes) //TODO: make new constructor work
+        )
 
-    }
-
-    fun setTurnOnAlarmRepeatToCustom(days: List<Boolean>) {
         uiState = uiState.copy(
             turnOnAlarm = uiState.turnOnAlarm.copy(
-                alarmType = RepeatingAlarmType(
-                    days,
-                )
+                alarmType = RepeatingAlarmType(mutableListOf(true,true,true,true,true,true,true))
+            )
+        )
+    }
+
+//    fun setTurnOnAlarmRepeatToCustom(days: List<Boolean>) {
+//
+//        airConditioner.setTurnOnAlarm(
+//            RepeatedAlarm( airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes)
+//        )
+//
+//        for (i in 0..days.size){
+//        }
+//
+//        uiState = uiState.copy(
+//            turnOnAlarm = uiState.turnOnAlarm.copy(
+//                alarmType = RepeatingAlarmType(
+//                    days,
+//                )
+//            ),
+//        )
+//    }
+
+    fun setTurnOffAlarmRepeatToOneTime() {
+        airConditioner.setTurnOffAlarm(
+            OneTimeAlarm(airConditioner.turnOffAlarm.hours, airConditioner.turnOffAlarm.minutes) //TODO: make new constructor work
+        )
+
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOffAlarm.copy(
+                alarmType = OneTimeAlarmType(),
             ),
         )
     }
+
+    fun setTurnOffAlarmRepeatToEveryday() {
+        airConditioner.setTurnOnAlarm(
+            RepeatedAlarm(airConditioner.turnOffAlarm.hours, airConditioner.turnOffAlarm.minutes) //TODO: make new constructor work
+        )
+
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOffAlarm.copy(
+                alarmType = RepeatingAlarmType(mutableListOf(true,true,true,true,true,true,true)), //TODO: WILL CHECK A WAY TO DO THIS MORE EFFICIENTLY LATER
+            ),
+        )
+    }
+
 }
