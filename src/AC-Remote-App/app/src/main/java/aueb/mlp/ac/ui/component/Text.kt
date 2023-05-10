@@ -43,7 +43,6 @@ fun MediumText(
 ) {
     Text(
         text = text,
-        style = ACTypography.bodyMedium,
     )
 }
 

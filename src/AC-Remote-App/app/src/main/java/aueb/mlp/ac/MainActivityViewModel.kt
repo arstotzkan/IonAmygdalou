@@ -21,7 +21,7 @@ class MainActivityViewModel(
     fun toggleOnOff(){
         airConditioner.toggleOnOff()
         uiState = uiState.copy(
-            acIsOn = !uiState.acIsOn
+            acIsOn = airConditioner.on
         )
     }
     fun incrementTemperature() {
@@ -110,7 +110,7 @@ class MainActivityViewModel(
     fun toggleEcoMode(){
         airConditioner.toggleEcoMode()
         uiState = uiState.copy(
-            ecoMode = !uiState.ecoMode
+            ecoMode = airConditioner.ecoMode
         )
     }
     // ...
