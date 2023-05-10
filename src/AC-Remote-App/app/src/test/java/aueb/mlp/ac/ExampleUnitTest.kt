@@ -82,17 +82,16 @@ class ExampleUnitTest {
         var alarm1 = RepeatedAlarm(23230, 0, WeeklySchedule())
     }
 
-//    Need to make more generic
-//    @Test
-//    fun repeatWorks(){
-//        var alarm1 = RepeatedAlarm(1, 0, WeeklySchedule())
-//        alarm1.schedule.toggleDay(DayOfWeek.WEDNESDAY)
-//        alarm1.schedule.toggleDay(DayOfWeek.THURSDAY)
-//        alarm1.schedule.toggleDay(DayOfWeek.FRIDAY)
-//
-//        var next = alarm1.findNextAlarm()
-//
-//        assertEquals(next.dayOfWeek, DayOfWeek.SATURDAY)
-//        assertEquals(next.dayOfMonth, 13)
-//    }
+    @Test
+    fun repeatWorks(){
+        var alarm1 = RepeatedAlarm(1, 0, WeeklySchedule())
+        alarm1.schedule.toggleDay(DayOfWeek.WEDNESDAY)
+        alarm1.schedule.toggleDay(DayOfWeek.THURSDAY)
+        alarm1.schedule.toggleDay(DayOfWeek.FRIDAY)
+
+        var next = alarm1.findNextAlarm()
+
+        assertEquals(next.dayOfWeek, DayOfWeek.SATURDAY)
+        assertEquals(next.dayOfMonth, 13)
+    }
 }
