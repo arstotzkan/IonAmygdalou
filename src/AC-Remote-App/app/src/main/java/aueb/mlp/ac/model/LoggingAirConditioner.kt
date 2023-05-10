@@ -20,6 +20,12 @@ class LoggingAirConditioner: AirConditioner {
 
     override var ecoMode: Boolean = false
         private set
+
+    override var turnOnAlarm: AirConditionerAlarm = OneTimeAlarm(1, 12)
+        private set
+
+    override var turnOffAlarm: AirConditionerAlarm = OneTimeAlarm(10, 34)
+        private set
     // ...
 
     override fun toggleOnOff() {
@@ -67,6 +73,16 @@ class LoggingAirConditioner: AirConditioner {
     override fun toggleEcoMode() {
         this.ecoMode = !this.ecoMode
         log("Eco mode", this.ecoMode)
+    }
+
+    override fun setTurnOnAlarm(newAlarm: AirConditionerAlarm){
+        this.turnOnAlarm = newAlarm
+        log("Turn on alarm", this.turnOnAlarm.hours)
+    }
+
+    override fun setTurnOffAlarm(newAlarm: AirConditionerAlarm){
+        this.turnOffAlarm = newAlarm
+        log("Turn off alarm", this.turnOffAlarm.hours)
     }
     // ...
 

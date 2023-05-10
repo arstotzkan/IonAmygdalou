@@ -20,7 +20,10 @@ interface AirConditioner {
     val acFan: ACFan
     val blinds: ACBlinds
     val ecoMode: Boolean
-     // ...
+    val turnOnAlarm: AirConditionerAlarm //TODO: maybe add ability to add more than one alarm?
+    val turnOffAlarm: AirConditionerAlarm //TODO: maybe add ability to add more than one alarm?
+
+    // ...
 
     fun incrementTemperature(): Boolean
 
@@ -31,6 +34,9 @@ interface AirConditioner {
     fun setFan(acFan: ACFan)
     fun setBlinds(blinds: ACBlinds)
     fun toggleEcoMode()
+
+    fun setTurnOnAlarm(newAlarm: AirConditionerAlarm)
+    fun setTurnOffAlarm(newAlarm: AirConditionerAlarm)
 
     // ...
 }
