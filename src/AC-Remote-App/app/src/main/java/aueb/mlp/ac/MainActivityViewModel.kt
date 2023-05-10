@@ -9,6 +9,7 @@ import aueb.mlp.ac.model.ACFan
 import aueb.mlp.ac.model.ACMode
 import aueb.mlp.ac.model.ACBlinds
 import aueb.mlp.ac.model.AirConditioner
+import aueb.mlp.ac.model.OneTimeAlarm
 
 class MainActivityViewModel(
     private val airConditioner: AirConditioner,
@@ -67,7 +68,7 @@ class MainActivityViewModel(
         )
     }
 
-    fun setFan (fan : String){
+    fun setFan(fan : String){
         airConditioner.setFan(
             when(fan) {
                 "SILENT" -> ACFan.SILENT
@@ -113,5 +114,46 @@ class MainActivityViewModel(
             ecoMode = airConditioner.ecoMode
         )
     }
-    // ...
+
+    fun toggleTurnOnAlarm() {
+
+    }
+
+    fun toggleTurnOffAlarm() {
+
+    }
+
+    fun setTurnOnAlarmTime(hours: Int, minutes: Int) {
+
+    }
+
+    fun setTurnOffAlarmTime(hours: Int, minutes: Int) {
+
+    }
+
+    fun setTurnOnAlarmRepeatToOneTime() {
+        airConditioner.setTurnOnAlarm(
+            OneTimeAlarm(airConditioner.turnOnAlarm)
+        )
+
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOnAlarm.copy(
+                alarmType = OneTimeAlarmType(),
+            ),
+        )
+    }
+
+    fun setTurnOnAlarmRepeatToEveryday() {
+
+    }
+
+    fun setTurnOnAlarmRepeatToCustom(days: List<Boolean>) {
+        uiState = uiState.copy(
+            turnOnAlarm = uiState.turnOnAlarm.copy(
+                alarmType = RepeatingAlarmType(
+                    days,
+                )
+            ),
+        )
+    }
 }
