@@ -9,16 +9,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -38,9 +43,11 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFF59BFEC), Color(0xFFA6CCDD))
-                        ))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFF74D0F8), Color(0xFFA6CCDD))
+                            )
+                        )
                 ) {
                     MainScreen(
                         MainActivityViewModel(
@@ -50,6 +57,28 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+
+
+@Composable
+fun ACDetails() {
+    Box(
+        modifier = Modifier
+            .size(size = 1000.dp)
+            .padding(40.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFFEF9D),
+                        Color(0xFFDCA96C)
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
     }
 }
 
@@ -80,6 +109,114 @@ fun MainScreenContent(
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
 ) {
+    Surface(
+        modifier = Modifier
+            .fillMaxSize(),
+        color= Color.Transparent
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            //First row with two columns
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(3f)
+                        .background(Color.Transparent)
+                ) {//AC info column
+                    ACDetails()
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .background(Color.Transparent)
+                        .wrapContentSize()
+                        .clip(RoundedCornerShape(20.dp)),
+
+                ) { //Increment buttons column
+
+                ButtonWithIcon(
+                    modifier= Modifier
+                        .size(width = 150.dp,height = 150.dp),
+                    id = R.drawable.ic_plus,
+                    alt = "Increment Temperature",
+                    onClick = { onIncrementTemperature() },
+                )
+                    ButtonWithIcon(
+                        modifier= Modifier
+                            .size(width = 150.dp,height = 150.dp),
+                        id = R.drawable.ic_minus,
+                        alt = "Decrement Temperature",
+                        onClick = onDecrementTemperature,
+                    )
+                }
+            }
+            // Second row with three columns
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { //Menu column
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .background(Color.Yellow)
+                ) {
+
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .background(Color.Magenta)
+                ) { //Mic button column
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+
+                ) { //Other buttons column
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                            .background(Color.Cyan)
+                    ) {
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                            .background(Color.Gray)
+                    ) {
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                            .background(Color.Red)
+                    ) {
+                    }
+
+                }
+            }
+        }
+
+
+
+    }
 //    Surface(
 //        color = when(uiState.mode) {
 //            Mode.HEAT -> Color(0xBBDF6B00)

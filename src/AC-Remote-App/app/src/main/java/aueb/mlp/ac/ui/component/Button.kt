@@ -79,11 +79,12 @@ fun ButtonWithIcon(
     @DrawableRes id: Int,
     alt: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
     IconButton(
         onClick = { }, // Icon consumes the onClick event
-        modifier = Modifier,
+        modifier = modifier,
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = MaterialTheme.colorScheme.surface,
