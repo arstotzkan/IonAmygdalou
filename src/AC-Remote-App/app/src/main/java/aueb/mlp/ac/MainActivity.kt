@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,9 +66,23 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@Composable
+fun MicButton(){
+    Box(
+        modifier = Modifier
+            .background(color = Color.White, shape = CircleShape)
+            // .clickable(onClick = onClick)
+            .size(250.dp)
+            .padding(300.dp),
+    ) {
+    }
+}
+
+
 
 @Composable
 fun ACDetails() {
+
     Box(
         modifier = Modifier
             .size(size = 1000.dp)
@@ -77,7 +96,7 @@ fun ACDetails() {
                     )
                 )
             ),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
     }
 }
@@ -112,7 +131,7 @@ fun MainScreenContent(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color= Color.Transparent
+        color = Color.Transparent
     ) {
         Column(
             modifier = Modifier
@@ -143,18 +162,18 @@ fun MainScreenContent(
                         .wrapContentSize()
                         .clip(RoundedCornerShape(20.dp)),
 
-                ) { //Increment buttons column
+                    ) { //Increment buttons column
 
-                ButtonWithIcon(
-                    modifier= Modifier
-                        .size(width = 150.dp,height = 150.dp),
-                    id = R.drawable.ic_plus,
-                    alt = "Increment Temperature",
-                    onClick = { onIncrementTemperature() },
-                )
                     ButtonWithIcon(
-                        modifier= Modifier
-                            .size(width = 150.dp,height = 150.dp),
+                        modifier = Modifier
+                            .size(width = 150.dp, height = 150.dp),
+                        id = R.drawable.ic_plus,
+                        alt = "Increment Temperature",
+                        onClick = { onIncrementTemperature() },
+                    )
+                    ButtonWithIcon(
+                        modifier = Modifier
+                            .size(width = 150.dp, height = 150.dp),
                         id = R.drawable.ic_minus,
                         alt = "Decrement Temperature",
                         onClick = onDecrementTemperature,
@@ -163,24 +182,79 @@ fun MainScreenContent(
             }
             // Second row with three columns
             Row(
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
             ) { //Menu column
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .background(Color.Yellow)
+                        .background(Color.Transparent)
                 ) {
+                    Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                ButtonWithMediumText(
+                    //TODO: ADD FUNCTION THAT CHANGES THE MENU...
+                    onClick = {  },
+                    text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+                )
+
+            }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .wrapContentSize()
+                    ) {
+                        ButtonWithMediumText(
+                            onClick = { },
+                            text = "ΕΝΤΑΣΗ" ,
+                        )
+
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .wrapContentSize()
+                    ) {
+                        ButtonWithMediumText(
+                            onClick = { },
+                            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ" ,
+                        )
+
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .wrapContentSize()
+                    ) {
+                        ButtonWithMediumText(
+                            onClick = { },
+                            text = "ΠΕΡΣΙΔΕΣ" ,
+                        )
+
+                    }
+
 
                 }
                 Column(
+                    verticalArrangement  = Arrangement.Center,
+                    horizontalAlignment= Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .background(Color.Magenta)
+                        .background(Color.Transparent)
+
                 ) { //Mic button column
+                    MicButton()
                 }
                 Column(
                     modifier = Modifier
@@ -213,7 +287,6 @@ fun MainScreenContent(
                 }
             }
         }
-
 
 
     }
@@ -448,3 +521,4 @@ fun MainScreenContent(
 //        }
 //    }
 }
+
