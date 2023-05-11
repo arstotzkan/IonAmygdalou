@@ -78,6 +78,19 @@ fun MicButton(){
     }
 }
 
+@Composable
+fun OffButton(
+    onSwitchOnOff: () -> Unit,
+){
+    Box(
+        modifier = Modifier
+            .background(color = Color.Red, shape = CircleShape)
+            .size(120.dp)
+            .padding(200.dp),
+    ) {
+        ButtonWithIcon(id =R.drawable.ic_placeholder, alt ="off", onClick = { onSwitchOnOff() })
+    }
+}
 
 
 @Composable
@@ -98,6 +111,7 @@ fun ACDetails() {
             ),
         contentAlignment = Alignment.Center,
     ) {
+
     }
 }
 
@@ -116,6 +130,7 @@ fun MainScreen(
         onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
     )
 }
+
 
 @Composable
 fun MainScreenContent(
@@ -253,7 +268,7 @@ fun MainScreenContent(
                         .weight(1f)
                         .background(Color.Transparent)
 
-                ) { //Mic button column
+                ) { //Main content column Idk how to make it
                     MicButton()
                 }
                 Column(
@@ -261,27 +276,37 @@ fun MainScreenContent(
                         .fillMaxHeight()
                         .weight(1f)
 
-                ) { //Other buttons column
+                ) { //Eco mode
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Cyan)
+                            .background(Color.Transparent)
                     ) {
+                        ButtonWithMediumText(
+                    text = "ECO",
+                    onClick = { onEcoModeChanged() },
+                )
                     }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Gray)
+                            .background(Color.Transparent)
                     ) {
+                        ButtonWithMediumText(
+                            text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
+                            onClick = {  },
+                        )
                     }
                     Column(
+                        horizontalAlignment  = Alignment.End,
+                        verticalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Red)
-                    ) {
+                            .background(Color.Transparent)
+                    ) { OffButton(onSwitchOnOff={/*close AC I guess*/})
                     }
 
                 }
@@ -290,6 +315,8 @@ fun MainScreenContent(
 
 
     }
+
+
 //    Surface(
 //        color = when(uiState.mode) {
 //            Mode.HEAT -> Color(0xBBDF6B00)
