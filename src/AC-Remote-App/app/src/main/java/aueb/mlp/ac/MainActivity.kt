@@ -79,6 +79,21 @@ fun MicButton(){
 }
 
 @Composable
+fun ModeMenu(
+
+) {
+
+}
+
+@Composable
+fun FanMenu(
+
+) {
+
+}
+
+
+@Composable
 fun OffButton(
     onSwitchOnOff: () -> Unit,
 ){
@@ -218,7 +233,7 @@ fun MainScreenContent(
             ) {
                 ButtonWithMediumText(
                     //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-                    onClick = {  },
+                    onClick = { },
                     text = "ΛΕΙΤΟΥΡΓΙΑ" ,
                 )
 
@@ -269,7 +284,13 @@ fun MainScreenContent(
                         .background(Color.Transparent)
 
                 ) { //Main content column Idk how to make it
-                    MicButton()
+                    if (uiState.activeMenu== Menu.MODE)
+                        ModeMenu()
+                    if(uiState.activeMenu==Menu.FAN)
+                        FanMenu()
+                    if (uiState.activeMenu== Menu.MAIN)
+                        MicButton()
+
                 }
                 Column(
                     modifier = Modifier
