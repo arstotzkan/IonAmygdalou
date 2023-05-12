@@ -82,14 +82,14 @@ fun MicButton(){
 fun ModeMenu(
 
 ) {
-
+     Text("Mode")
 }
 
 @Composable
 fun FanMenu(
 
 ) {
-
+    Text("Fan")
 }
 
 
@@ -141,6 +141,7 @@ fun MainScreen(
         onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
         onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
         onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
+        changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
         onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
         onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
     )
@@ -155,6 +156,7 @@ fun MainScreenContent(
     onDecrementTemperature: () -> Unit,
     onModeChanged: (String) -> Unit,
     onFanChanged: (String) -> Unit,
+    changeMenu:(String)-> Unit,
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
 ) {
@@ -178,7 +180,7 @@ fun MainScreenContent(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(3f)
-                        .background(Color.Transparent)
+
                 ) {//AC info column
                     ACDetails()
                 }
@@ -188,7 +190,6 @@ fun MainScreenContent(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .background(Color.Transparent)
                         .wrapContentSize()
                         .clip(RoundedCornerShape(20.dp)),
 
@@ -223,7 +224,6 @@ fun MainScreenContent(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .background(Color.Transparent)
                 ) {
                     Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -233,7 +233,7 @@ fun MainScreenContent(
             ) {
                 ButtonWithMediumText(
                     //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-                    onClick = { },
+                    onClick = { changeMenu("MODE") },
                     text = "ΛΕΙΤΟΥΡΓΙΑ" ,
                 )
 
@@ -244,7 +244,7 @@ fun MainScreenContent(
                             .wrapContentSize()
                     ) {
                         ButtonWithMediumText(
-                            onClick = { },
+                            onClick = {  changeMenu("FAN") },
                             text = "ΕΝΤΑΣΗ" ,
                         )
 
@@ -281,7 +281,6 @@ fun MainScreenContent(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-                        .background(Color.Transparent)
 
                 ) { //Main content column Idk how to make it
                     if (uiState.activeMenu== Menu.MODE)
@@ -302,7 +301,6 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Transparent)
                     ) {
                         ButtonWithMediumText(
                     text = "ECO",
@@ -313,7 +311,6 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Transparent)
                     ) {
                         ButtonWithMediumText(
                             text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
@@ -326,7 +323,6 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .background(Color.Transparent)
                     ) { OffButton(onSwitchOnOff={/*close AC I guess*/})
                     }
 

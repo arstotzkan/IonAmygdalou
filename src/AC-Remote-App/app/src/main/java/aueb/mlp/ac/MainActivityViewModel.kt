@@ -27,6 +27,24 @@ class MainActivityViewModel(
             acIsOn = airConditioner.on
         )
     }
+
+
+    fun changeMenu(menu: String){
+        uiState = uiState.copy(
+            activeMenu = when(menu){
+                "MAIN"-> Menu.MAIN
+                "MODE" -> Menu.MODE
+                "FAN"-> Menu.FAN
+                "BLINDS"-> Menu.BLINDS
+                "TIMER"-> Menu.TIMER
+                "CHANGE"->Menu.CHANGE
+                "ADDAC"-> Menu.ADDAC
+                else -> error("Invalid menu: $menu")
+            }
+        )
+
+    }
+
     fun incrementTemperature() {
         val success = airConditioner.incrementTemperature()
 

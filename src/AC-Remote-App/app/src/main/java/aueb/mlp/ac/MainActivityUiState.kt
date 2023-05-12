@@ -1,7 +1,7 @@
 package aueb.mlp.ac
 
 enum class Menu {
-    MODE, FAN, MAIN,
+    MODE, FAN, MAIN, BLINDS, TIMER, CHANGE, ADDAC
 }
 
 enum class Mode {
