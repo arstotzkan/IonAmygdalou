@@ -35,8 +35,12 @@ interface AirConditioner {
     fun setBlinds(blinds: ACBlinds)
     fun toggleEcoMode()
 
-    fun setTurnOnAlarm(newAlarm: AirConditionerAlarm)
-    fun setTurnOffAlarm(newAlarm: AirConditionerAlarm)
+    fun toggleTurnOnAlarm()
+    fun toggleTurnOffAlarm()
+    fun setTurnOnAlarmTime(hours: Int, minutes: Int): Boolean
+    fun setTurnOffAlarmTime(hours: Int, minutes: Int): Boolean
+    fun setTurnOnAlarmType(alarmType: AlarmType)
+    fun setTurnOffAlarmType(alarmType: AlarmType)
 
     // ...
 }
