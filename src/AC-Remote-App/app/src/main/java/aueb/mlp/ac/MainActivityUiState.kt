@@ -16,30 +16,18 @@ enum class Blinds {
     HORIZONTAL, VERTICAL, FOLLOW_ME, OFF
 }
 
-enum class Repeat {
-    ONE_TIME, EVERYDAY, CUSTOM,
-}
-
-sealed class AlarmType
-
-class OneTimeAlarmType: AlarmType()
-class RepeatingAlarmType(
-    val days: List<Boolean>,
-): AlarmType()
-
-/*
-when(alarm) {
-    is OneTimeAlarmType -> // ...
-    is RepeatingAlarmType -> alarm.days
-}
-*/
-
-data class Alarm(
-    val on: Boolean = false,
-    val hours: Int = 0,
-    val minutes: Int = 0,
-    val alarmType: AlarmType = OneTimeAlarmType(),
+data class Time(
+    val hours: Int,
+    val minutes: Int,
 )
+
+sealed class AlarmRepeat {
+    object OneTimeRepeat : AlarmRepeat()
+
+    object EverydayRepeat : AlarmRepeat()
+
+    class CustomRepeat(val days: List<Boolean>) : AlarmRepeat()
+}
 
 data class MainActivityUiState(
     val error: String = "",
@@ -50,6 +38,10 @@ data class MainActivityUiState(
     val fan: Fan = Fan.NORMAL,
     val blinds: Blinds = Blinds.OFF,
     val ecoMode: Boolean = false,
-    val turnOnAlarm: Alarm = Alarm(),
-    val turnOffAlarm: Alarm = Alarm(),
+    val turnOnAlarmState: Boolean = false,
+    val turnOffAlarmState: Boolean = false,
+    val turnOnAlarmTime: Time = Time(0, 0),
+    val turnOffAlarmTime: Time = Time(0, 0),
+    val turnOnAlarmRepeat: AlarmRepeat = AlarmRepeat.OneTimeRepeat,
+    val turnOffAlarmRepeat: AlarmRepeat = AlarmRepeat.OneTimeRepeat,
 )

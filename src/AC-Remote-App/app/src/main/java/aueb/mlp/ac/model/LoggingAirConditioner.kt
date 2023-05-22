@@ -21,10 +21,10 @@ class LoggingAirConditioner: AirConditioner {
     override var ecoMode: Boolean = false
         private set
 
-    override var turnOnAlarm: AirConditionerAlarm = OneTimeAlarm(1, 12)
+    override var turnOnAlarm: AirConditionerAlarm = AirConditionerAlarm(1, 12)
         private set
 
-    override var turnOffAlarm: AirConditionerAlarm = OneTimeAlarm(10, 34)
+    override var turnOffAlarm: AirConditionerAlarm = AirConditionerAlarm(10, 34)
         private set
     // ...
 
@@ -75,15 +75,38 @@ class LoggingAirConditioner: AirConditioner {
         log("Eco mode", this.ecoMode)
     }
 
-    override fun setTurnOnAlarm(newAlarm: AirConditionerAlarm){
-        this.turnOnAlarm = newAlarm
-        log("Turn on alarm", this.turnOnAlarm.hours)
+    override fun toggleTurnOnAlarm() {
+        this.turnOnAlarm.toggleOnOff()
+        log("TurnOnAlarmToggle", this.turnOnAlarm.on)
     }
 
-    override fun setTurnOffAlarm(newAlarm: AirConditionerAlarm){
-        this.turnOffAlarm = newAlarm
-        log("Turn off alarm", this.turnOffAlarm.hours)
+    override fun toggleTurnOffAlarm() {
+        this.turnOffAlarm.toggleOnOff()
+        log("TurnOffAlarmToggle", this.turnOnAlarm.on)
     }
+
+    override fun setTurnOnAlarmTime(hours: Int, minutes: Int): Boolean {
+        val success = this.turnOnAlarm.setTime(hours, minutes)
+        log("TurnOnAlarm Time", Pair(this.turnOnAlarm.hours, this.turnOnAlarm.minutes))
+        return success
+    }
+
+    override fun setTurnOffAlarmTime(hours: Int, minutes: Int): Boolean {
+        val success = this.turnOffAlarm.setTime(hours, minutes)
+        log("TurnOffAlarm Time", Pair(this.turnOffAlarm.hours, this.turnOffAlarm.minutes))
+        return success
+    }
+
+    override fun setTurnOnAlarmType(alarmType: AlarmType) {
+        this.turnOnAlarm.type = alarmType
+        log("TurnOnAlarm Type", this.turnOnAlarm.type)
+    }
+
+    override fun setTurnOffAlarmType(alarmType: AlarmType) {
+        this.turnOffAlarm.type = alarmType
+        log("TurnOffAlarm Type", this.turnOffAlarm.type)
+    }
+
     // ...
 
     private fun <T> log(variable: String, value: T) {

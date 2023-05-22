@@ -5,13 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import aueb.mlp.ac.model.ACBlinds
 import aueb.mlp.ac.model.ACFan
 import aueb.mlp.ac.model.ACMode
-import aueb.mlp.ac.model.ACBlinds
 import aueb.mlp.ac.model.AirConditioner
-import aueb.mlp.ac.model.OneTimeAlarm
-import aueb.mlp.ac.model.RepeatedAlarm
-import aueb.mlp.ac.model.WeeklySchedule
+import aueb.mlp.ac.model.AlarmType
+import java.time.DayOfWeek
 
 class MainActivityViewModel(
     private val airConditioner: AirConditioner,
@@ -136,116 +135,123 @@ class MainActivityViewModel(
     }
 
     fun toggleTurnOnAlarm() {
+        airConditioner.toggleTurnOnAlarm()
         airConditioner.turnOnAlarm.toggleOnOff()
+
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOnAlarm.copy(
-                on = !uiState.turnOnAlarm.on,
-            ),
+            turnOnAlarmState = airConditioner.turnOnAlarm.on
         )
     }
 
     fun toggleTurnOffAlarm() {
-        airConditioner.turnOffAlarm.toggleOnOff()
+        airConditioner.toggleTurnOffAlarm()
+
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOffAlarm.copy(
-                on = !uiState.turnOffAlarm.on,
-            ),
+            turnOffAlarmState = airConditioner.turnOffAlarm.on
         )
     }
 
     fun setTurnOnAlarmTime(hours: Int, minutes: Int) {
-        if (hours in (0..23 ) && minutes in (0..59 )){
-            airConditioner.turnOnAlarm.setTime(hours, minutes)
+        if (airConditioner.setTurnOnAlarmTime(hours, minutes)) {
             uiState = uiState.copy(
-                turnOnAlarm = uiState.turnOnAlarm.copy(
-                    hours = hours,
-                    minutes = minutes
-                ),
+                turnOnAlarmTime = Time(hours, minutes),
             )
         } else {
+            // TODO: better errors. will this ever be thrown?
             RuntimeException("Invalid arguements");
         }
-
     }
 
     fun setTurnOffAlarmTime(hours: Int, minutes: Int) {
-        if (hours in (0..23 ) && minutes in (0..59 )){
-            airConditioner.turnOffAlarm.setTime(hours, minutes)
+        if (airConditioner.setTurnOffAlarmTime(hours, minutes)) {
             uiState = uiState.copy(
-                turnOnAlarm = uiState.turnOffAlarm.copy(
-                    hours = hours,
-                    minutes = minutes
-                ),
+                turnOffAlarmTime = Time(hours, minutes),
             )
         } else {
+            // TODO: better errors. will this ever be thrown?
             RuntimeException("Invalid arguements");
         }
     }
 
-    fun setTurnOnAlarmRepeatToOneTime() {
-        airConditioner.setTurnOnAlarm(
-            OneTimeAlarm(airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes) //TODO: make new constructor work
+    fun setTurnOnAlarmRepeat(repeat: String) {
+        airConditioner.setTurnOnAlarmType(
+            when (repeat) {
+                "ONE_TIME" -> AlarmType.OneTime
+                "EVERYDAY" -> AlarmType.Everyday
+                "CUSTOM" -> AlarmType.Custom
+                else -> error("Invalid repeat mode: $repeat")
+            }
         )
 
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOnAlarm.copy(
-                alarmType = OneTimeAlarmType(),
-            ),
+            turnOnAlarmRepeat = with(airConditioner.turnOnAlarm.type) {
+                when (this) {
+                    is AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
+                    is AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
+                    is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*this.days))
+                }
+            }
         )
     }
 
-    fun setTurnOnAlarmRepeatToEveryday() {
-        airConditioner.setTurnOnAlarm(
-            RepeatedAlarm(airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes) //TODO: make new constructor work
+    fun setTurnOffAlarmRepeat(repeat: String) {
+        airConditioner.setTurnOffAlarmType(
+            when (repeat) {
+                "ONE_TIME" -> AlarmType.OneTime
+                "EVERYDAY" -> AlarmType.Everyday
+                "CUSTOM" -> AlarmType.Custom
+                else -> error("Invalid repeat mode: $repeat")
+            }
         )
 
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOnAlarm.copy(
-                alarmType = RepeatingAlarmType(mutableListOf(true,true,true,true,true,true,true))
-            )
+            turnOffAlarmRepeat = with(airConditioner.turnOffAlarm.type) {
+                when (this) {
+                    is AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
+                    is AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
+                    is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*this.days))
+                }
+            }
         )
     }
 
-//    fun setTurnOnAlarmRepeatToCustom(days: List<Boolean>) {
-//
-//        airConditioner.setTurnOnAlarm(
-//            RepeatedAlarm( airConditioner.turnOnAlarm.hours, airConditioner.turnOnAlarm.minutes)
-//        )
-//
-//        for (i in 0..days.size){
-//        }
-//
-//        uiState = uiState.copy(
-//            turnOnAlarm = uiState.turnOnAlarm.copy(
-//                alarmType = RepeatingAlarmType(
-//                    days,
-//                )
-//            ),
-//        )
-//    }
-
-    fun setTurnOffAlarmRepeatToOneTime() {
-        airConditioner.setTurnOffAlarm(
-            OneTimeAlarm(airConditioner.turnOffAlarm.hours, airConditioner.turnOffAlarm.minutes) //TODO: make new constructor work
-        )
+    fun toggleTurnOnAlarmDay(day: DayOfWeek) {
+        with(airConditioner.turnOnAlarm.type) {
+            when (this) {
+                is AlarmType.OneTime, is AlarmType.Everyday
+                    -> error("Can only toggle day on Custom Alarm Type")
+                is AlarmType.Custom -> this.toggleDay(day)
+            }
+        }
 
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOffAlarm.copy(
-                alarmType = OneTimeAlarmType(),
-            ),
+            turnOnAlarmRepeat = with(airConditioner.turnOffAlarm.type) {
+                when (this) {
+                    is AlarmType.OneTime, is AlarmType.Everyday
+                    -> error("Can only toggle day on Custom Alarm Type")
+                    is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*this.days))
+                }
+            }
         )
     }
 
-    fun setTurnOffAlarmRepeatToEveryday() {
-        airConditioner.setTurnOnAlarm(
-            RepeatedAlarm(airConditioner.turnOffAlarm.hours, airConditioner.turnOffAlarm.minutes) //TODO: make new constructor work
-        )
+    fun toggleTurnOffAlarmDay(day: DayOfWeek) {
+        with(airConditioner.turnOffAlarm.type) {
+            when (this) {
+                is AlarmType.OneTime, is AlarmType.Everyday
+                -> error("Can only toggle day on Custom Alarm Type")
+                is AlarmType.Custom -> this.toggleDay(day)
+            }
+        }
 
         uiState = uiState.copy(
-            turnOnAlarm = uiState.turnOffAlarm.copy(
-                alarmType = RepeatingAlarmType(mutableListOf(true,true,true,true,true,true,true)), //TODO: WILL CHECK A WAY TO DO THIS MORE EFFICIENTLY LATER
-            ),
+            turnOffAlarmRepeat = with(airConditioner.turnOffAlarm.type) {
+                when (this) {
+                    is AlarmType.OneTime, is AlarmType.Everyday
+                    -> error("Can only toggle day on Custom Alarm Type")
+                    is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*this.days))
+                }
+            }
         )
     }
-
 }
