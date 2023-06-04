@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -128,7 +129,13 @@ fun ChoiceButtonWithText(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    selected: Boolean = false
+    selected: Boolean = false,
+    selectedColors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = Color(0xFF008DAC),
+        contentColor = Color(0xFFDDDDDD),
+        disabledContainerColor = Color(0xFF119EBC),
+        disabledContentColor = Color(0xFFEEEEEE),
+    )
 ){
     Button(
         onClick = onClick,
@@ -143,17 +150,12 @@ fun ChoiceButtonWithText(
         border = null,
         contentPadding = PaddingValues(30.dp),
         colors = when (selected) {
+            true -> selectedColors
             false -> ButtonDefaults.buttonColors( //TODO: Improve color scheme
                 containerColor = Color(0xFFEEEEEE),
                 contentColor = Color(0xFF1111111),
                 disabledContainerColor = Color(0xFFCCCCCC),
                 disabledContentColor = Color(0xFF676767),
-            )
-            true -> ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF008DAC),
-                contentColor = Color(0xFFCCCCCC),
-                disabledContainerColor = Color(0xFF119EBC),
-                disabledContentColor = Color(0xFFEEEEEE),
             )
         }
 
