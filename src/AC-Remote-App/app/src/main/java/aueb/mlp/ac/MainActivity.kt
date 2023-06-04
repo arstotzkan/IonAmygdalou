@@ -224,6 +224,25 @@ fun ScreenMenu(
 
     }
 }
+
+@Composable
+fun EcoButton(
+    ecoToggleCallback: () -> Unit,
+    currentEcoState: Boolean
+){
+    ChoiceButtonWithText(
+        text = "ECO",
+        onClick = { ecoToggleCallback() },
+        selected = currentEcoState,
+        selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+            containerColor = Color(0xFF7BB530),
+            contentColor = Color(0xFFEEEEEE),
+            disabledContainerColor = Color(0xFF8CC640),
+            disabledContentColor = Color(0xFFEEEEEE),
+        )
+    )
+}
+
 @Composable
 fun OffButton(
     onSwitchOnOff: () -> Unit,
@@ -386,10 +405,7 @@ fun MainScreenContent(
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        ButtonWithMediumText(
-                    text = "ECO",
-                    onClick = { onEcoModeChanged() },
-                )
+                        EcoButton(onEcoModeChanged, uiState.ecoMode)
                     }
                     Column(
                         modifier = Modifier
