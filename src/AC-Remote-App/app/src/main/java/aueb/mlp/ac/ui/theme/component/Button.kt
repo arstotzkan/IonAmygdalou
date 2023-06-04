@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -121,12 +123,42 @@ fun ButtonWithIcon(
 }
 
 @Composable
-fun ChoiceIconWithText(
+fun ChoiceButtonWithText(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     selected: Boolean = false
 ){
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            //.fillMaxWidth()
+            .wrapContentHeight()
+            .size(300.dp, 100.dp)
+            .padding(10.dp)
+        ,
+        enabled = enabled,
+        shape = ACShapes.medium,
+        border = null,
+        contentPadding = PaddingValues(30.dp),
+        colors = when (selected) {
+            false -> ButtonDefaults.buttonColors( //TODO: Improve color scheme
+                containerColor = Color(0xFFEEEEEE),
+                contentColor = Color(0xFF1111111),
+                disabledContainerColor = Color(0xFFCCCCCC),
+                disabledContentColor = Color(0xFF676767),
+            )
+            true -> ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF008DAC),
+                contentColor = Color(0xFFCCCCCC),
+                disabledContainerColor = Color(0xFF119EBC),
+                disabledContentColor = Color(0xFFEEEEEE),
+            )
+        }
 
+    ) {
+        Text(text = text
+            , fontSize= 18.sp)
+    }
 }
