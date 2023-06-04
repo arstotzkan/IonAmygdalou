@@ -174,54 +174,86 @@ fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
     currentMenu: Menu
 ){
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .wrapContentSize()
+    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
 
-    ) {
-        ChoiceButtonWithText(
-            //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-            onClick = { changeMenuCallback("MODE") },
-            text = "ΛΕΙΤΟΥΡΓΙΑ" ,
-            selected = "MODE" == currentMenu.toString()
-        )
+        ) {
+            ChoiceButtonWithText(
+                //TODO: ADD FUNCTION THAT CHANGES THE MENU...
+                onClick = {
+                    when (currentMenu.toString() == "MODE"){
+                        true -> changeMenuCallback("MAIN")
+                        false -> changeMenuCallback("MODE")
+                    }
+                },
+                text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+                selected = currentMenu.toString() == "MODE"
+            )
 
+        }
+
+    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            ChoiceButtonWithText(
+                onClick = {
+                    when (currentMenu.toString() == "FAN"){
+                        true -> changeMenuCallback("MAIN")
+                        false -> changeMenuCallback("FAN")
+                    }
+                },
+                text = "ΕΝΤΑΣΗ" ,
+                selected = currentMenu.toString() == "FAN"
+            )
+
+        }
+
+    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            ChoiceButtonWithText(
+                onClick = { },
+                text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+            )
+
+        }
     }
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .wrapContentSize()
-    ) {
-        ChoiceButtonWithText(
-            onClick = {  changeMenuCallback("FAN") },
-            text = "ΕΝΤΑΣΗ" ,
-            selected = "FAN" == currentMenu.toString()
-        )
 
+    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            ChoiceButtonWithText(
+                onClick = { },
+                text = "ΠΕΡΣΙΔΕΣ",
+            )
+
+        }
     }
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .wrapContentSize()
-    ) {
-        ChoiceButtonWithText(
-            onClick = { },
-            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ" ,
-        )
+    if (currentMenu.toString() != "MAIN") {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            ChoiceButtonWithText(
+                onClick = { changeMenuCallback("MAIN") },
+                text = "ΠΙΣΩ",
+            )
 
-    }
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .wrapContentSize()
-    ) {
-        ChoiceButtonWithText(
-            onClick = { },
-            text = "ΠΕΡΣΙΔΕΣ" ,
-        )
-
+        }
     }
 }
 
