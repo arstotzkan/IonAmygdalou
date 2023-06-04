@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -94,12 +95,24 @@ fun ModeMenu(
         ChoiceButtonWithText(
             text = "ΘΕΡΜΑΝΣΗ" ,
             onClick = { modeCallback("HEAT") },
-            selected = "HEAT" == currentMode.toString()
+            selected = "HEAT" == currentMode.toString(),
+            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+                containerColor = Color(0xFFDF6B00),
+                contentColor = Color(0xFFEEEEEE),
+                disabledContainerColor = Color(0xFFEF7C11),
+                disabledContentColor = Color(0xFF333333),
+            )
         )
         ChoiceButtonWithText(
             text = "ΨΥΞΗ" ,
             onClick = { modeCallback("COLD") },
-            selected = "COLD" == currentMode.toString()
+            selected = "COLD" == currentMode.toString(),
+            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+                containerColor = Color(0xFF80AFB9),
+                contentColor = Color(0xFFEEEEEE),
+                disabledContainerColor = Color(0xFF91BFCA),
+                disabledContentColor = Color(0xFF333333),
+            )
         )
     }
     Row(
@@ -110,12 +123,24 @@ fun ModeMenu(
         ChoiceButtonWithText(
             onClick = {modeCallback("DRY")  },
             text = "ΑΦΥΓΡΑΝΣΗ" ,
-            selected = "DRY" == currentMode.toString()
+            selected = "DRY" == currentMode.toString(),
+            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+                containerColor = Color(0xFF57B9D8),
+                contentColor = Color(0xFFEEEEEE),
+                disabledContainerColor = Color(0xFF78CAE9),
+                disabledContentColor = Color(0xFF333333),
+            )
         )
         ChoiceButtonWithText(
             onClick = {modeCallback("AUTO")  },
             text = "ΑΥΤΟΜΑΤΗ" ,
-            selected = "AUTO" == currentMode.toString()
+            selected = "AUTO" == currentMode.toString(),
+            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+                containerColor = Color(0xFF979797),
+                contentColor = Color(0xFFEEEEEE),
+                disabledContainerColor = Color(0xFFCACACA),
+                disabledContentColor = Color(0xFF333333),
+            )
         )
     }
 }
