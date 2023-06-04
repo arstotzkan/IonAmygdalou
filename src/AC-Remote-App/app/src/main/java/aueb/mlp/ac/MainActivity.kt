@@ -40,6 +40,7 @@ import aueb.mlp.ac.ui.theme.component.ButtonWithMediumText
 import aueb.mlp.ac.ui.theme.component.ButtonWithText
 import aueb.mlp.ac.ui.theme.component.MediumText
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
+import aueb.mlp.ac.ui.theme.component.ChoiceButtonWithText
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,13 +91,15 @@ fun ModeMenu(
         modifier = Modifier
             .wrapContentSize()
     ) {
-        ButtonWithMediumText(
+        ChoiceButtonWithText(
             text = "ΘΕΡΜΑΝΣΗ" ,
             onClick = { modeCallback("HEAT") },
+            selected = "HEAT" == currentMode.toString()
         )
-        ButtonWithMediumText(
+        ChoiceButtonWithText(
             text = "ΨΥΞΗ" ,
             onClick = { modeCallback("COLD") },
+            selected = "COLD" == currentMode.toString()
         )
     }
     Row(
@@ -104,38 +107,98 @@ fun ModeMenu(
         modifier = Modifier
             .wrapContentSize()
     ) {
-        ButtonWithMediumText(
+        ChoiceButtonWithText(
             onClick = {modeCallback("DRY")  },
             text = "ΑΦΥΓΡΑΝΣΗ" ,
+            selected = "DRY" == currentMode.toString()
         )
-        ButtonWithMediumText(
+        ChoiceButtonWithText(
             onClick = {modeCallback("AUTO")  },
             text = "ΑΥΤΟΜΑΤΗ" ,
+            selected = "AUTO" == currentMode.toString()
         )
     }
 }
 
+
 @Composable
 fun FanMenu(
     fanCallback: (input: String) -> Unit,
-    currentFan: Fan
+    currentFanMode: Fan
 ) {
-    Text(currentFan.toString())
-    ButtonWithMediumText(
+    Text(currentFanMode.toString())
+    ChoiceButtonWithText(
         onClick = {fanCallback("SILENT")  },
         text = "ΣΙΩΠΗΛΗ" ,
+        selected = "SILENT" == currentFanMode.toString()
     )
-    ButtonWithMediumText(
+    ChoiceButtonWithText(
         onClick = {fanCallback("NORMAL")  },
         text = "ΚΑΝΟΝΙΚΗ" ,
+        selected = "NORMAL" == currentFanMode.toString()
     )
-    ButtonWithMediumText(
+    ChoiceButtonWithText(
         onClick = {fanCallback("TURBO")  },
         text = "TURBO" ,
+        selected = "TURBO" == currentFanMode.toString()
     )
 }
 
+@Composable
+fun ScreenMenu(
+    changeMenuCallback: (input: String) -> Unit,
+    currentMenu: Menu
+){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .wrapContentSize()
 
+    ) {
+        ChoiceButtonWithText(
+            //TODO: ADD FUNCTION THAT CHANGES THE MENU...
+            onClick = { changeMenuCallback("MODE") },
+            text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+            selected = "MODE" == currentMenu.toString()
+        )
+
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        ChoiceButtonWithText(
+            onClick = {  changeMenuCallback("FAN") },
+            text = "ΕΝΤΑΣΗ" ,
+            selected = "FAN" == currentMenu.toString()
+        )
+
+    }
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        ChoiceButtonWithText(
+            onClick = { },
+            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ" ,
+        )
+
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        ChoiceButtonWithText(
+            onClick = { },
+            text = "ΠΕΡΣΙΔΕΣ" ,
+        )
+
+    }
+}
 @Composable
 fun OffButton(
     onSwitchOnOff: () -> Unit,
@@ -268,54 +331,7 @@ fun MainScreenContent(
                         .fillMaxHeight()
                         .weight(1f)
                 ) {
-                    Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-
-            ) {
-                ButtonWithMediumText(
-                    //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-                    onClick = { changeMenu("MODE") },
-                    text = "ΛΕΙΤΟΥΡΓΙΑ" ,
-                )
-
-            }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .wrapContentSize()
-                    ) {
-                        ButtonWithMediumText(
-                            onClick = {  changeMenu("FAN") },
-                            text = "ΕΝΤΑΣΗ" ,
-                        )
-
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .wrapContentSize()
-                    ) {
-                        ButtonWithMediumText(
-                            onClick = { },
-                            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ" ,
-                        )
-
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .wrapContentSize()
-                    ) {
-                        ButtonWithMediumText(
-                            onClick = { },
-                            text = "ΠΕΡΣΙΔΕΣ" ,
-                        )
-
-                    }
-
+                    ScreenMenu(changeMenu, uiState.activeMenu)
 
                 }
                 Column(
