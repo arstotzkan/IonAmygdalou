@@ -1,4 +1,4 @@
-package aueb.mlp.ac.ui.component
+package aueb.mlp.ac.ui.theme.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

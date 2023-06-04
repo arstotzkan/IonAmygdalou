@@ -33,11 +33,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import aueb.mlp.ac.model.LoggingAirConditioner
-import aueb.mlp.ac.ui.component.ButtonWithIcon
-import aueb.mlp.ac.ui.component.ErrorLabel
-import aueb.mlp.ac.ui.component.LargeText
-import aueb.mlp.ac.ui.component.ButtonWithMediumText
-import aueb.mlp.ac.ui.component.MediumText
+import aueb.mlp.ac.ui.theme.component.ButtonWithIcon
+import aueb.mlp.ac.ui.theme.component.ErrorLabel
+import aueb.mlp.ac.ui.theme.component.LargeText
+import aueb.mlp.ac.ui.theme.component.ButtonWithMediumText
+import aueb.mlp.ac.ui.theme.component.ButtonWithText
+import aueb.mlp.ac.ui.theme.component.MediumText
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -80,16 +81,58 @@ fun MicButton(){
 
 @Composable
 fun ModeMenu(
-
+    modeCallback: (input: String) -> Unit,
+    currentMode : Mode
 ) {
-     Text("Mode")
+    Text(currentMode.toString())
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        ButtonWithMediumText(
+            text = "ΘΕΡΜΑΝΣΗ" ,
+            onClick = { modeCallback("HEAT") },
+        )
+        ButtonWithMediumText(
+            text = "ΨΥΞΗ" ,
+            onClick = { modeCallback("COLD") },
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        ButtonWithMediumText(
+            onClick = {modeCallback("DRY")  },
+            text = "ΑΦΥΓΡΑΝΣΗ" ,
+        )
+        ButtonWithMediumText(
+            onClick = {modeCallback("AUTO")  },
+            text = "ΑΥΤΟΜΑΤΗ" ,
+        )
+    }
 }
 
 @Composable
 fun FanMenu(
-
+    fanCallback: (input: String) -> Unit,
+    currentFan: Fan
 ) {
-    Text("Fan")
+    Text(currentFan.toString())
+    ButtonWithMediumText(
+        onClick = {fanCallback("SILENT")  },
+        text = "ΣΙΩΠΗΛΗ" ,
+    )
+    ButtonWithMediumText(
+        onClick = {fanCallback("NORMAL")  },
+        text = "ΚΑΝΟΝΙΚΗ" ,
+    )
+    ButtonWithMediumText(
+        onClick = {fanCallback("TURBO")  },
+        text = "TURBO" ,
+    )
 }
 
 
@@ -280,13 +323,13 @@ fun MainScreenContent(
                     horizontalAlignment= Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f)
+                        .weight(2f)
 
                 ) { //Main content column Idk how to make it
                     if (uiState.activeMenu== Menu.MODE)
-                        ModeMenu()
+                        ModeMenu(onModeChanged, uiState.mode)
                     if(uiState.activeMenu==Menu.FAN)
-                        FanMenu()
+                        FanMenu(onFanChanged, uiState.fan)
                     if (uiState.activeMenu== Menu.MAIN)
                         MicButton()
 

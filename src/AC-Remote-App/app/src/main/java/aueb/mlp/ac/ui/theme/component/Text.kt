@@ -1,4 +1,4 @@
-package aueb.mlp.ac.ui.component
+package aueb.mlp.ac.ui.theme.component
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
