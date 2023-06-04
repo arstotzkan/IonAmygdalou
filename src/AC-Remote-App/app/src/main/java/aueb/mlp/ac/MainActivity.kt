@@ -29,6 +29,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -174,7 +175,6 @@ fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
     currentMenu: Menu
 ){
-    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE")
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -190,12 +190,11 @@ fun ScreenMenu(
                     }
                 },
                 text = "ΛΕΙΤΟΥΡΓΙΑ" ,
-                selected = currentMenu.toString() == "MODE"
+                selected = currentMenu.toString() == "MODE",
+                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE") 1f else 0f)
             )
-
         }
 
-    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN")
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -209,40 +208,50 @@ fun ScreenMenu(
                     }
                 },
                 text = "ΕΝΤΑΣΗ" ,
-                selected = currentMenu.toString() == "FAN"
+                selected = currentMenu.toString() == "FAN",
+                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN") 1f else 0f)
             )
-
         }
 
-    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            ChoiceButtonWithText(
-                onClick = { },
-                text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
-            )
+        if (currentMenu.toString() != "BLINDS") //a little bit spaghetti, i've done this so the blinds btn is on the right place
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .wrapContentSize()
+            ) {
+                ChoiceButtonWithText(
+                    onClick = {
+                        when (currentMenu.toString() == "TIMER"){
+                            true -> changeMenuCallback("MAIN")
+                            false -> changeMenuCallback("TIMER")
+                        }
+                    },
+                    text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+                    selected = currentMenu.toString() == "TIMER",
+                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
+                )
 
-        }
-    }
+            }
 
-    if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            ChoiceButtonWithText(
-                onClick = { },
-                text = "ΠΕΡΣΙΔΕΣ",
-            )
+        if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") //a little bit spaghetti, i've done this so the back btn is on the right place
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .wrapContentSize()
+            ) {
+                ChoiceButtonWithText(
+                    onClick = {
+                        when (currentMenu.toString() == "BLINDS"){
+                            true -> changeMenuCallback("MAIN")
+                            false -> changeMenuCallback("BLINDS")
+                        }
+                    },
+                    text = "ΠΕΡΣΙΔΕΣ",
+                    selected = currentMenu.toString() == "BLINDS",
+                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
+                )
+            }
 
-        }
-    }
-
-    if (currentMenu.toString() != "MAIN") {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -251,10 +260,11 @@ fun ScreenMenu(
             ChoiceButtonWithText(
                 onClick = { changeMenuCallback("MAIN") },
                 text = "ΠΙΣΩ",
+                modifier = Modifier.alpha(if (currentMenu.toString() != "MAIN") 1f else 0f)
             )
 
         }
-    }
+
 }
 
 @Composable
