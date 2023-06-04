@@ -86,7 +86,7 @@ fun ModeMenu(
     modeCallback: (input: String) -> Unit,
     currentMode : Mode
 ) {
-    Text(currentMode.toString())
+    //Text(currentMode.toString())
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -151,7 +151,7 @@ fun FanMenu(
     fanCallback: (input: String) -> Unit,
     currentFanMode: Fan
 ) {
-    Text(currentFanMode.toString())
+    //Text(currentFanMode.toString())
     ChoiceButtonWithText(
         onClick = {fanCallback("SILENT")  },
         text = "ΣΙΩΠΗΛΗ" ,
