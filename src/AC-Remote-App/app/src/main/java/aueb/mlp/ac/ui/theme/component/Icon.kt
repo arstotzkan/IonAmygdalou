@@ -2,7 +2,6 @@ package aueb.mlp.ac.ui.theme.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -24,24 +23,19 @@ private fun IconPreview() {
             Icon(
                 R.drawable.ic_placeholder,
                 alt = "placeholder",
-                sizeVariation = SizeVariation.SMALL,
+                sizeVariation = SizeVariation.PRIMARY,
             )
             Icon(
                 R.drawable.ic_placeholder,
                 alt = "placeholder",
-                sizeVariation = SizeVariation.MEDIUM,
-            )
-            Icon(
-                R.drawable.ic_placeholder,
-                alt = "placeholder",
-                sizeVariation = SizeVariation.LARGE,
+                sizeVariation = SizeVariation.SECONDARY,
             )
         }
     }
 }
 
 enum class SizeVariation {
-    LARGE, MEDIUM, SMALL,
+    PRIMARY, SECONDARY,
 }
 
 @Composable
@@ -49,19 +43,16 @@ fun Icon(
     @DrawableRes id: Int,
     alt: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
-    sizeVariation: SizeVariation = SizeVariation.MEDIUM,
+    sizeVariation: SizeVariation = SizeVariation.SECONDARY,
 ) {
     Image(
         painter = painterResource(id = id),
         contentDescription = alt,
         modifier = modifier
-            .clickable(onClick = onClick)
             .size(
                 when (sizeVariation) {
-                    SizeVariation.SMALL -> 24.dp
-                    SizeVariation.MEDIUM -> 32.dp
-                    SizeVariation.LARGE -> 40.dp
+                    SizeVariation.PRIMARY -> 40.dp
+                    SizeVariation.SECONDARY -> 32.dp
                 }
             ),
     )
