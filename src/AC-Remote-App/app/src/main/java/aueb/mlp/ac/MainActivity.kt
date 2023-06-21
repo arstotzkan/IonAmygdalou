@@ -91,6 +91,8 @@ fun ModeMenu(
     currentMode : Mode
 ) {
     //Text(currentMode.toString())
+    // TODO: ### replace with grid https://developer.android.com/jetpack/compose/lists#lazy-grids ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -158,6 +160,7 @@ fun FanMenu(
     fanCallback: (input: String) -> Unit,
     currentFanMode: Fan
 ) {
+    // TODO: ### enclose in a Column with proper spacing etc etc ###
     //Text(currentFanMode.toString())
     StatefulTextButton(
         onClick = {fanCallback("SILENT")  },
@@ -184,6 +187,11 @@ fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
     currentMenu: Menu
 ){
+    // TODO: ### don't enclose individual items in a row ###
+    // TODO: ### enclose everything in a column with proper spacing etc etc ###
+    // TODO: ### fix menu to work in the new way (all items visible at all times) ###
+    // TODO: ### remove alpha modifier; it's included in the disabled color ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -381,6 +389,7 @@ fun MainScreenContent(
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
 ) {
+    // TODO: ### extract +, -, ChangeAc to their own components ###
     Surface(
         modifier = Modifier
             .fillMaxSize(),
