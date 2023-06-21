@@ -1,166 +1,209 @@
 package aueb.mlp.ac.ui.theme.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import aueb.mlp.ac.R
-import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.ACShapes
 
-@Preview
-@Composable
-private fun ButtonWithTextPreview() {
-    ACRemoteAppTheme {
-        ButtonWithText(
-            text = "Button Text",
-            onClick = {  },
+data class AcButtonColors(
+    val containerColor: Color,
+    val contentColor: Color,
+) {
+    companion object {
+        val Disabled = AcButtonColors(
+            containerColor = Color(0xFFC5C7F1),
+            contentColor = Color(0x80000000),
+        )
+        val Enabled = AcButtonColors(
+            containerColor = Color(0xFFECF0FF),
+            contentColor = Color(0xFF000000),
+        )
+        val Selected = AcButtonColors(
+            containerColor = Color(0xFF008DAC),
+            contentColor = Color(0xFFFFFFFF),
         )
     }
 }
 
-@Preview
 @Composable
-private fun ButtonWithIconPreview() {
-    ACRemoteAppTheme {
-        ButtonWithIcon(
-            id = R.drawable.ic_placeholder,
-            alt = "image alt text",
-            onClick = { },
-        )
+fun PlainButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable(onClick = { if (enabled) onClick() })
+            .padding(10.dp)
+            .clip(shape = ACShapes.medium)
+            .background(if (enabled) enabledColors.containerColor else disabledColors.containerColor)
+            .then(modifier)
+            // moved after .then because first size is used
+            .wrapContentHeight()
+            .size(300.dp, 100.dp)
+    ) {
+        content()
     }
 }
 
 @Composable
-fun ButtonWithText(
+/**
+ * `!enabled` is checked first; disabled buttons have highest precedence. `selected` is checked
+ * second; enabled buttons change depending on whether they are selected. If `!selected` fall back
+ * to enabledColors.
+ */
+fun StatefulButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    selected: Boolean,
+    selectedColors: AcButtonColors = AcButtonColors.Selected,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable(onClick = { if (enabled) onClick() })
+            .padding(10.dp)
+            .clip(shape = ACShapes.medium)
+            .background(
+                if (!enabled)
+                    disabledColors.containerColor
+                else
+                    if (selected) selectedColors.containerColor
+                    else enabledColors.containerColor
+            )
+            .then(modifier)
+            // moved after .then because first size is used
+            .wrapContentHeight()
+            .size(300.dp, 100.dp)
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun PlainTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
 ) {
-    Button(
+    PlainButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = ACShapes.medium,
-        border = null,
-        contentPadding = PaddingValues(8.dp),
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
     ) {
-        LargeText(text = text)
+        Text(text = text)
     }
 }
 
 @Composable
-fun ButtonWithMediumText(
+fun StatefulTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    selected: Boolean,
+    selectedColors: AcButtonColors = AcButtonColors.Selected,
 ) {
-    Button(
+    StatefulButton(
         onClick = onClick,
-        modifier = modifier
-            //.fillMaxWidth()
-            .wrapContentHeight()
-            .size(300.dp, 100.dp)
-            .padding(10.dp)
-        ,
+        modifier = modifier,
         enabled = enabled,
-        shape = ACShapes.medium,
-        border = null,
-        contentPadding = PaddingValues(30.dp),
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+        selected = selected,
+        selectedColors = selectedColors,
     ) {
-        Text(text = text
-            , fontSize= 18.sp)
+        Text(text = text)
     }
 }
+
 @Composable
-fun ButtonWithIcon(
+fun PlainIconButton(
     @DrawableRes id: Int,
     alt: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
 ) {
-    IconButton(
-        onClick = { }, // Icon consumes the onClick event
+    PlainButton(
+        onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ),
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
     ) {
         Icon(
             id = id,
             alt = alt,
-            onClick = onClick,
         )
     }
 }
 
 @Composable
-fun ChoiceButtonWithText(
+fun ModeButton(
     text: String,
+    @DrawableRes id: Int,
+    alt: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    selected: Boolean = false,
-    selectedColors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = Color(0xFF008DAC),
-        contentColor = Color(0xFFDDDDDD),
-        disabledContainerColor = Color(0xFF119EBC),
-        disabledContentColor = Color(0xFFEEEEEE),
-    )
-){
-    Button(
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    selected: Boolean,
+    selectedColors: AcButtonColors = AcButtonColors.Selected,
+) {
+    StatefulButton(
         onClick = onClick,
-        modifier = modifier
-            //.fillMaxWidth()
-            .wrapContentHeight()
-            .size(300.dp, 100.dp)
-            .padding(10.dp)
-        ,
+        modifier = modifier,
         enabled = enabled,
-        shape = ACShapes.medium,
-        border = null,
-        contentPadding = PaddingValues(30.dp),
-        colors = when (selected) {
-            true -> selectedColors
-            false -> ButtonDefaults.buttonColors( //TODO: Improve color scheme
-                containerColor = Color(0xFFEEEEEE),
-                contentColor = Color(0xFF1111111),
-                disabledContainerColor = Color(0xFFCCCCCC),
-                disabledContentColor = Color(0xFF676767),
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+        selected = selected,
+        selectedColors = selectedColors,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(24.dp)
+        ) {
+            Text(text = text)
+            Icon(
+                id = id,
+                alt = alt,
             )
         }
-
-    ) {
-        Text(text = text
-            , fontSize= 18.sp)
     }
 }
