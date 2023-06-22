@@ -232,46 +232,25 @@ fun ScreenMenu(
             )
         }
 
-        if (currentMenu.toString() != "BLINDS") //a little bit spaghetti, i've done this so the blinds btn is on the right place
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-            ) {
-                StatefulTextButton(
-                    onClick = {
-                        when (currentMenu.toString() == "TIMER"){
-                            true -> changeMenuCallback("MAIN")
-                            false -> changeMenuCallback("TIMER")
-                        }
-                    },
-                    text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
-                    enabled = true, // TODO: don't hardcode as true
-                    selected = currentMenu.toString() == "TIMER",
-                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
-                )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            StatefulTextButton(
+                onClick = {
+                    when (currentMenu.toString() == "TIMER"){
+                        true -> changeMenuCallback("MAIN")
+                        false -> changeMenuCallback("TIMER")
+                    }
+                },
+                text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+                enabled = true, // TODO: don't hardcode as true
+                selected = currentMenu.toString() == "TIMER",
+                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
+            )
 
-            }
-
-        if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") //a little bit spaghetti, i've done this so the back btn is on the right place
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-            ) {
-                StatefulTextButton(
-                    onClick = {
-                        when (currentMenu.toString() == "BLINDS"){
-                            true -> changeMenuCallback("MAIN")
-                            false -> changeMenuCallback("BLINDS")
-                        }
-                    },
-                    text = "ΠΕΡΣΙΔΕΣ",
-                    enabled = true, // TODO: don't hardcode as true
-                    selected = currentMenu.toString() == "BLINDS",
-                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
-                )
-            }
+        }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -279,14 +258,19 @@ fun ScreenMenu(
                 .wrapContentSize()
         ) {
             StatefulTextButton(
-                onClick = { changeMenuCallback("MAIN") },
-                text = "ΠΙΣΩ",
+                onClick = {
+                    when (currentMenu.toString() == "BLINDS"){
+                        true -> changeMenuCallback("MAIN")
+                        false -> changeMenuCallback("BLINDS")
+                    }
+                },
+                text = "ΠΕΡΣΙΔΕΣ",
                 enabled = true, // TODO: don't hardcode as true
-                selected = false,
-                modifier = Modifier.alpha(if (currentMenu.toString() != "MAIN") 1f else 0f)
+                selected = currentMenu.toString() == "BLINDS",
+                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
             )
-
         }
+
 
 }
 
