@@ -209,7 +209,6 @@ fun ScreenMenu(
                 text = "ΛΕΙΤΟΥΡΓΙΑ" ,
                 enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "MODE",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE") 1f else 0f)
             )
         }
 
@@ -228,7 +227,6 @@ fun ScreenMenu(
                 text = "ΕΝΤΑΣΗ" ,
                 enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "FAN",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN") 1f else 0f)
             )
         }
 
@@ -247,7 +245,6 @@ fun ScreenMenu(
                 text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
                 enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "TIMER",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
             )
 
         }
@@ -267,7 +264,6 @@ fun ScreenMenu(
                 text = "ΠΕΡΣΙΔΕΣ",
                 enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "BLINDS",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
             )
         }
 
