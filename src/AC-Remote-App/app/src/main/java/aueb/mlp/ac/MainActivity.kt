@@ -30,6 +30,7 @@ import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
+import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
 import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.StatefulButton
@@ -175,6 +176,46 @@ fun FanMenu(
         )
     }
 
+}
+
+@Composable
+fun TimerMenu(){
+    Text("TODOOOOOOOOOOOOOO")
+}
+@Composable
+fun BlindsMenu(
+    blindCallback: (input: String) -> Unit,
+    currentBlindMode: Blinds
+){
+    //TODO: ADD SWITCHES
+    // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+    ){
+        PlainButtonWithSwitchAndText(
+            onClick = {
+                if (currentBlindMode == Blinds.VERTICAL)
+                    blindCallback("OFF")
+                else
+                    blindCallback("VERTICAL")
+            },
+            text = "ΠΑΝΩ-ΚΑΤΩ" ,
+            enabled = true,
+            switchChecked = currentBlindMode == Blinds.VERTICAL
+        )
+        PlainButtonWithSwitchAndText(
+            onClick = {
+                if (currentBlindMode == Blinds.HORIZONTAL)
+                    blindCallback("OFF")
+                else
+                    blindCallback("HORIZONTAL")
+            },
+            text = "ΔΕΞΙΑ-ΑΡΙΣΤΕΡΑ" ,
+            enabled = true,
+            switchChecked = currentBlindMode == Blinds.HORIZONTAL
+        )
+    }
 }
 
 @Composable
@@ -428,8 +469,9 @@ fun MainScreenContent(
                     when(uiState.activeMenu ){
                         Menu.MODE -> ModeMenu(onModeChanged, uiState.mode)
                         Menu.FAN -> FanMenu(onFanChanged, uiState.fan)
-                        Menu.TIMER -> MicButton()
-                        Menu.BLINDS -> MicButton()
+                        Menu.TIMER -> TimerMenu()
+                        Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
+                        //Maybe selecting/adding an AC needs its own activity??
                         else -> MicButton()
                     }
 
