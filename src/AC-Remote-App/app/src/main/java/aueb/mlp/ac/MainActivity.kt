@@ -189,9 +189,9 @@ fun ScreenMenu(
 ){
     // TODO: ### don't enclose individual items in a row ###
     // TODO: ### enclose everything in a column with proper spacing etc etc ###
-    // TODO: ### fix menu to work in the new way (all items visible at all times) ###
-    // TODO: ### remove alpha modifier; it's included in the disabled color ###
-    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
+    // TODO: ### fix menu to work in the new way (all items visible at all times) OK ###
+    // TODO: ### remove alpha modifier; it's included in the disabled color OK ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone OK ###
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
@@ -201,14 +201,11 @@ fun ScreenMenu(
             StatefulTextButton(
                 //TODO: ADD FUNCTION THAT CHANGES THE MENU...
                 onClick = {
-                    when (currentMenu.toString() == "MODE"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("MODE")
-                    }
+                    changeMenuCallback("MODE")
                 },
                 text = "ΛΕΙΤΟΥΡΓΙΑ" ,
                 enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "MODE",
+                selected = currentMenu == Menu.MODE,
             )
         }
 
@@ -219,14 +216,11 @@ fun ScreenMenu(
         ) {
             StatefulTextButton(
                 onClick = {
-                    when (currentMenu.toString() == "FAN"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("FAN")
-                    }
+                    changeMenuCallback("FAN")
                 },
                 text = "ΕΝΤΑΣΗ" ,
                 enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "FAN",
+                selected = currentMenu == Menu.FAN,
             )
         }
 
@@ -237,14 +231,11 @@ fun ScreenMenu(
         ) {
             StatefulTextButton(
                 onClick = {
-                    when (currentMenu.toString() == "TIMER"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("TIMER")
-                    }
+                    changeMenuCallback("TIMER")
                 },
                 text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
                 enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "TIMER",
+                selected = currentMenu == Menu.TIMER,
             )
 
         }
@@ -256,14 +247,11 @@ fun ScreenMenu(
         ) {
             StatefulTextButton(
                 onClick = {
-                    when (currentMenu.toString() == "BLINDS"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("BLINDS")
-                    }
+                    changeMenuCallback("BLINDS")
                 },
                 text = "ΠΕΡΣΙΔΕΣ",
                 enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "BLINDS",
+                selected = currentMenu == Menu.BLINDS,
             )
         }
 
