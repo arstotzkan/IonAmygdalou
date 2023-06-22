@@ -185,88 +185,62 @@ fun FanMenu(
 @Composable
 fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
-    currentMenu: Menu
+    uiState: MainActivityUiState
+
 ){
-    // TODO: ### don't enclose individual items in a row ###
-    // TODO: ### enclose everything in a column with proper spacing etc etc ###
-    // TODO: ### fix menu to work in the new way (all items visible at all times) OK ###
-    // TODO: ### remove alpha modifier; it's included in the disabled color OK ###
-    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone OK ###
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-
-        ) {
-            StatefulTextButton(
-                //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-                onClick = {
-                    changeMenuCallback("MODE")
-                },
-                text = "ΛΕΙΤΟΥΡΓΙΑ" ,
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu == Menu.MODE,
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            StatefulTextButton(
-                onClick = {
-                    changeMenuCallback("FAN")
-                },
-                text = "ΕΝΤΑΣΗ" ,
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu == Menu.FAN,
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            StatefulTextButton(
-                onClick = {
-                    changeMenuCallback("TIMER")
-                },
-                text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu == Menu.TIMER,
-            )
-
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            StatefulTextButton(
-                onClick = {
-                    changeMenuCallback("BLINDS")
-                },
-                text = "ΠΕΡΣΙΔΕΣ",
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu == Menu.BLINDS,
-            )
-        }
-
-
+    // TODO: ### don't enclose individual items in a row (DONE) ###
+    // TODO: ### enclose everything in a column with proper spacing etc etc (DONE) ###
+    // TODO: ### fix menu to work in the new way (all items visible at all times) (DONE) ###
+    // TODO: ### remove alpha modifier; it's included in the disabled color (DONE) ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone (DONE) ###
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+    ){
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("MODE")
+            },
+            text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+            enabled = uiState.acIsOn, // TODO: don't hardcode as true (DONE)
+            selected = uiState.activeMenu == Menu.MODE,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("FAN")
+            },
+            text = "ΕΝΤΑΣΗ" ,
+            enabled = uiState.acIsOn, // TODO: don't hardcode as true (DONE)
+            selected = uiState.activeMenu == Menu.FAN,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("TIMER")
+            },
+            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+            enabled = uiState.acIsOn, // TODO: don't hardcode as true (DONE)
+            selected = uiState.activeMenu == Menu.TIMER,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("BLINDS")
+            },
+            text = "ΠΕΡΣΙΔΕΣ",
+            enabled = uiState.acIsOn, // TODO: don't hardcode as true (DONE)
+            selected = uiState.activeMenu == Menu.BLINDS,
+        )
+    }
 }
 
 @Composable
 fun EcoButton(
     ecoToggleCallback: () -> Unit,
-    currentEcoState: Boolean
+    uiState: MainActivityUiState,
 ){
     StatefulButton(
         onClick = { ecoToggleCallback() },
-        enabled = true, // TODO: don't hardcode as true
-        selected = currentEcoState,
+        enabled = uiState.acIsOn, // TODO: don't hardcode as true (DONE)
+        selected = uiState.ecoMode,
         selectedColors = AcButtonColors(
             containerColor = Color(0xFF8CC640),
             contentColor = Color(0xFF000000),
@@ -425,7 +399,7 @@ fun MainScreenContent(
                         .fillMaxHeight()
                         .weight(1f)
                 ) {
-                    ScreenMenu(changeMenu, uiState.activeMenu)
+                    ScreenMenu(changeMenu, uiState)
 
                 }
                 Column(
@@ -455,7 +429,7 @@ fun MainScreenContent(
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        EcoButton(onEcoModeChanged, uiState.ecoMode)
+                        EcoButton(onEcoModeChanged, uiState)
                     }
                     Column(
                         modifier = Modifier
