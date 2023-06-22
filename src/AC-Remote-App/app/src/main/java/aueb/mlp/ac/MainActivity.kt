@@ -35,14 +35,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import aueb.mlp.ac.model.LoggingAirConditioner
-import aueb.mlp.ac.ui.theme.component.ButtonWithIcon
 import aueb.mlp.ac.ui.theme.component.ErrorLabel
 import aueb.mlp.ac.ui.theme.component.LargeText
-import aueb.mlp.ac.ui.theme.component.ButtonWithMediumText
-import aueb.mlp.ac.ui.theme.component.ButtonWithText
 import aueb.mlp.ac.ui.theme.component.MediumText
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
-import aueb.mlp.ac.ui.theme.component.ChoiceButtonWithText
+import aueb.mlp.ac.ui.theme.component.AcButtonColors
+import aueb.mlp.ac.ui.theme.component.Icon
+import aueb.mlp.ac.ui.theme.component.ModeButton
+import aueb.mlp.ac.ui.theme.component.PlainIconButton
+import aueb.mlp.ac.ui.theme.component.PlainTextButton
+import aueb.mlp.ac.ui.theme.component.StatefulButton
+import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,31 +91,35 @@ fun ModeMenu(
     currentMode : Mode
 ) {
     //Text(currentMode.toString())
+    // TODO: ### replace with grid https://developer.android.com/jetpack/compose/lists#lazy-grids ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .wrapContentSize()
     ) {
-        ChoiceButtonWithText(
+        ModeButton(
             text = "ΘΕΡΜΑΝΣΗ" ,
+            id = R.drawable.ic_mode_heat,
+            alt = "mode heat",
             onClick = { modeCallback("HEAT") },
+            enabled = true, // TODO: don't hardcode as true
             selected = "HEAT" == currentMode.toString(),
-            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+            selectedColors = AcButtonColors(
                 containerColor = Color(0xFFDF6B00),
-                contentColor = Color(0xFFEEEEEE),
-                disabledContainerColor = Color(0xFFEF7C11),
-                disabledContentColor = Color(0xFF333333),
+                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
-        ChoiceButtonWithText(
+        ModeButton(
             text = "ΨΥΞΗ" ,
+            id = R.drawable.ic_mode_cold,
+            alt = "mode cold",
             onClick = { modeCallback("COLD") },
+            enabled = true, // TODO: don't hardcode as true
             selected = "COLD" == currentMode.toString(),
-            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+            selectedColors = AcButtonColors(
                 containerColor = Color(0xFF80AFB9),
-                contentColor = Color(0xFFEEEEEE),
-                disabledContainerColor = Color(0xFF91BFCA),
-                disabledContentColor = Color(0xFF333333),
+                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
     }
@@ -121,51 +128,56 @@ fun ModeMenu(
         modifier = Modifier
             .wrapContentSize()
     ) {
-        ChoiceButtonWithText(
+        ModeButton(
             onClick = {modeCallback("DRY")  },
+            id = R.drawable.ic_mode_humidity,
+            alt = "mode humidity",
             text = "ΑΦΥΓΡΑΝΣΗ" ,
+            enabled = true, // TODO: don't hardcode as true
             selected = "DRY" == currentMode.toString(),
-            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
+            selectedColors = AcButtonColors(
                 containerColor = Color(0xFF57B9D8),
-                contentColor = Color(0xFFEEEEEE),
-                disabledContainerColor = Color(0xFF78CAE9),
-                disabledContentColor = Color(0xFF333333),
+                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
-        ChoiceButtonWithText(
+        ModeButton(
             onClick = {modeCallback("AUTO")  },
+            id = R.drawable.ic_mode_auto,
+            alt = "mode auto",
             text = "ΑΥΤΟΜΑΤΗ" ,
+            enabled = true, // TODO: don't hardcode as true
             selected = "AUTO" == currentMode.toString(),
-            selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
-                containerColor = Color(0xFF979797),
-                contentColor = Color(0xFFEEEEEE),
-                disabledContainerColor = Color(0xFFCACACA),
-                disabledContentColor = Color(0xFF333333),
+            selectedColors = AcButtonColors(
+                containerColor = Color(0xFFB9B9B9),
+                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
     }
 }
-
 
 @Composable
 fun FanMenu(
     fanCallback: (input: String) -> Unit,
     currentFanMode: Fan
 ) {
+    // TODO: ### enclose in a Column with proper spacing etc etc ###
     //Text(currentFanMode.toString())
-    ChoiceButtonWithText(
+    StatefulTextButton(
         onClick = {fanCallback("SILENT")  },
         text = "ΣΙΩΠΗΛΗ" ,
+        enabled = true,
         selected = "SILENT" == currentFanMode.toString()
     )
-    ChoiceButtonWithText(
+    StatefulTextButton(
         onClick = {fanCallback("NORMAL")  },
         text = "ΚΑΝΟΝΙΚΗ" ,
+        enabled = true,
         selected = "NORMAL" == currentFanMode.toString()
     )
-    ChoiceButtonWithText(
+    StatefulTextButton(
         onClick = {fanCallback("TURBO")  },
         text = "TURBO" ,
+        enabled = true,
         selected = "TURBO" == currentFanMode.toString()
     )
 }
@@ -175,13 +187,18 @@ fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
     currentMenu: Menu
 ){
+    // TODO: ### don't enclose individual items in a row ###
+    // TODO: ### enclose everything in a column with proper spacing etc etc ###
+    // TODO: ### fix menu to work in the new way (all items visible at all times) ###
+    // TODO: ### remove alpha modifier; it's included in the disabled color ###
+    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .wrapContentSize()
 
         ) {
-            ChoiceButtonWithText(
+            StatefulTextButton(
                 //TODO: ADD FUNCTION THAT CHANGES THE MENU...
                 onClick = {
                     when (currentMenu.toString() == "MODE"){
@@ -190,6 +207,7 @@ fun ScreenMenu(
                     }
                 },
                 text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+                enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "MODE",
                 modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE") 1f else 0f)
             )
@@ -200,7 +218,7 @@ fun ScreenMenu(
             modifier = Modifier
                 .wrapContentSize()
         ) {
-            ChoiceButtonWithText(
+            StatefulTextButton(
                 onClick = {
                     when (currentMenu.toString() == "FAN"){
                         true -> changeMenuCallback("MAIN")
@@ -208,6 +226,7 @@ fun ScreenMenu(
                     }
                 },
                 text = "ΕΝΤΑΣΗ" ,
+                enabled = true, // TODO: don't hardcode as true
                 selected = currentMenu.toString() == "FAN",
                 modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN") 1f else 0f)
             )
@@ -219,7 +238,7 @@ fun ScreenMenu(
                 modifier = Modifier
                     .wrapContentSize()
             ) {
-                ChoiceButtonWithText(
+                StatefulTextButton(
                     onClick = {
                         when (currentMenu.toString() == "TIMER"){
                             true -> changeMenuCallback("MAIN")
@@ -227,6 +246,7 @@ fun ScreenMenu(
                         }
                     },
                     text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+                    enabled = true, // TODO: don't hardcode as true
                     selected = currentMenu.toString() == "TIMER",
                     modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
                 )
@@ -239,7 +259,7 @@ fun ScreenMenu(
                 modifier = Modifier
                     .wrapContentSize()
             ) {
-                ChoiceButtonWithText(
+                StatefulTextButton(
                     onClick = {
                         when (currentMenu.toString() == "BLINDS"){
                             true -> changeMenuCallback("MAIN")
@@ -247,6 +267,7 @@ fun ScreenMenu(
                         }
                     },
                     text = "ΠΕΡΣΙΔΕΣ",
+                    enabled = true, // TODO: don't hardcode as true
                     selected = currentMenu.toString() == "BLINDS",
                     modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
                 )
@@ -257,9 +278,11 @@ fun ScreenMenu(
             modifier = Modifier
                 .wrapContentSize()
         ) {
-            ChoiceButtonWithText(
+            StatefulTextButton(
                 onClick = { changeMenuCallback("MAIN") },
                 text = "ΠΙΣΩ",
+                enabled = true, // TODO: don't hardcode as true
+                selected = false,
                 modifier = Modifier.alpha(if (currentMenu.toString() != "MAIN") 1f else 0f)
             )
 
@@ -272,17 +295,29 @@ fun EcoButton(
     ecoToggleCallback: () -> Unit,
     currentEcoState: Boolean
 ){
-    ChoiceButtonWithText(
-        text = "ECO",
+    StatefulButton(
         onClick = { ecoToggleCallback() },
+        enabled = true, // TODO: don't hardcode as true
         selected = currentEcoState,
-        selectedColors = ButtonDefaults.buttonColors( //TODO: Improve color scheme
-            containerColor = Color(0xFF7BB530),
-            contentColor = Color(0xFFEEEEEE),
-            disabledContainerColor = Color(0xFF8CC640),
-            disabledContentColor = Color(0xFFEEEEEE),
+        selectedColors = AcButtonColors(
+            containerColor = Color(0xFF8CC640),
+            contentColor = Color(0xFF000000),
         )
-    )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(16.dp)
+        ) {
+            Icon(
+                id = R.drawable.ic_eco,
+                alt = "eco mode",
+            )
+            Text("ECO")
+        }
+    }
 }
 
 @Composable
@@ -295,7 +330,9 @@ fun OffButton(
             .size(120.dp)
             .padding(200.dp),
     ) {
-        ButtonWithIcon(id =R.drawable.ic_placeholder, alt ="off", onClick = { onSwitchOnOff() })
+        PlainIconButton(id =R.drawable.ic_placeholder, alt ="off", onClick = { onSwitchOnOff() },
+            enabled = true, // TODO: don't hardcode as true
+        )
     }
 }
 
@@ -352,6 +389,7 @@ fun MainScreenContent(
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
 ) {
+    // TODO: ### extract +, -, ChangeAc to their own components ###
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -387,19 +425,21 @@ fun MainScreenContent(
 
                     ) { //Increment buttons column
 
-                    ButtonWithIcon(
+                    PlainIconButton(
                         modifier = Modifier
                             .size(width = 150.dp, height = 150.dp),
                         id = R.drawable.ic_plus,
                         alt = "Increment Temperature",
                         onClick = { onIncrementTemperature() },
+                        enabled = true, // TODO: don't hardcode as true
                     )
-                    ButtonWithIcon(
+                    PlainIconButton(
                         modifier = Modifier
                             .size(width = 150.dp, height = 150.dp),
                         id = R.drawable.ic_minus,
                         alt = "Decrement Temperature",
                         onClick = onDecrementTemperature,
+                        enabled = true, // TODO: don't hardcode as true
                     )
                 }
             }
@@ -454,9 +494,10 @@ fun MainScreenContent(
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        ButtonWithMediumText(
+                        PlainTextButton(
                             text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
-                            onClick = {  },
+                            onClick = { /* TODO: add function */ },
+                            enabled = true, // TODO: don't hardcode as true
                         )
                     }
                     Column(
