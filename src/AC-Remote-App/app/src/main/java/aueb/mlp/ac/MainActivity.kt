@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -44,6 +43,7 @@ import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
+import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
 import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.StatefulButton
@@ -93,7 +93,7 @@ fun ModeMenu(
 ) {
     //Text(currentMode.toString())
     // TODO: ### replace with grid https://developer.android.com/jetpack/compose/lists#lazy-grids ###
-    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
+    // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
@@ -105,7 +105,7 @@ fun ModeMenu(
             alt = "mode heat",
             onClick = { modeCallback("HEAT") },
             enabled = true, // TODO: don't hardcode as true
-            selected = "HEAT" == currentMode.toString(),
+            selected = currentMode == Mode.HEAT,
             selectedColors = AcButtonColors(
                 containerColor = Color(0xFFDF6B00),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
@@ -117,7 +117,7 @@ fun ModeMenu(
             alt = "mode cold",
             onClick = { modeCallback("COLD") },
             enabled = true, // TODO: don't hardcode as true
-            selected = "COLD" == currentMode.toString(),
+            selected = currentMode == Mode.COLD,
             selectedColors = AcButtonColors(
                 containerColor = Color(0xFF80AFB9),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
@@ -135,7 +135,7 @@ fun ModeMenu(
             alt = "mode humidity",
             text = "ΑΦΥΓΡΑΝΣΗ" ,
             enabled = true, // TODO: don't hardcode as true
-            selected = "DRY" == currentMode.toString(),
+            selected = currentMode == Mode.DRY,
             selectedColors = AcButtonColors(
                 containerColor = Color(0xFF57B9D8),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
@@ -147,7 +147,7 @@ fun ModeMenu(
             alt = "mode auto",
             text = "ΑΥΤΟΜΑΤΗ" ,
             enabled = true, // TODO: don't hardcode as true
-            selected = "AUTO" == currentMode.toString(),
+            selected = currentMode == Mode.AUTO,
             selectedColors = AcButtonColors(
                 containerColor = Color(0xFFB9B9B9),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
@@ -162,25 +162,68 @@ fun FanMenu(
     currentFanMode: Fan
 ) {
     // TODO: ### enclose in a Column with proper spacing etc etc ###
+    // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
     //Text(currentFanMode.toString())
-    StatefulTextButton(
-        onClick = {fanCallback("SILENT")  },
-        text = "ΣΙΩΠΗΛΗ" ,
-        enabled = true,
-        selected = "SILENT" == currentFanMode.toString()
-    )
-    StatefulTextButton(
-        onClick = {fanCallback("NORMAL")  },
-        text = "ΚΑΝΟΝΙΚΗ" ,
-        enabled = true,
-        selected = "NORMAL" == currentFanMode.toString()
-    )
-    StatefulTextButton(
-        onClick = {fanCallback("TURBO")  },
-        text = "TURBO" ,
-        enabled = true,
-        selected = "TURBO" == currentFanMode.toString()
-    )
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+    ){
+        StatefulTextButton(
+            onClick = {fanCallback("SILENT")  },
+            text = "ΣΙΩΠΗΛΗ" ,
+            enabled = true,
+            selected = currentFanMode == Fan.SILENT
+        )
+        StatefulTextButton(
+            onClick = {fanCallback("NORMAL")  },
+            text = "ΚΑΝΟΝΙΚΗ" ,
+            enabled = true,
+            selected = currentFanMode == Fan.NORMAL
+        )
+        StatefulTextButton(
+            onClick = {fanCallback("TURBO")  },
+            text = "TURBO" ,
+            enabled = true,
+            selected = currentFanMode == Fan.TURBO
+        )
+    }
+
+}
+
+@Composable
+fun BlindsMenu(
+    blindCallback: (input: String) -> Unit,
+    currentBlindMode: Blinds
+){
+    //TODO: ADD SWITCHES
+    // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+    ){
+        PlainButtonWithSwitchAndText(
+            onClick = {
+                if (currentBlindMode == Blinds.VERTICAL)
+                    blindCallback("OFF")
+                else
+                    blindCallback("VERTICAL")
+            },
+            text = "ΠΑΝΩ-ΚΑΤΩ" ,
+            enabled = true,
+            switchChecked = currentBlindMode == Blinds.VERTICAL
+        )
+        PlainButtonWithSwitchAndText(
+            onClick = {
+                if (currentBlindMode == Blinds.HORIZONTAL)
+                    blindCallback("OFF")
+                else
+                    blindCallback("HORIZONTAL")
+            },
+            text = "ΔΕΞΙΑ-ΑΡΙΣΤΕΡΑ" ,
+            enabled = true,
+            switchChecked = currentBlindMode == Blinds.HORIZONTAL
+        )
+    }
 }
 
 @Composable
@@ -440,120 +483,58 @@ private fun ChangeRepeatPopup(
 @Composable
 fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
-    currentMenu: Menu
+    uiState: MainActivityUiState
+
 ){
-    // TODO: ### don't enclose individual items in a row ###
-    // TODO: ### enclose everything in a column with proper spacing etc etc ###
-    // TODO: ### fix menu to work in the new way (all items visible at all times) ###
-    // TODO: ### remove alpha modifier; it's included in the disabled color ###
-    // TODO: ### use actual enum instead of calling .toString(); comparing strings is very error prone ###
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-
-        ) {
-            StatefulTextButton(
-                //TODO: ADD FUNCTION THAT CHANGES THE MENU...
-                onClick = {
-                    when (currentMenu.toString() == "MODE"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("MODE")
-                    }
-                },
-                text = "ΛΕΙΤΟΥΡΓΙΑ" ,
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "MODE",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "MODE") 1f else 0f)
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            StatefulTextButton(
-                onClick = {
-                    when (currentMenu.toString() == "FAN"){
-                        true -> changeMenuCallback("MAIN")
-                        false -> changeMenuCallback("FAN")
-                    }
-                },
-                text = "ΕΝΤΑΣΗ" ,
-                enabled = true, // TODO: don't hardcode as true
-                selected = currentMenu.toString() == "FAN",
-                modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "FAN") 1f else 0f)
-            )
-        }
-
-        if (currentMenu.toString() != "BLINDS") //a little bit spaghetti, i've done this so the blinds btn is on the right place
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-            ) {
-                StatefulTextButton(
-                    onClick = {
-                        when (currentMenu.toString() == "TIMER"){
-                            true -> changeMenuCallback("MAIN")
-                            false -> changeMenuCallback("TIMER")
-                        }
-                    },
-                    text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
-                    enabled = true, // TODO: don't hardcode as true
-                    selected = currentMenu.toString() == "TIMER",
-                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "TIMER") 1f else 0f)
-                )
-
-            }
-
-        if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") //a little bit spaghetti, i've done this so the back btn is on the right place
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .wrapContentSize()
-            ) {
-                StatefulTextButton(
-                    onClick = {
-                        when (currentMenu.toString() == "BLINDS"){
-                            true -> changeMenuCallback("MAIN")
-                            false -> changeMenuCallback("BLINDS")
-                        }
-                    },
-                    text = "ΠΕΡΣΙΔΕΣ",
-                    enabled = true, // TODO: don't hardcode as true
-                    selected = currentMenu.toString() == "BLINDS",
-                    modifier = Modifier.alpha(if (currentMenu.toString() == "MAIN" || currentMenu.toString() == "BLINDS") 1f else 0f)
-                )
-            }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .wrapContentSize()
-        ) {
-            StatefulTextButton(
-                onClick = { changeMenuCallback("MAIN") },
-                text = "ΠΙΣΩ",
-                enabled = true, // TODO: don't hardcode as true
-                selected = false,
-                modifier = Modifier.alpha(if (currentMenu.toString() != "MAIN") 1f else 0f)
-            )
-
-        }
-
+    Column(
+        modifier = Modifier
+            .wrapContentSize()
+    ){
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("MODE")
+            },
+            text = "ΛΕΙΤΟΥΡΓΙΑ" ,
+            enabled = uiState.acIsOn,
+            selected = uiState.activeMenu == Menu.MODE,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("FAN")
+            },
+            text = "ΕΝΤΑΣΗ" ,
+            enabled = uiState.acIsOn,
+            selected = uiState.activeMenu == Menu.FAN,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("TIMER")
+            },
+            text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
+            enabled = uiState.acIsOn,
+            selected = uiState.activeMenu == Menu.TIMER,
+        )
+        StatefulTextButton(
+            onClick = {
+                changeMenuCallback("BLINDS")
+            },
+            text = "ΠΕΡΣΙΔΕΣ",
+            enabled = uiState.acIsOn,
+            selected = uiState.activeMenu == Menu.BLINDS,
+        )
+    }
 }
+
 
 @Composable
 fun EcoButton(
     ecoToggleCallback: () -> Unit,
-    currentEcoState: Boolean
+    uiState: MainActivityUiState,
 ){
     StatefulButton(
         onClick = { ecoToggleCallback() },
-        enabled = true, // TODO: don't hardcode as true
-        selected = currentEcoState,
+        enabled = uiState.acIsOn,
+        selected = uiState.ecoMode,
         selectedColors = AcButtonColors(
             containerColor = Color(0xFF8CC640),
             contentColor = Color(0xFF000000),
@@ -575,6 +556,17 @@ fun EcoButton(
     }
 }
 
+
+@Composable
+fun ChangeDeviceButton(
+    changeDeviceCallback: () -> Unit
+){
+    PlainTextButton(
+        text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
+        onClick = changeDeviceCallback,
+        enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
+    )
+}
 @Composable
 fun OffButton(
     onSwitchOnOff: () -> Unit,
@@ -586,7 +578,7 @@ fun OffButton(
             .padding(200.dp),
     ) {
         PlainIconButton(id =R.drawable.ic_placeholder, alt ="off", onClick = { onSwitchOnOff() },
-            enabled = true, // TODO: don't hardcode as true
+            enabled = true,
         )
     }
 }
@@ -612,6 +604,30 @@ fun ACDetails() {
     ) {
 
     }
+}
+
+@Composable
+fun ChangeTempButtons(
+    onIncrementTemperatureFunc: () -> Unit,
+    onDecrementTemperatureFunc: () -> Unit,
+    uiState: MainActivityUiState
+){
+    PlainIconButton(
+        modifier = Modifier
+            .size(width = 150.dp, height = 150.dp),
+        id = R.drawable.ic_plus,
+        alt = "Increment Temperature",
+        onClick = onIncrementTemperatureFunc,
+        enabled = uiState.acIsOn,
+    )
+    PlainIconButton(
+        modifier = Modifier
+            .size(width = 150.dp, height = 150.dp),
+        id = R.drawable.ic_minus,
+        alt = "Decrement Temperature",
+        onClick = onDecrementTemperatureFunc,
+        enabled = uiState.acIsOn,
+    )
 }
 
 @Composable
@@ -660,7 +676,6 @@ fun MainScreenContent(
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
 ) {
-    // TODO: ### extract +, -, ChangeAc to their own components ###
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -696,21 +711,10 @@ fun MainScreenContent(
 
                     ) { //Increment buttons column
 
-                    PlainIconButton(
-                        modifier = Modifier
-                            .size(width = 150.dp, height = 150.dp),
-                        id = R.drawable.ic_plus,
-                        alt = "Increment Temperature",
-                        onClick = { onIncrementTemperature() },
-                        enabled = true, // TODO: don't hardcode as true
-                    )
-                    PlainIconButton(
-                        modifier = Modifier
-                            .size(width = 150.dp, height = 150.dp),
-                        id = R.drawable.ic_minus,
-                        alt = "Decrement Temperature",
-                        onClick = onDecrementTemperature,
-                        enabled = true, // TODO: don't hardcode as true
+                    ChangeTempButtons(
+                        onIncrementTemperatureFunc = onIncrementTemperature,
+                        onDecrementTemperatureFunc = onDecrementTemperature,
+                        uiState = uiState
                     )
                 }
             }
@@ -728,7 +732,7 @@ fun MainScreenContent(
                         .fillMaxHeight()
                         .weight(1f)
                 ) {
-                    ScreenMenu(changeMenu, uiState.activeMenu)
+                    ScreenMenu(changeMenu, uiState)
 
                 }
                 Column(
@@ -739,30 +743,28 @@ fun MainScreenContent(
                         .weight(2f)
 
                 ) { //Main content column Idk how to make it
-                    if (uiState.activeMenu== Menu.MODE)
-                        ModeMenu(onModeChanged, uiState.mode)
-                    if(uiState.activeMenu==Menu.FAN)
-                        FanMenu(onFanChanged, uiState.fan)
-                    if (uiState.activeMenu==Menu.TIMER
-                        || uiState.activeMenu==Menu.TIMER_ON
-                        || uiState.activeMenu==Menu.TIMER_OFF)
-                        TimerMenu(
-                            currentMenu = uiState.activeMenu,
-                            changeMenuCallback = changeMenu,
-                            turnOnAlarm = uiState.turnOnAlarm,
-                            turnOffAlarm = uiState.turnOffAlarm,
-                            onTurnOnAlarmStateChanged = onTurnOnAlarmStateChanged,
-                            onTurnOffAlarmStateChanged = onTurnOffAlarmStateChanged,
-                            onTurnOnAlarmTimeChanged = onTurnOnAlarmTimeChanged,
-                            onTurnOffAlarmTimeChanged = onTurnOffAlarmTimeChanged,
-                            onTurnOnAlarmRepeatChanged = onTurnOnAlarmRepeatChanged,
-                            onTurnOffAlarmRepeatChanged = onTurnOffAlarmRepeatChanged,
-                            onToggleTurnOnAlarmDay = onToggleTurnOnAlarmDay,
-                            onToggleTurnOffAlarmDay = onToggleTurnOffAlarmDay,
-                        )
-                    if (uiState.activeMenu== Menu.MAIN)
-                        MicButton()
-
+                    when(uiState.activeMenu ){
+                        Menu.MODE -> ModeMenu(onModeChanged, uiState.mode)
+                        Menu.FAN -> FanMenu(onFanChanged, uiState.fan)
+                        Menu.TIMER, Menu.TIMER_ON, Menu.TIMER_OFF ->
+                            TimerMenu(
+                                currentMenu = uiState.activeMenu,
+                                changeMenuCallback = changeMenu,
+                                turnOnAlarm = uiState.turnOnAlarm,
+                                turnOffAlarm = uiState.turnOffAlarm,
+                                onTurnOnAlarmStateChanged = onTurnOnAlarmStateChanged,
+                                onTurnOffAlarmStateChanged = onTurnOffAlarmStateChanged,
+                                onTurnOnAlarmTimeChanged = onTurnOnAlarmTimeChanged,
+                                onTurnOffAlarmTimeChanged = onTurnOffAlarmTimeChanged,
+                                onTurnOnAlarmRepeatChanged = onTurnOnAlarmRepeatChanged,
+                                onTurnOffAlarmRepeatChanged = onTurnOffAlarmRepeatChanged,
+                                onToggleTurnOnAlarmDay = onToggleTurnOnAlarmDay,
+                                onToggleTurnOffAlarmDay = onToggleTurnOffAlarmDay,
+                            )
+                        Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
+                        //Maybe selecting/adding an AC needs its own activity??
+                        else -> MicButton()
+                    }
                 }
                 Column(
                     modifier = Modifier
@@ -775,18 +777,14 @@ fun MainScreenContent(
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        EcoButton(onEcoModeChanged, uiState.ecoMode)
+                        EcoButton(onEcoModeChanged, uiState)
                     }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        PlainTextButton(
-                            text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
-                            onClick = { /* TODO: add function */ },
-                            enabled = true, // TODO: don't hardcode as true
-                        )
+                        ChangeDeviceButton({})
                     }
                     Column(
                         horizontalAlignment  = Alignment.End,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -61,6 +62,38 @@ fun PlainButton(
             .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
     ) {
         content()
+    }
+}
+
+@Composable
+//TODO: Maybe needs some refactoring/renaming??
+fun PlainButtonWithSwitchAndText(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    switchChecked: Boolean
+){
+    PlainButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .wrapContentSize()
+        ){
+            Text(text = text)
+            Switch(
+                checked = switchChecked,
+                onCheckedChange = {}
+            )
+        }
     }
 }
 
