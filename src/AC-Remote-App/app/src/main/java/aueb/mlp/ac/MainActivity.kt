@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,12 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import aueb.mlp.ac.model.LoggingAirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
+import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
@@ -35,6 +42,8 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MicButton(){
+    //I am not deleting this because of the code in
     Box(
         modifier = Modifier
             .background(color = Color.White, shape = CircleShape)
@@ -95,7 +105,7 @@ fun ModeMenu(
             enabled = true, // TODO: don't hardcode as true
             selected = currentMode == Mode.HEAT,
             selectedColors = AcButtonColors(
-                containerColor = Color(0xFFDF6B00),
+                containerColor = Color(0xFFDF6B00).copy(alpha= 0.7f),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
@@ -107,7 +117,7 @@ fun ModeMenu(
             enabled = true, // TODO: don't hardcode as true
             selected = currentMode == Mode.COLD,
             selectedColors = AcButtonColors(
-                containerColor = Color(0xFF80AFB9),
+                containerColor = Color(0xFF80AFB9).copy(alpha= 0.75f),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
@@ -125,7 +135,7 @@ fun ModeMenu(
             enabled = true, // TODO: don't hardcode as true
             selected = currentMode == Mode.DRY,
             selectedColors = AcButtonColors(
-                containerColor = Color(0xFF57B9D8),
+                containerColor = Color(0xFF57B9D8).copy(alpha= 0.75f),
                 contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
             )
         )
@@ -311,11 +321,11 @@ fun OffButton(
 ){
     Box(
         modifier = Modifier
-            .background(color = Color.Red, shape = CircleShape)
+            .background(color = Red40, shape = CircleShape)
             .size(120.dp)
-            .padding(200.dp),
-    ) {
-        PlainIconButton(id =R.drawable.ic_placeholder, alt ="off", onClick = { onSwitchOnOff() },
+            .padding(16.dp)
+    ) { // HAHAHA Managed to add an icon but it has a white bg and idk what to  do :/
+        PlainIconButton(id =R.drawable.ic_power_off, alt ="off", onClick = { onSwitchOnOff() },
             enabled = true,
         )
     }
@@ -323,7 +333,22 @@ fun OffButton(
 
 
 @Composable
-fun ACDetails() {
+fun ACDetails(
+
+    uiState: MainActivityUiState
+) {
+
+
+    val backgroundColor = if (uiState.acIsOn) {
+        when (uiState.mode) {
+            Mode.HEAT -> listOf(Color(0xFFFFEF9D), Color(0xFFE0B178))
+            Mode.DRY -> listOf(Color(0xFFD0F1FF), Color(0xFF669ED3))
+            Mode.COLD -> listOf(Color(0xFFD0DCEB), Color(0xFF80A6C9))
+            Mode.AUTO -> listOf(Color(0xFFE8E8F7), Color(0xFF89D8DD))
+        }
+    } else {
+        listOf(Color(0xFF575CDA), Color(0xFF5765E3))
+    }
 
     Box(
         modifier = Modifier
@@ -332,16 +357,206 @@ fun ACDetails() {
             .clip(RoundedCornerShape(20.dp))
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFFFEF9D),
-                        Color(0xFFDCA96C)
-                    )
+                    colors = backgroundColor
                 )
             ),
         contentAlignment = Alignment.Center,
     ) {
+        Box(
+            modifier = Modifier
+                .size(height=380.dp, width=380.dp)
 
+        ) {
+
+            if (uiState.acIsOn){
+                when(uiState.mode){
+                    Mode.HEAT->Icon(
+                        modifier = Modifier
+                            .size(380.dp),
+                        id = R.drawable.ic_sun,
+                        alt = "Heat Mode",
+                    )
+                    Mode.COLD->Icon(
+                        modifier = Modifier
+                            .size(350.dp)
+                            .padding(start= 36.dp),
+                        id = R.drawable.ic_snow,
+                        alt = "Cold Mode",
+                    )
+                    Mode.DRY->Icon(
+                        modifier = Modifier
+                            .size(380.dp)
+                            .padding(end= 48.dp),
+                        id = R.drawable.ic_humid,
+                        alt = "Dry Mode",
+                    )
+                    Mode.AUTO->Icon(
+                        modifier = Modifier
+                            .size(380.dp),
+                        id = R.drawable.ic_auto,
+                        alt = "Auto Mode",
+                    )
+                }
+            } else {
+                Icon(
+                modifier = Modifier
+                    .size(380.dp),
+                id = R.drawable.ic_moon,
+                alt = "Sleep Mode",
+                )
+            }
+        }
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            ) {
+                if(uiState.acIsOn){
+                Icon(
+                    modifier = Modifier
+                        .size(width = 40.dp, height = 40.dp),
+                    id = R.drawable.ic_fan,
+                    alt = "Increment Temperature",
+                ) //PLease do not execute me publically for this I had no other idea
+                    when (uiState.fan){
+                        Fan.SILENT-> repeat(3) { index ->
+                            Icon(
+                                id = R.drawable.ic_fan_square,
+                                alt = "Normal Mode",
+                                modifier = Modifier
+                                    .size(width = 30.dp, height = 30.dp)
+                                    .alpha(if (index==0) 1f else 0.5f)
+                                    .padding(top = 8.dp)
+                            )
+                        }
+                        Fan.NORMAL -> repeat(3) { index ->
+                            Icon(
+                                id = R.drawable.ic_fan_square,
+                                alt = "Normal Mode",
+                                modifier = Modifier
+                                    .size(width = 30.dp, height = 30.dp)
+                                    .alpha(if (index==2) 0.5f else 1f)
+                                    .padding(top = 8.dp)
+                            )
+                        }
+                        Fan.TURBO-> repeat(3) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(width = 30.dp, height = 30.dp)
+                                    .padding(top = 8.dp),
+                                id = R.drawable.ic_fan_square,
+                                alt = "Turbo Mode",
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    val currentTime = LocalTime.now()
+                    val format = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+                    Text(
+                        text = format,
+                        style = TextStyle(color = Color.Black),
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight(500),
+
+                    )
+                    Text( //This is where we show current AC but Idk if we have that yet
+                        text = "AC1: ΚΟΥΖΙΝΑ",
+                        style = TextStyle(color = Color.Black),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight(500),
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val tempText= if (uiState.acIsOn){
+                        uiState.temperature.toString() + "°C"
+                    } else {
+                        " "
+                    }
+                    Text(
+                        text = tempText,
+                        style = TextStyle(color = Color.White),
+                        fontSize = 60.sp,
+                        fontWeight = FontWeight(500)
+                    )
+                    val modeText = if (uiState.acIsOn) {
+                        when (uiState.mode) {
+                            Mode.HEAT ->"ΘΕΡΜΑΝΣΗ"
+                            Mode.DRY -> "ΑΦΥΓΡΑΝΣΗ"
+                            Mode.COLD -> "ΨΥΞΗ"
+                            Mode.AUTO -> "ΑΥΤΟΜΑΤH"
+                        }
+                    } else {
+                        ""
+                    }
+                    Text(
+                        text = modeText,
+                        style = TextStyle(color = Color.White),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight(500),
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start=8.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+
+                    val timerState = if (uiState.turnOffAlarmState) "ΚΛΕΙΣΙΜΟ" else "ΑΝΟΙΓΜΑ"
+                    Text(
+                        text = timerState,
+                        style = TextStyle(color = Color.Black),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight(500),
+
+                        )
+                    val time= if (uiState.turnOffAlarmState) uiState.turnOffAlarmTime else uiState.turnOnAlarmTime
+                    val hours = time.hours
+                    val minutes= time.minutes
+                    Text(
+                        text = "ΣΕ " + hours + "Ω : " + minutes + "Λ",
+                        style = TextStyle(color = Color.Black),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight(500),
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
     }
+
 }
 
 @Composable
@@ -420,7 +635,7 @@ fun MainScreenContent(
                         .weight(3f)
 
                 ) {//AC info column
-                    ACDetails()
+                    ACDetails(uiState= uiState)
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
