@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 internal class WeeklySchedule {
 
     private val _days = Array(7) { true }
-    val days = _days.copyOf()
+    val days get() = _days.copyOf()
 
     fun toggleDay(day : DayOfWeek) {
         if (getNumberOfActiveDays() == 1 && isEnabledOnDay(day))

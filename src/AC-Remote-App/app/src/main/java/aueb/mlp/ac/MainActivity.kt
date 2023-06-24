@@ -1,9 +1,12 @@
 package aueb.mlp.ac
 
+import android.app.TimePickerDialog
 import android.os.Bundle
+import android.widget.TimePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,19 +17,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import aueb.mlp.ac.model.LoggingAirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
+import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
@@ -35,8 +48,12 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
+import java.time.DayOfWeek
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel = MainActivityViewModel(LoggingAirConditioner())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,17 +67,12 @@ class MainActivity : ComponentActivity() {
                             )
                         )
                 ) {
-                    MainScreen(
-                        MainActivityViewModel(
-                            LoggingAirConditioner()
-                        )
-                    )
+                    MainScreen(viewModel)
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun MicButton(){
@@ -179,10 +191,6 @@ fun FanMenu(
 }
 
 @Composable
-fun TimerMenu(){
-    Text("TODOOOOOOOOOOOOOO")
-}
-@Composable
 fun BlindsMenu(
     blindCallback: (input: String) -> Unit,
     currentBlindMode: Blinds
@@ -215,6 +223,260 @@ fun BlindsMenu(
             enabled = true,
             switchChecked = currentBlindMode == Blinds.HORIZONTAL
         )
+    }
+}
+
+@Composable
+fun TimerMenu(
+    currentMenu: Menu,
+    changeMenuCallback: (input: String) -> Unit,
+    turnOnAlarm: Alarm,
+    turnOffAlarm: Alarm,
+    onTurnOnAlarmStateChanged: (Boolean) -> Unit,
+    onTurnOffAlarmStateChanged: (Boolean) -> Unit,
+    onTurnOnAlarmTimeChanged: (Time) -> Unit,
+    onTurnOffAlarmTimeChanged: (Time) -> Unit,
+    onTurnOnAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onTurnOffAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onToggleTurnOnAlarmDay: (DayOfWeek) -> Unit,
+    onToggleTurnOffAlarmDay: (DayOfWeek) -> Unit,
+) {
+    when (currentMenu) {
+        Menu.TIMER -> BothAlarmsMenu(
+            turnOnAlarm = turnOnAlarm,
+            turnOffAlarm = turnOffAlarm,
+            onTurnOnAlarmStateChanged = onTurnOnAlarmStateChanged,
+            onTurnOffAlarmStateChanged = onTurnOffAlarmStateChanged,
+            changeMenuCallback = changeMenuCallback,
+        )
+
+        Menu.TIMER_ON -> SingleAlarmMenu(
+            alarm = turnOnAlarm,
+            onAlarmTimeChanged = onTurnOnAlarmTimeChanged,
+            onAlarmRepeatChanged = onTurnOnAlarmRepeatChanged,
+            onToggleAlarmDay = onToggleTurnOnAlarmDay,
+            onNavigateBack = { changeMenuCallback("TIMER") },
+        )
+
+        Menu.TIMER_OFF -> SingleAlarmMenu(
+            alarm = turnOffAlarm,
+            onAlarmTimeChanged = onTurnOffAlarmTimeChanged,
+            onAlarmRepeatChanged = onTurnOffAlarmRepeatChanged,
+            onToggleAlarmDay = onToggleTurnOffAlarmDay,
+            onNavigateBack = { changeMenuCallback("TIMER") },
+        )
+
+        else -> error("this was not supposed to happen")
+    }
+}
+
+@Composable
+private fun BothAlarmsMenu(
+    turnOnAlarm: Alarm,
+    turnOffAlarm: Alarm,
+    onTurnOnAlarmStateChanged: (Boolean) -> Unit,
+    onTurnOffAlarmStateChanged: (Boolean) -> Unit,
+    changeMenuCallback: (input: String) -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp)
+    ) {
+        AlarmSurface(
+            alarm = turnOnAlarm,
+            isTurnOnAlarm = true,
+            onAlarmStateChanged = onTurnOnAlarmStateChanged,
+            onNavigateToSingleAlarm = { changeMenuCallback("TIMER_ON") }
+        )
+        AlarmSurface(
+            alarm = turnOffAlarm,
+            isTurnOnAlarm = false,
+            onAlarmStateChanged = onTurnOffAlarmStateChanged,
+            onNavigateToSingleAlarm = { changeMenuCallback("TIMER_OFF") }
+        )
+    }
+}
+
+@Composable
+private fun AlarmSurface(
+    alarm: Alarm,
+    isTurnOnAlarm: Boolean,
+    onAlarmStateChanged: (Boolean) -> Unit,
+    onNavigateToSingleAlarm: () -> Unit,
+) {
+    Surface(
+        shape = ACShapes.large,
+        color = Color(0xFFFFFFFF),
+        modifier = Modifier
+            .wrapContentSize()
+            .clickable { onNavigateToSingleAlarm() }
+    ) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxHeight()
+                .wrapContentWidth()
+                .padding(16.dp)
+        ) {
+            Text(if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ")
+            Text(alarm.time.toString())
+            Text(alarm.repeat.toString())
+            Switch(
+                checked = alarm.state,
+                onCheckedChange = onAlarmStateChanged,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color(0xFF0085FF),
+                    checkedTrackColor = Color(0xFFD9D9D9),
+                    checkedBorderColor = Color(0xFF000000),
+                    uncheckedThumbColor = Color(0xFFBFBFBF),
+                    uncheckedTrackColor = Color(0x80D9D9D9),
+                    uncheckedBorderColor = Color(0xFF000000),
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun SingleAlarmMenu(
+    alarm: Alarm,
+    onAlarmTimeChanged: (Time) -> Unit,
+    onAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onToggleAlarmDay: (DayOfWeek) -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+
+    val context = LocalContext.current
+    var changeRepeatPopup by remember { mutableStateOf(false) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .wrapContentSize()
+    ) {
+        PlainTextButton(
+            text = alarm.time.toString(),
+            onClick = {
+                TimePickerDialog(
+                    context,
+                    { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
+                        onAlarmTimeChanged(Time(selectedHour, selectedMinute))
+                    },
+                    alarm.time.hours,
+                    alarm.time.minutes,
+                    true,
+                ).show()
+            },
+            enabled = true,
+        )
+        PlainTextButton(
+            text = alarm.repeat.toString(),
+            onClick = { changeRepeatPopup = true },
+            enabled = true,
+        )
+        PlainTextButton(
+            text = "ΠΙΣΩ",
+            onClick = onNavigateBack,
+            enabled = true
+        )
+        if (changeRepeatPopup) {
+            ChangeRepeatPopup(
+                onDismissRequest = { changeRepeatPopup = false },
+                alarmRepeat = alarm.repeat,
+                onAlarmRepeatChanged = onAlarmRepeatChanged,
+                onToggleAlarmDay = onToggleAlarmDay,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DayButton(
+    day: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    StatefulTextButton(
+        text = day,
+        onClick = onClick,
+        enabled = true,
+        selected = selected,
+        selectedColors = AcButtonColors(
+            containerColor = Color(0xFFFFB800),
+            contentColor = Color(0xFF000000),
+        ),
+        modifier = Modifier.wrapContentSize(),
+    )
+}
+
+@Composable
+private fun ChangeRepeatPopup(
+    onDismissRequest: () -> Unit,
+    alarmRepeat: AlarmRepeat,
+    onAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onToggleAlarmDay: (DayOfWeek) -> Unit,
+) {
+    Popup(
+        onDismissRequest = onDismissRequest,
+        alignment = Alignment.Center,
+    ) {
+        Surface(
+            shape = ACShapes.medium,
+            color = Color(0xFFFFFFFF),
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(32.dp),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                ) {
+                    StatefulTextButton(
+                        text = "ΜΙΑ ΦΟΡΑ",
+                        onClick = { onAlarmRepeatChanged(AlarmRepeat.OneTimeRepeat) },
+                        enabled = true,
+                        selected = alarmRepeat is AlarmRepeat.OneTimeRepeat,
+                    )
+                    StatefulTextButton(
+                        text = "ΚΑΘΕ ΜΕΡΑ",
+                        onClick = { onAlarmRepeatChanged(AlarmRepeat.EverydayRepeat) },
+                        enabled = true,
+                        selected = alarmRepeat is AlarmRepeat.EverydayRepeat,
+                    )
+                    StatefulTextButton(
+                        text = "ΠΡΟΧΩΡΗΜΕΝΕΣ",
+                        onClick = { onAlarmRepeatChanged(AlarmRepeat.CustomRepeat(listOf())) },
+                        enabled = true,
+                        selected = alarmRepeat is AlarmRepeat.CustomRepeat,
+                    )
+                }
+                if (alarmRepeat is AlarmRepeat.CustomRepeat) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    ) {
+                        DayButton("Δε", alarmRepeat.days[0]) { onToggleAlarmDay(DayOfWeek.MONDAY) }
+                        DayButton("Τρ", alarmRepeat.days[1]) { onToggleAlarmDay(DayOfWeek.TUESDAY) }
+                        DayButton("Τε", alarmRepeat.days[2]) { onToggleAlarmDay(DayOfWeek.WEDNESDAY) }
+                        DayButton("Πε", alarmRepeat.days[3]) { onToggleAlarmDay(DayOfWeek.THURSDAY) }
+                        DayButton("Πα", alarmRepeat.days[4]) { onToggleAlarmDay(DayOfWeek.FRIDAY) }
+                        DayButton("Σα", alarmRepeat.days[5]) { onToggleAlarmDay(DayOfWeek.SATURDAY) }
+                        DayButton("Κυ", alarmRepeat.days[6]) { onToggleAlarmDay(DayOfWeek.SUNDAY) }
+                    }
+                }
+                PlainTextButton(
+                    text = "ΟΚ",
+                    onClick = onDismissRequest,
+                    enabled = true,
+                )
+            }
+        }
     }
 }
 
@@ -382,6 +644,14 @@ fun MainScreen(
         changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
         onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
         onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
+        onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
+        onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
+        onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
+        onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
+        onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
+        onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
+        onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
+        onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
     )
 }
 
@@ -394,6 +664,14 @@ fun MainScreenContent(
     onDecrementTemperature: () -> Unit,
     onModeChanged: (String) -> Unit,
     onFanChanged: (String) -> Unit,
+    onTurnOnAlarmStateChanged: (Boolean) -> Unit,
+    onTurnOffAlarmStateChanged: (Boolean) -> Unit,
+    onTurnOnAlarmTimeChanged: (Time) -> Unit,
+    onTurnOffAlarmTimeChanged: (Time) -> Unit,
+    onTurnOnAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onTurnOffAlarmRepeatChanged: (AlarmRepeat) -> Unit,
+    onToggleTurnOnAlarmDay: (DayOfWeek) -> Unit,
+    onToggleTurnOffAlarmDay: (DayOfWeek) -> Unit,
     changeMenu:(String)-> Unit,
     onBlindsChanged: (String) -> Unit,
     onEcoModeChanged: () -> Unit,
@@ -465,16 +743,28 @@ fun MainScreenContent(
                         .weight(2f)
 
                 ) { //Main content column Idk how to make it
-
                     when(uiState.activeMenu ){
                         Menu.MODE -> ModeMenu(onModeChanged, uiState.mode)
                         Menu.FAN -> FanMenu(onFanChanged, uiState.fan)
-                        Menu.TIMER -> TimerMenu()
+                        Menu.TIMER, Menu.TIMER_ON, Menu.TIMER_OFF ->
+                            TimerMenu(
+                                currentMenu = uiState.activeMenu,
+                                changeMenuCallback = changeMenu,
+                                turnOnAlarm = uiState.turnOnAlarm,
+                                turnOffAlarm = uiState.turnOffAlarm,
+                                onTurnOnAlarmStateChanged = onTurnOnAlarmStateChanged,
+                                onTurnOffAlarmStateChanged = onTurnOffAlarmStateChanged,
+                                onTurnOnAlarmTimeChanged = onTurnOnAlarmTimeChanged,
+                                onTurnOffAlarmTimeChanged = onTurnOffAlarmTimeChanged,
+                                onTurnOnAlarmRepeatChanged = onTurnOnAlarmRepeatChanged,
+                                onTurnOffAlarmRepeatChanged = onTurnOffAlarmRepeatChanged,
+                                onToggleTurnOnAlarmDay = onToggleTurnOnAlarmDay,
+                                onToggleTurnOffAlarmDay = onToggleTurnOffAlarmDay,
+                            )
                         Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
                         //Maybe selecting/adding an AC needs its own activity??
                         else -> MicButton()
                     }
-
                 }
                 Column(
                     modifier = Modifier

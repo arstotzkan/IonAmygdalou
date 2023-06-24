@@ -45,7 +45,7 @@ sealed class AlarmType {
 
         private val schedule = WeeklySchedule()
 
-        val days = schedule.days
+        val days get() = schedule.days
 
         fun toggleDay(day: DayOfWeek) = schedule.toggleDay(day)
 
