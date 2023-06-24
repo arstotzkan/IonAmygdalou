@@ -82,7 +82,7 @@ class LoggingAirConditioner: AirConditioner {
 
     override fun toggleTurnOffAlarm() {
         this.turnOffAlarm.toggleOnOff()
-        log("TurnOffAlarmToggle", this.turnOnAlarm.on)
+        log("TurnOffAlarmToggle", this.turnOffAlarm.on)
     }
 
     override fun setTurnOnAlarmTime(hours: Int, minutes: Int): Boolean {
