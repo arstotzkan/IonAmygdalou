@@ -6,6 +6,7 @@ import android.widget.TimePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -1044,6 +1047,109 @@ fun ChangeAcScreen(
     onSetCurrentAcByName: (String) -> Unit,
     onCreateNewAc: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
+) {
+
+    var submenu by remember { mutableStateOf("DEMO") } // TODO: change to 'ADD_AC'
+
+    when (submenu) {
+        // TODO: remove 'DEMO' case
+        "DEMO" -> ChangeAcScreenDemo(
+            acList = acList,
+            onSetCurrentAcByName = onSetCurrentAcByName,
+            onDeleteExistingAcByName = onDeleteExistingAcByName,
+            onCreateNewAc = onCreateNewAc,
+        )
+
+        "CHANGE_AC" -> ChangeAc(
+            acList = acList,
+            onSetCurrentAcByName = onSetCurrentAcByName,
+            onDeleteExistingAcByName = onDeleteExistingAcByName,
+            onNavigateToCreateNewAc = { submenu = "ADD_AC" }
+        )
+
+        "ADD_AC" -> AddAc(
+            onCreateNewAc = onCreateNewAc,
+            onNavigateBack = { submenu = "CHANGE_AC" },
+        )
+    }
+}
+
+// TODO: remove
+@Composable
+fun ChangeAcScreenDemo(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onCreateNewAc: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+) {
+    var counter by remember { mutableStateOf(1) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        Text("ACs Found")
+
+        PlainTextButton(
+            text = "Click to add 'AC $counter'",
+            onClick = { onCreateNewAc("AC $counter"); counter++ },
+            enabled = true,
+        )
+
+        // RecyclerView equivalent
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .wrapContentSize()
+                .border(2.dp, color = Color.Red)
+        ) {
+            items(acList) { acName ->
+                // read as: for each item in `acList`, create the following stuff,
+                // and refer to each item as `acName`
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .wrapContentSize()
+                ) {
+                    Text(text = acName)
+                    PlainTextButton(
+                        text = "set",
+                        onClick = { onSetCurrentAcByName(acName) },
+                        enabled = true
+                    )
+                    PlainTextButton(
+                        text = "delete",
+                        onClick = { onDeleteExistingAcByName(acName) },
+                        enabled = true
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChangeAc(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+    onNavigateToCreateNewAc: () -> Unit, // called when 'ΠΡΟΣΘΗΚΗ ΚΛΙΜΑΤΙΣΤΙΚΟΥ' button is clicked
+    // no 'onNavigateBack', when AC is selected, the screen
+    // automatically goes back to main menu (for now)
+) {
+    // TODO: your stuff here...
+}
+
+@Composable
+fun AddAc(
+    // add `acList` parameter if needed. maybe it's better to not show ac list in 'add ac' screen,
+    // it might get confusing seeing the ac list in two places ('change ac' and 'add ac'), idk
+    onNavigateBack: () -> Unit, // called when 'back' button is clicked
+    onCreateNewAc: (String) -> Unit,
 ) {
     // TODO: your stuff here...
 }
