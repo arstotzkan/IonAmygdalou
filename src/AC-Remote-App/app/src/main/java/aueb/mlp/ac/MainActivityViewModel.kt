@@ -23,6 +23,7 @@ class MainActivityViewModel(
         with (airConditioner) {
             uiState = uiState.copy(
                 error = "",
+		 acName = name,
                 activeMenu = Menu.MAIN,
                 acIsOn = on,
                 temperature = temperature,

@@ -14,6 +14,7 @@ enum class ACBlinds {
 // ...
 
 interface AirConditioner {
+    val name: String
     val on: Boolean
     val temperature: Int
     val acMode: ACMode

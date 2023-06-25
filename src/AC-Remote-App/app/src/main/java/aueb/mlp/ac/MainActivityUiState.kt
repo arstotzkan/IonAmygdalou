@@ -48,6 +48,7 @@ data class Alarm(
 
 data class MainActivityUiState(
     val error: String = "",
+    val acName: String = "AC 0",
     val activeMenu: Menu = Menu.MODE,
     val acIsOn: Boolean = true,
     val temperature: Int = 25,

@@ -62,7 +62,7 @@ import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel = MainActivityViewModel(LoggingAirConditioner())
+    private val viewModel = MainActivityViewModel(LoggingAirConditioner("PLACEHOLDER AC"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -736,8 +736,8 @@ fun ACDetails(
                         fontWeight = FontWeight(500),
 
                     )
-                    Text( //This is where we show current AC but Idk if we have that yet
-                        text = "AC1: ΚΟΥΖΙΝΑ",
+                    Text(
+                        text = uiState.acName,
                         style = TextStyle(color = Color.Black),
                         fontSize = 24.sp,
                         fontWeight = FontWeight(500),
