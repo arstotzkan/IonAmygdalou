@@ -2,7 +2,7 @@ package aueb.mlp.ac.model
 
 import android.util.Log
 
-class LoggingAirConditioner: AirConditioner {
+class LoggingAirConditioner(override val name: String): AirConditioner {
 
     override var on: Boolean = true
         private set

@@ -7,79 +7,48 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import aueb.mlp.ac.model.ACBlinds
 import aueb.mlp.ac.model.ACFan
+import aueb.mlp.ac.model.ACManager
 import aueb.mlp.ac.model.ACMode
 import aueb.mlp.ac.model.AirConditioner
 import aueb.mlp.ac.model.AlarmType
 import java.time.DayOfWeek
 
 class MainActivityViewModel(
-    private val airConditioner: AirConditioner,
+    private val acManager: ACManager,
 ): ViewModel() {
 
-    var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState())
+    private lateinit var airConditioner: AirConditioner
+
+    var acListState by mutableStateOf(listOf<String>())
         private set
 
-    init {
-        with (airConditioner) {
-            uiState = uiState.copy(
-                error = "",
-                activeMenu = Menu.MAIN,
-                acIsOn = on,
-                temperature = temperature,
-                mode = when (acMode) {
-                    ACMode.HEAT -> Mode.HEAT
-                    ACMode.COLD -> Mode.COLD
-                    ACMode.DRY -> Mode.DRY
-                    ACMode.AUTO -> Mode.AUTO
-                },
-                fan = when (this.acFan) {
-                    ACFan.SILENT -> Fan.SILENT
-                    ACFan.NORMAL -> Fan.NORMAL
-                    ACFan.TURBO -> Fan.TURBO
-                },
-                blinds = when (this.blinds) {
-                    ACBlinds.HORIZONTAL -> Blinds.HORIZONTAL
-                    ACBlinds.VERTICAL -> Blinds.VERTICAL
-                    ACBlinds.FOLLOW_ME -> Blinds.FOLLOW_ME
-                    ACBlinds.OFF -> Blinds.FOLLOW_ME
-                },
-                ecoMode = ecoMode,
-                turnOnAlarm = Alarm(),
-                turnOffAlarm = Alarm(),
-                turnOnAlarmState = turnOnAlarm.on,
-                turnOffAlarmState = turnOffAlarm.on,
-                turnOnAlarmTime = with (turnOnAlarm) { Time(hours, minutes) },
-                turnOffAlarmTime = with (turnOffAlarm) { Time(hours, minutes) },
-                turnOnAlarmRepeat = turnOnAlarm.type.let {
-                    when (it) {
-                        AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
-                        AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
-                        is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*it.days))
-                    }
-                },
-                turnOffAlarmRepeat = turnOffAlarm.type.let {
-                    when (it) {
-                        AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
-                        AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
-                        is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*it.days))
-                    }
-                },
-            )
-        }
+    var uiState: MainActivityUiState? by mutableStateOf(null)
+        private set
 
-        updateAlarmsFromParts()
+    fun createNewAc(acName: String) {
+        acManager.createNewAc(acName)
+        acListState = acManager.getAllAcNames()
+    }
+
+    fun deleteAcByName(acName: String) {
+        acManager.deleteAcByName(acName)
+        acListState = acManager.getAllAcNames()
+    }
+
+    fun setCurrentAcByName(acName: String) {
+        airConditioner = acManager.getAcByName(acName)
+        updateUiStateWithCurrentAc()
     }
 
     fun toggleOnOff(){
         airConditioner.toggleOnOff()
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             acIsOn = airConditioner.on
         )
     }
 
-
     fun changeMenu(menu: String){
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             activeMenu = when(menu){
                 "MAIN"-> Menu.MAIN
                 "MODE" -> Menu.MODE
@@ -101,7 +70,7 @@ class MainActivityViewModel(
 
         Log.d("MAVM", "Success: $success")
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             error = if (!success) "Temperature cannot go above 30" else "",
             temperature = airConditioner.temperature
         )
@@ -112,7 +81,7 @@ class MainActivityViewModel(
 
         Log.d("MAVM", "Success: $success")
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             error = if (!success) "Temperature cannot go below 18" else "",
             temperature = airConditioner.temperature
         )
@@ -129,7 +98,7 @@ class MainActivityViewModel(
             }
         )
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             mode = when(airConditioner.acMode) {
                 ACMode.HEAT -> Mode.HEAT
                 ACMode.COLD -> Mode.COLD
@@ -149,7 +118,7 @@ class MainActivityViewModel(
             }
         )
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             fan = when(airConditioner.acFan) {
                 ACFan.SILENT -> Fan.SILENT
                 ACFan.NORMAL -> Fan.NORMAL
@@ -159,6 +128,7 @@ class MainActivityViewModel(
     }
 
     fun setBlinds (blinds: String){
+        Log.d("DEBUG", "Blinds ")
         airConditioner.setBlinds(
             when(blinds) {
                 "HORIZONTAL" -> ACBlinds.HORIZONTAL
@@ -169,7 +139,7 @@ class MainActivityViewModel(
             }
         )
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             blinds = when(airConditioner.blinds) {
                 ACBlinds.HORIZONTAL -> Blinds.HORIZONTAL
                 ACBlinds.VERTICAL -> Blinds.VERTICAL
@@ -181,7 +151,7 @@ class MainActivityViewModel(
 
     fun toggleEcoMode(){
         airConditioner.toggleEcoMode()
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             ecoMode = airConditioner.ecoMode
         )
     }
@@ -189,7 +159,7 @@ class MainActivityViewModel(
     fun toggleTurnOnAlarm() {
         airConditioner.toggleTurnOnAlarm()
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOnAlarmState = airConditioner.turnOnAlarm.on,
         )
 
@@ -199,7 +169,7 @@ class MainActivityViewModel(
     fun toggleTurnOffAlarm() {
         airConditioner.toggleTurnOffAlarm()
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOffAlarmState = airConditioner.turnOffAlarm.on,
         )
 
@@ -208,7 +178,7 @@ class MainActivityViewModel(
 
     fun setTurnOnAlarmTime(time: Time) {
         if (airConditioner.setTurnOnAlarmTime(time.hours, time.minutes)) {
-            uiState = uiState.copy(
+            uiState = uiState!!.copy(
                 turnOnAlarmTime = time,
             )
 
@@ -223,7 +193,7 @@ class MainActivityViewModel(
 
     fun setTurnOffAlarmTime(time: Time) {
         if (airConditioner.setTurnOffAlarmTime(time.hours, time.minutes)) {
-            uiState = uiState.copy(
+            uiState = uiState!!.copy(
                 turnOffAlarmTime = time,
             )
 
@@ -245,7 +215,7 @@ class MainActivityViewModel(
             }
         )
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOnAlarmRepeat = with(airConditioner.turnOnAlarm.type) {
                 when (this) {
                     AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
@@ -267,7 +237,7 @@ class MainActivityViewModel(
             }
         )
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOffAlarmRepeat = with(airConditioner.turnOffAlarm.type) {
                 when (this) {
                     AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
@@ -290,7 +260,7 @@ class MainActivityViewModel(
             }
         }
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOnAlarmRepeat = with(airConditioner.turnOnAlarm.type) {
                 when (this) {
                     AlarmType.OneTime, AlarmType.Everyday
@@ -314,7 +284,7 @@ class MainActivityViewModel(
             }
         }
 
-        uiState = uiState.copy(
+        uiState = uiState!!.copy(
             turnOffAlarmRepeat = with(airConditioner.turnOffAlarm.type) {
                 when (this) {
                     AlarmType.OneTime, AlarmType.Everyday
@@ -328,8 +298,61 @@ class MainActivityViewModel(
         updateAlarmsFromParts()
     }
 
+    private fun updateUiStateWithCurrentAc() {
+        with (airConditioner) {
+
+            uiState = MainActivityUiState(
+                error = "",
+                acName = name,
+                activeMenu = Menu.MAIN,
+                acIsOn = on,
+                temperature = temperature,
+                mode = when (acMode) {
+                    ACMode.HEAT -> Mode.HEAT
+                    ACMode.COLD -> Mode.COLD
+                    ACMode.DRY -> Mode.DRY
+                    ACMode.AUTO -> Mode.AUTO
+                },
+                fan = when (this.acFan) {
+                    ACFan.SILENT -> Fan.SILENT
+                    ACFan.NORMAL -> Fan.NORMAL
+                    ACFan.TURBO -> Fan.TURBO
+                },
+                blinds = when (this.blinds) {
+                    ACBlinds.HORIZONTAL -> Blinds.HORIZONTAL
+                    ACBlinds.VERTICAL -> Blinds.VERTICAL
+                    ACBlinds.FOLLOW_ME -> Blinds.FOLLOW_ME
+                    ACBlinds.OFF -> Blinds.FOLLOW_ME
+                },
+                ecoMode = ecoMode,
+                turnOnAlarm = Alarm(), // will be set from #updateAlarmsFromParts()
+                turnOffAlarm = Alarm(), // will be set from #updateAlarmsFromParts()
+                turnOnAlarmState = turnOnAlarm.on,
+                turnOffAlarmState = turnOffAlarm.on,
+                turnOnAlarmTime = with(turnOnAlarm) { Time(hours, minutes) },
+                turnOffAlarmTime = with(turnOffAlarm) { Time(hours, minutes) },
+                turnOnAlarmRepeat = turnOnAlarm.type.let {
+                    when (it) {
+                        AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
+                        AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
+                        is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*it.days))
+                    }
+                },
+                turnOffAlarmRepeat = turnOffAlarm.type.let {
+                    when (it) {
+                        AlarmType.OneTime -> AlarmRepeat.OneTimeRepeat
+                        AlarmType.Everyday -> AlarmRepeat.EverydayRepeat
+                        is AlarmType.Custom -> AlarmRepeat.CustomRepeat(days = listOf(*it.days))
+                    }
+                },
+            )
+        }
+
+        updateAlarmsFromParts()
+    }
+
     private fun updateAlarmsFromParts() {
-        uiState = with(uiState) {
+        uiState = with(uiState!!) {
             copy(
                 turnOnAlarm = Alarm(turnOnAlarmState, turnOnAlarmTime, turnOnAlarmRepeat),
                 turnOffAlarm = Alarm(turnOffAlarmState, turnOffAlarmTime, turnOffAlarmRepeat)

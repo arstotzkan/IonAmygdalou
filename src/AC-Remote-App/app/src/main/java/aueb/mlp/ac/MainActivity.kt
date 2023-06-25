@@ -6,6 +6,7 @@ import android.widget.TimePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -43,7 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import aueb.mlp.ac.model.LoggingAirConditioner
+import aueb.mlp.ac.model.ACManagerImpl
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
@@ -62,7 +65,7 @@ import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel = MainActivityViewModel(LoggingAirConditioner())
+    private val viewModel = MainActivityViewModel(ACManagerImpl())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -736,8 +739,8 @@ fun ACDetails(
                         fontWeight = FontWeight(500),
 
                     )
-                    Text( //This is where we show current AC but Idk if we have that yet
-                        text = "AC1: ΚΟΥΖΙΝΑ",
+                    Text(
+                        text = uiState.acName,
                         style = TextStyle(color = Color.Black),
                         fontSize = 24.sp,
                         fontWeight = FontWeight(500),
@@ -855,25 +858,37 @@ fun ChangeTempButtons(
 fun MainScreen(
     mainActivityViewModel: MainActivityViewModel
 ) {
-    MainScreenContent(
-        uiState = mainActivityViewModel.uiState,
-        onSwitchOnOff = {mainActivityViewModel.toggleOnOff()},
-        onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
-        onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
-        onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
-        onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
-        changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
-        onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
-        onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
-        onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
-        onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
-        onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
-        onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
-        onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
-        onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
-        onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
-        onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
-    )
+    val uiState = mainActivityViewModel.uiState
+    val acListState = mainActivityViewModel.acListState
+
+    if (uiState == null) {
+        ChangeAcScreen(
+            acList = acListState,
+            onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
+            onCreateNewAc = mainActivityViewModel::createNewAc,
+            onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
+        )
+    } else {
+        MainScreenContent(
+            uiState = uiState,
+            onSwitchOnOff = {mainActivityViewModel.toggleOnOff()},
+            onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
+            onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
+            onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
+            onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
+            changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
+            onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
+            onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
+            onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
+            onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
+            onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
+            onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
+            onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
+            onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
+            onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
+            onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
+        )
+    }
 }
 
 
@@ -1026,3 +1041,115 @@ fun MainScreenContent(
     }
 }
 
+@Composable
+fun ChangeAcScreen(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onCreateNewAc: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+) {
+
+    var submenu by remember { mutableStateOf("DEMO") } // TODO: change to 'ADD_AC'
+
+    when (submenu) {
+        // TODO: remove 'DEMO' case
+        "DEMO" -> ChangeAcScreenDemo(
+            acList = acList,
+            onSetCurrentAcByName = onSetCurrentAcByName,
+            onDeleteExistingAcByName = onDeleteExistingAcByName,
+            onCreateNewAc = onCreateNewAc,
+        )
+
+        "CHANGE_AC" -> ChangeAc(
+            acList = acList,
+            onSetCurrentAcByName = onSetCurrentAcByName,
+            onDeleteExistingAcByName = onDeleteExistingAcByName,
+            onNavigateToCreateNewAc = { submenu = "ADD_AC" }
+        )
+
+        "ADD_AC" -> AddAc(
+            onCreateNewAc = onCreateNewAc,
+            onNavigateBack = { submenu = "CHANGE_AC" },
+        )
+    }
+}
+
+// TODO: remove
+@Composable
+fun ChangeAcScreenDemo(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onCreateNewAc: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+) {
+    var counter by remember { mutableStateOf(1) }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        Text("ACs Found")
+
+        PlainTextButton(
+            text = "Click to add 'AC $counter'",
+            onClick = { onCreateNewAc("AC $counter"); counter++ },
+            enabled = true,
+        )
+
+        // RecyclerView equivalent
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .wrapContentSize()
+                .border(2.dp, color = Color.Red)
+        ) {
+            items(acList) { acName ->
+                // read as: for each item in `acList`, create the following stuff,
+                // and refer to each item as `acName`
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .wrapContentSize()
+                ) {
+                    Text(text = acName)
+                    PlainTextButton(
+                        text = "set",
+                        onClick = { onSetCurrentAcByName(acName) },
+                        enabled = true
+                    )
+                    PlainTextButton(
+                        text = "delete",
+                        onClick = { onDeleteExistingAcByName(acName) },
+                        enabled = true
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChangeAc(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+    onNavigateToCreateNewAc: () -> Unit, // called when 'ΠΡΟΣΘΗΚΗ ΚΛΙΜΑΤΙΣΤΙΚΟΥ' button is clicked
+    // no 'onNavigateBack', when AC is selected, the screen
+    // automatically goes back to main menu (for now)
+) {
+    // TODO: your stuff here...
+}
+
+@Composable
+fun AddAc(
+    // add `acList` parameter if needed. maybe it's better to not show ac list in 'add ac' screen,
+    // it might get confusing seeing the ac list in two places ('change ac' and 'add ac'), idk
+    onNavigateBack: () -> Unit, // called when 'back' button is clicked
+    onCreateNewAc: (String) -> Unit,
+) {
+    // TODO: your stuff here...
+}
