@@ -47,6 +47,7 @@ import aueb.mlp.ac.model.LoggingAirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
+import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
@@ -580,15 +581,19 @@ fun ChangeDeviceButton(
 @Composable
 fun OffButton(
     onSwitchOnOff: () -> Unit,
+    isOpen : Boolean,
 ){
     Box(
         modifier = Modifier
             .background(color = Red40, shape = CircleShape)
             .size(120.dp)
             .padding(16.dp)
-    ) { // HAHAHA Managed to add an icon but it has a white bg and idk what to  do :/
-        PlainIconButton(id =R.drawable.ic_power_off, alt ="off", onClick = { onSwitchOnOff() },
+    ) {
+        PlainIconButton(id =R.drawable.ic_on_off, alt ="off", onClick = { onSwitchOnOff() },
             enabled = true,
+            enabledColors = if (isOpen) AcButtonColors(containerColor =Red40, contentColor = Color.White) else AcButtonColors(containerColor =Green40, contentColor = Color.White)
+
+
         )
     }
 }
@@ -805,6 +810,7 @@ fun ACDetails(
                         )
                     val time= if (uiState.turnOffAlarmState) uiState.turnOffAlarmTime else uiState.turnOnAlarmTime
                     val hours = time.hours
+                    //show in how many hours this will happen
                     val minutes= time.minutes
                     Text(
                         text = "ΣΕ " + hours + "Ω : " + minutes + "Λ",
@@ -1009,7 +1015,7 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                    ) { OffButton(onSwitchOnOff={/*close AC I guess*/})
+                    ) { OffButton(onSwitchOnOff={/*close AC I guess*/} , uiState.acIsOn)
                     }
 
                 }
@@ -1018,237 +1024,5 @@ fun MainScreenContent(
 
 
     }
-
-
-//    Surface(
-//        color = when(uiState.mode) {
-//            Mode.HEAT -> Color(0xBBDF6B00)
-//            Mode.COLD -> Color(0xBB80AFB9)
-//            Mode.DRY -> Color(0xBB00BBCC)
-//            Mode.AUTO -> Color(0xBBAAAAAA)
-//        },
-//        //malakisthka ligo sta teleutaia dyo
-//        border = when(uiState.ecoMode){
-//            true -> BorderStroke(10.dp, Color(0xBB00AA11))
-//            false -> BorderStroke(0.dp, Color(0xBB00AA11))
-//        },
-//        contentColor = when(uiState.acIsOn){
-//            true -> Color(0xBB222222)
-//            false -> Color(0xBBEEEEEE)
-//        }
-//    ) {
-//        Column(
-//            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            modifier = Modifier
-//                .fillMaxSize(),
-//        ) {
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ) {
-//                LargeText(
-//                    text = "Temperature: " + uiState.temperature.toString(),
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ) {
-//                LargeText(
-//                    text = "Mode: " + uiState.mode.toString(),
-//                )
-//
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                LargeText(
-//                    text = "Fan: " + uiState.fan.toString(),
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                LargeText(
-//                    text = "Blinds: " + uiState.blinds.toString(),
-//                )
-//
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                LargeText(
-//                    text = "Eco mode is on: " + uiState.ecoMode.toString(),
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                LargeText(
-//                    text = "AC is on: " + uiState.acIsOn.toString(),
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                MediumText(
-//                    text = "Temp Control",
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ) {
-//                ButtonWithIcon(
-//                    id = R.drawable.ic_placeholder,
-//                    alt = "Decrement Temperature",
-//                    onClick = onDecrementTemperature,
-//                    enabled = false,
-//                )
-//                ButtonWithIcon(
-//                    id = R.drawable.ic_minus,
-//                    alt = "Decrement Temperature",
-//                    onClick = onDecrementTemperature,
-//                )
-//                ButtonWithIcon(
-//                    id = R.drawable.ic_plus,
-//                    alt = "Increment Temperature",
-//                    onClick = { onIncrementTemperature() },
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                MediumText(
-//                    text = "AC Modes",
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceEvenly,
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//            ) {
-//                ButtonWithMediumText(
-//                    text = "HEAT",
-//                    onClick = { onModeChanged("HEAT") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "COLD",
-//                    onClick = { onModeChanged("COLD") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "DRY",
-//                    onClick = { onModeChanged("DRY") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "AUTO",
-//                    onClick = { onModeChanged("AUTO") },
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                MediumText(
-//                    text = "Fans",
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceEvenly,
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//            ) {
-//                ButtonWithMediumText(
-//                    text = "SILENT",
-//                    onClick = { onFanChanged("SILENT") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "NORMAL",
-//                    onClick = { onFanChanged("NORMAL") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "TURBO",
-//                    onClick = { onFanChanged("TURBO") },
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                MediumText(
-//                    text = "Blinds",
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceEvenly,
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//            ) {
-//                ButtonWithMediumText(
-//                    text = "HORIZONTAL",
-//                    onClick = { onBlindsChanged("HORIZONTAL") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "VERTICAL",
-//                    onClick = { onBlindsChanged("VERTICAL") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "FOLLOW ME",
-//                    onClick = { onBlindsChanged("FOLLOW ME") },
-//                )
-//                ButtonWithMediumText(
-//                    text = "OFF",
-//                    onClick = { onBlindsChanged("OFF") },
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//                modifier = Modifier
-//                    .wrapContentSize()
-//            ){
-//                MediumText(
-//                    text = "Misc",
-//                )
-//            }
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceEvenly,
-//                modifier = Modifier
-//                    .fillMaxWidth(),
-//            ) {
-//                ButtonWithMediumText(
-//                    text = "TOGGLE ECO MODE",
-//                    onClick = { onEcoModeChanged() },
-//                )
-//
-//                ButtonWithMediumText(
-//                    text = "SWITCH AC ON/OFF",
-//                    onClick = { onSwitchOnOff() },
-//                )
-//            }
-//            if (uiState.error != "") {
-//                ErrorLabel(
-//                    text = uiState.error,
-//                )
-//            }
-//        }
-//    }
 }
 
