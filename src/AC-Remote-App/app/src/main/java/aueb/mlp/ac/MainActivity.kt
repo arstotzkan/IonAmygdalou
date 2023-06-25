@@ -43,7 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import aueb.mlp.ac.model.LoggingAirConditioner
+import aueb.mlp.ac.model.ACManagerImpl
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
@@ -62,7 +62,7 @@ import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel = MainActivityViewModel(LoggingAirConditioner("PLACEHOLDER AC"))
+    private val viewModel = MainActivityViewModel(ACManagerImpl())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -855,25 +855,37 @@ fun ChangeTempButtons(
 fun MainScreen(
     mainActivityViewModel: MainActivityViewModel
 ) {
-    MainScreenContent(
-        uiState = mainActivityViewModel.uiState,
-        onSwitchOnOff = {mainActivityViewModel.toggleOnOff()},
-        onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
-        onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
-        onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
-        onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
-        changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
-        onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
-        onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
-        onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
-        onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
-        onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
-        onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
-        onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
-        onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
-        onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
-        onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
-    )
+    val uiState = mainActivityViewModel.uiState
+    val acListState = mainActivityViewModel.acListState
+
+    if (uiState == null) {
+        ChangeAcScreen(
+            acList = acListState,
+            onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
+            onCreateNewAc = mainActivityViewModel::createNewAc,
+            onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
+        )
+    } else {
+        MainScreenContent(
+            uiState = uiState,
+            onSwitchOnOff = {mainActivityViewModel.toggleOnOff()},
+            onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
+            onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
+            onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
+            onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
+            changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
+            onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
+            onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
+            onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
+            onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
+            onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
+            onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
+            onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
+            onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
+            onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
+            onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
+        )
+    }
 }
 
 
@@ -1026,3 +1038,12 @@ fun MainScreenContent(
     }
 }
 
+@Composable
+fun ChangeAcScreen(
+    acList: List<String>,
+    onSetCurrentAcByName: (String) -> Unit,
+    onCreateNewAc: (String) -> Unit,
+    onDeleteExistingAcByName: (String) -> Unit,
+) {
+    // TODO: your stuff here...
+}
