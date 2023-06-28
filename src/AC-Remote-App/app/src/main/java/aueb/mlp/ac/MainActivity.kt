@@ -871,6 +871,7 @@ fun MainScreen(
 
         ChangeAcScreen(
             startValue = if (uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
+            currentAC = uiState?.acName,
             acList = acListState,
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
             onCreateNewAc = mainActivityViewModel::createNewAc,
@@ -1052,6 +1053,7 @@ fun MainScreenContent(
 @Composable
 fun ChangeAcScreen(
     startValue: String,
+    currentAC: String?,
     acList: List<String>,
     onSetCurrentAcByName: (String) -> Unit,
     onCreateNewAc: (String) -> Unit,
@@ -1063,10 +1065,11 @@ fun ChangeAcScreen(
     when (submenu) {
         "CHANGE_AC" -> ChangeAc(
             acList = acList,
+            currentAC = currentAC,
             onSetCurrentAcByName = onSetCurrentAcByName,
             onDeleteExistingAcByName = onDeleteExistingAcByName,
             onNavigateToCreateNewAc = { submenu = "ADD_AC" },
-            onNavigateBack = { },
+            onNavigateBack = onSetCurrentAcByName,
         )
 
         "ADD_AC" -> AddAc(
@@ -1082,10 +1085,11 @@ fun ChangeAcScreen(
 @Composable
 fun ChangeAc(
     acList: List<String>,
+    currentAC: String?,
     onSetCurrentAcByName: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
     onNavigateToCreateNewAc: () -> Unit, // called when 'ΠΡΟΣΘΗΚΗ ΚΛΙΜΑΤΙΣΤΙΚΟΥ' button is clicked
-    onNavigateBack: () -> Unit, // called when 'back' button is clicked
+    onNavigateBack: (String) -> Unit, // called when 'back' button is clicked
     // automatically goes back to main menu (for now)
 ) {
     // TODO: your stuff here...
@@ -1101,15 +1105,18 @@ fun ChangeAc(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ){
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1.5f),
-            ) {
-                BackButton(
-                    onNavigateBack = onNavigateBack
-                )
+
+            if (currentAC != null){
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1.5f),
+                ) {
+                    BackButton(
+                        onNavigateBack = { onNavigateBack(currentAC) }
+                    )
+                }
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
