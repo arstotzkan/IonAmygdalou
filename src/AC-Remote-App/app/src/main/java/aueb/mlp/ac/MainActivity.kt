@@ -1042,7 +1042,7 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                    ) { OffButton(onSwitchOnOff={/*close AC I guess*/} , uiState.acIsOn)
+                    ) { OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
                     }
 
                 }

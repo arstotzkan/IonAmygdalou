@@ -43,6 +43,7 @@ class MainActivityViewModel(
     }
 
     fun toggleOnOff(){
+        changeMenu("MAIN")
         airConditioner.toggleOnOff()
         uiState = uiState!!.copy(
             acIsOn = airConditioner.on
