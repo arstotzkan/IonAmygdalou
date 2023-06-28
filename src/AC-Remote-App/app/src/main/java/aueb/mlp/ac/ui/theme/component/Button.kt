@@ -158,6 +158,26 @@ fun PlainTextButton(
 }
 
 @Composable
+fun LargePlainTextButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+) {
+    PlainButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+    ) {
+        LargeText(text = text)
+    }
+}
+
+@Composable
 fun PlainTextFieldButton(
     text: String,
     onClick: () -> Unit,

@@ -62,6 +62,7 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
+import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -1272,6 +1273,7 @@ fun ACRow(
     setDeviceCallback: (String) -> Unit,
     deleteDeviceCallback: (String) -> Unit
 ){
+    var openDialog by remember { mutableStateOf(false) }
 
     RowButtonWithIconCallback(
         text="ΚΛΙΜΑΤΙΣΤΙΚΟ $acID: $acName ",
@@ -1282,6 +1284,18 @@ fun ACRow(
             .padding(16.dp), //TODO: dont hardcode
         id = R.drawable.ic_x,
         alt = "delete ac",
-        onIconClick = {deleteDeviceCallback(acName)}
+        onIconClick = {
+            openDialog = true
+        }
     )
+
+    if (openDialog){
+        SimpleAlertDialog(
+            onAccept = { deleteDeviceCallback(acName) },
+            onDismiss = {openDialog = false},
+            onReject = {openDialog = false},
+            title = "Delete AC",
+            text = "Are you sure you want to delete $acName?"
+        )
+    }
 }
