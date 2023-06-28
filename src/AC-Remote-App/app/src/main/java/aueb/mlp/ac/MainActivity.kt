@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import aueb.mlp.ac.model.ACManagerImpl
+import aueb.mlp.ac.model.AirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
@@ -71,7 +72,7 @@ import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel = MainActivityViewModel(ACManagerImpl())
+    private val viewModel = MainActivityViewModel(ACManagerImpl(), HashMap<String, Menu>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1009,7 +1010,9 @@ fun MainScreenContent(
                             )
                         Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
                         //Maybe selecting/adding an AC needs its own activity??
-                        else -> MicButton()
+                        else -> {
+
+                        }
                     }
 
                 }

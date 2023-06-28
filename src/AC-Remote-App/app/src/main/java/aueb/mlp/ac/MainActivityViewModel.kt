@@ -15,6 +15,7 @@ import java.time.DayOfWeek
 
 class MainActivityViewModel(
     private val acManager: ACManager,
+    private val acMenuManager : HashMap<String, Menu>
 ): ViewModel() {
 
     private lateinit var airConditioner: AirConditioner
@@ -27,6 +28,7 @@ class MainActivityViewModel(
 
     fun createNewAc(acName: String) {
         acManager.createNewAc(acName)
+        acMenuManager[acName] = Menu.MODE
         acListState = acManager.getAllAcNames()
     }
 
@@ -62,6 +64,20 @@ class MainActivityViewModel(
                 else -> error("Invalid menu: $menu")
             }
         )
+
+        if (uiState!!.acName != null){
+            acMenuManager[uiState!!.acName] = when(menu){
+                "MAIN"-> Menu.MAIN
+                "MODE" -> Menu.MODE
+                "FAN"-> Menu.FAN
+                "BLINDS"-> Menu.BLINDS
+                "TIMER"-> Menu.TIMER
+                "TIMER_ON"-> Menu.TIMER_ON
+                "TIMER_OFF"-> Menu.TIMER_OFF
+                else -> acMenuManager[uiState!!.acName] as Menu
+            }
+        }
+
 
     }
 
@@ -299,12 +315,15 @@ class MainActivityViewModel(
     }
 
     private fun updateUiStateWithCurrentAc() {
+
         with (airConditioner) {
+
+            val newActiveMenu = if (acMenuManager[name] != null) acMenuManager[name] as Menu else Menu.MODE
 
             uiState = MainActivityUiState(
                 error = "",
                 acName = name,
-                activeMenu = Menu.MODE,
+                activeMenu = newActiveMenu,
                 acIsOn = on,
                 temperature = temperature,
                 mode = when (acMode) {
