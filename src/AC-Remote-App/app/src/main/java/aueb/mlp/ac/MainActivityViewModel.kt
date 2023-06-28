@@ -304,7 +304,7 @@ class MainActivityViewModel(
             uiState = MainActivityUiState(
                 error = "",
                 acName = name,
-                activeMenu = Menu.MAIN,
+                activeMenu = Menu.MODE,
                 acIsOn = on,
                 temperature = temperature,
                 mode = when (acMode) {

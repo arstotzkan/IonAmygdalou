@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -156,6 +158,26 @@ fun PlainTextButton(
 }
 
 @Composable
+fun PlainTextFieldButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+) {
+    PlainButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+    ) {
+        Text(text = text)
+    }
+}
+
+@Composable
 fun StatefulTextButton(
     text: String,
     onClick: () -> Unit,
@@ -236,6 +258,82 @@ fun ModeButton(
             Icon(
                 id = id,
                 alt = alt,
+            )
+        }
+    }
+}
+
+@Composable
+fun RowButton(
+    @DrawableRes id: Int,
+    alt: String,
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+){
+    PlainButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(24.dp)
+        ) {
+            Text(text = text)
+            Icon(
+                id = id,
+                alt = alt,
+            )
+        }
+    }
+}
+
+@Composable
+fun RowButtonWithIconCallback(
+    @DrawableRes id: Int,
+    alt: String,
+    text: String,
+    onClick: () -> Unit,
+    onIconClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    enabledColors: AcButtonColors = AcButtonColors.Enabled,
+    disabledColors: AcButtonColors = AcButtonColors.Disabled,
+){
+    PlainButton(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(1f),
+        enabled = enabled,
+        enabledColors = enabledColors,
+        disabledColors = disabledColors,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth(1f)
+        ) {
+            Text(
+                text = text,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+            )
+            PlainIconButton(
+                id = id,
+                alt = alt,
+                onClick = onIconClick,
+                enabled = enabled,
+                modifier = Modifier
+                    .fillMaxWidth(0.2f)
             )
         }
     }

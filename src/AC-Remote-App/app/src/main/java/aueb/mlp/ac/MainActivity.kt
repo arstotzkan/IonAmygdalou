@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -24,6 +25,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -41,7 +44,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,9 +56,12 @@ import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
+import aueb.mlp.ac.ui.theme.component.PlainButton
 import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
 import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
+import aueb.mlp.ac.ui.theme.component.RowButton
+import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -573,11 +578,11 @@ fun EcoButton(
 
 @Composable
 fun ChangeDeviceButton(
-    changeDeviceCallback: () -> Unit
+    changeDeviceCallback: (String) -> Unit
 ){
     PlainTextButton(
         text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
-        onClick = changeDeviceCallback,
+        onClick = { changeDeviceCallback("CHANGE") },
         enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
     )
 }
@@ -649,14 +654,14 @@ fun ACDetails(
                     Mode.COLD->Icon(
                         modifier = Modifier
                             .size(350.dp)
-                            .padding(start= 36.dp),
+                            .padding(start = 36.dp),
                         id = R.drawable.ic_snow,
                         alt = "Cold Mode",
                     )
                     Mode.DRY->Icon(
                         modifier = Modifier
                             .size(380.dp)
-                            .padding(end= 48.dp),
+                            .padding(end = 48.dp),
                         id = R.drawable.ic_humid,
                         alt = "Dry Mode",
                     )
@@ -699,7 +704,7 @@ fun ACDetails(
                                 alt = "Normal Mode",
                                 modifier = Modifier
                                     .size(width = 30.dp, height = 30.dp)
-                                    .alpha(if (index==0) 1f else 0.5f)
+                                    .alpha(if (index == 0) 1f else 0.5f)
                                     .padding(top = 8.dp)
                             )
                         }
@@ -709,7 +714,7 @@ fun ACDetails(
                                 alt = "Normal Mode",
                                 modifier = Modifier
                                     .size(width = 30.dp, height = 30.dp)
-                                    .alpha(if (index==2) 0.5f else 1f)
+                                    .alpha(if (index == 2) 0.5f else 1f)
                                     .padding(top = 8.dp)
                             )
                         }
@@ -799,7 +804,7 @@ fun ACDetails(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start=8.dp),
+                        .padding(start = 8.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
 
@@ -861,8 +866,10 @@ fun MainScreen(
     val uiState = mainActivityViewModel.uiState
     val acListState = mainActivityViewModel.acListState
 
-    if (uiState == null) {
+    if (uiState == null || uiState.activeMenu == Menu.CHANGE || uiState.activeMenu == Menu.ADDAC ) {
+
         ChangeAcScreen(
+            startValue = if (uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
             acList = acListState,
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
             onCreateNewAc = mainActivityViewModel::createNewAc,
@@ -1022,7 +1029,7 @@ fun MainScreenContent(
                             .fillMaxSize()
                             .weight(1f)
                     ) {
-                        ChangeDeviceButton({})
+                        ChangeDeviceButton(changeMenu)
                     }
                     Column(
                         horizontalAlignment  = Alignment.End,
@@ -1043,94 +1050,33 @@ fun MainScreenContent(
 
 @Composable
 fun ChangeAcScreen(
+    startValue: String,
     acList: List<String>,
     onSetCurrentAcByName: (String) -> Unit,
     onCreateNewAc: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
 ) {
 
-    var submenu by remember { mutableStateOf("DEMO") } // TODO: change to 'ADD_AC'
+    var submenu by remember { mutableStateOf(startValue) }
 
     when (submenu) {
-        // TODO: remove 'DEMO' case
-        "DEMO" -> ChangeAcScreenDemo(
-            acList = acList,
-            onSetCurrentAcByName = onSetCurrentAcByName,
-            onDeleteExistingAcByName = onDeleteExistingAcByName,
-            onCreateNewAc = onCreateNewAc,
-        )
-
         "CHANGE_AC" -> ChangeAc(
             acList = acList,
             onSetCurrentAcByName = onSetCurrentAcByName,
             onDeleteExistingAcByName = onDeleteExistingAcByName,
-            onNavigateToCreateNewAc = { submenu = "ADD_AC" }
+            onNavigateToCreateNewAc = { submenu = "ADD_AC" },
+            onNavigateBack = { },
         )
 
         "ADD_AC" -> AddAc(
+            acList = acList,
             onCreateNewAc = onCreateNewAc,
             onNavigateBack = { submenu = "CHANGE_AC" },
         )
     }
 }
 
-// TODO: remove
-@Composable
-fun ChangeAcScreenDemo(
-    acList: List<String>,
-    onSetCurrentAcByName: (String) -> Unit,
-    onCreateNewAc: (String) -> Unit,
-    onDeleteExistingAcByName: (String) -> Unit,
-) {
-    var counter by remember { mutableStateOf(1) }
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        Text("ACs Found")
-
-        PlainTextButton(
-            text = "Click to add 'AC $counter'",
-            onClick = { onCreateNewAc("AC $counter"); counter++ },
-            enabled = true,
-        )
-
-        // RecyclerView equivalent
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .wrapContentSize()
-                .border(2.dp, color = Color.Red)
-        ) {
-            items(acList) { acName ->
-                // read as: for each item in `acList`, create the following stuff,
-                // and refer to each item as `acName`
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .wrapContentSize()
-                ) {
-                    Text(text = acName)
-                    PlainTextButton(
-                        text = "set",
-                        onClick = { onSetCurrentAcByName(acName) },
-                        enabled = true
-                    )
-                    PlainTextButton(
-                        text = "delete",
-                        onClick = { onDeleteExistingAcByName(acName) },
-                        enabled = true
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun ChangeAc(
@@ -1138,18 +1084,204 @@ fun ChangeAc(
     onSetCurrentAcByName: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
     onNavigateToCreateNewAc: () -> Unit, // called when 'ΠΡΟΣΘΗΚΗ ΚΛΙΜΑΤΙΣΤΙΚΟΥ' button is clicked
-    // no 'onNavigateBack', when AC is selected, the screen
+    onNavigateBack: () -> Unit, // called when 'back' button is clicked
     // automatically goes back to main menu (for now)
 ) {
     // TODO: your stuff here...
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(7f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ){
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1.5f),
+            ) {
+                BackButton(
+                    onNavigateBack = onNavigateBack
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(8.5f),
+            ) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .wrapContentSize()
+                ) {
+                    items(acList) { acName ->
+                        // read as: for each item in `acList`, create the following stuff,
+                        // and refer to each item as `acName`
+//                        Row(
+//                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            modifier = Modifier
+//                                .wrapContentSize()
+//                        ) {
+//
+//                        }
+                        ACRow(
+                            acName = acName,
+                            acID = acList.indexOf(acName) + 1,
+                            setDeviceCallback = onSetCurrentAcByName,
+                            deleteDeviceCallback = onDeleteExistingAcByName,
+                        )
+                    }
+                }
+            }
+
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround){
+
+            RowButton(
+                id = R.drawable.ic_plus_green,
+                alt = "add ac",
+                text="ΠΡΟΣΘΗΚΗ ΚΛΙΜΑΤΙΣΤΙΚΟΥ",
+                enabled = true,
+                onClick = onNavigateToCreateNewAc,
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+            )
+        }
+    }
 }
 
 @Composable
 fun AddAc(
     // add `acList` parameter if needed. maybe it's better to not show ac list in 'add ac' screen,
     // it might get confusing seeing the ac list in two places ('change ac' and 'add ac'), idk
+    acList: List<String>,
     onNavigateBack: () -> Unit, // called when 'back' button is clicked
     onCreateNewAc: (String) -> Unit,
 ) {
+    var newAcName by remember { mutableStateOf("") }
+
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .fillMaxHeight(0.2f)
+        ){
+            BackButton(
+                onNavigateBack = onNavigateBack
+            )
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxHeight(0.8f)
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(7f),
+            ) {
+                var i = 1
+                var j = 1
+                while (i <= 3) {
+                    val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
+                    if (acList.indexOf(tempDeviceName) == -1){
+                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true )
+                        i += 1
+                    }
+                    j += 1
+                }
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(7f),
+            ) {
+                PlainButton(onClick = {}, enabled = true) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Text("ΟΝΟΜΑ")
+                        BasicTextField(
+                            value = newAcName,
+                            textStyle = TextStyle.Default.copy(fontSize = 32.sp),
+                            onValueChange = { newText ->
+                                newAcName = newText
+                            }
+                        )
+                        Divider (
+                            color = Color.Black, //TODO: MAKE CONFIGURABLE (NOT HARDCODED)
+                            modifier = Modifier
+                                .height(2.dp)
+                                .fillMaxHeight()
+                                .fillMaxWidth(0.8f)
+                        )
+                    }
+                }
+
+                PlainTextButton(text="ΠΡΟΣΘΗΚΗ", onClick= {onCreateNewAc(newAcName); newAcName = "" }, enabled =true )
+            }
+        }
+    }
+
+
     // TODO: your stuff here...
+}
+
+
+@Composable
+fun BackButton(
+    onNavigateBack: () -> Unit
+){
+    PlainIconButton(
+        modifier = Modifier
+            .size(width = 125.dp, height = 125.dp),
+        id = R.drawable.ic_back,
+        alt = "Decrement Temperature",
+        onClick = onNavigateBack,
+        enabled = true,
+    )
+}
+
+@Composable
+fun ACRow(
+    acName : String,
+    acID: Int,
+    setDeviceCallback: (String) -> Unit,
+    deleteDeviceCallback: (String) -> Unit
+){
+
+    RowButtonWithIconCallback(
+        text="ΚΛΙΜΑΤΙΣΤΙΚΟ $acID: $acName ",
+        onClick= { setDeviceCallback(acName) } ,
+        enabled = true,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(16.dp), //TODO: dont hardcode
+        id = R.drawable.ic_x,
+        alt = "delete ac",
+        onIconClick = {deleteDeviceCallback(acName)}
+    )
 }
