@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -61,12 +62,9 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
-<<<<<<< HEAD
-import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
+//import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.SizeVariation
-=======
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
->>>>>>> 1510a7b1013591f2cfd2d36b005094e6df280822
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -109,12 +107,13 @@ fun ModeMenu(
     // TODO: ### replace with grid https://developer.android.com/jetpack/compose/lists#lazy-grids ###
     // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(72.dp),
+        verticalAlignment= Alignment.CenterVertically,
         modifier = Modifier
             .wrapContentSize()
     ) {
         ModeButton(
-            text = "ΘΕΡΜΑΝΣΗ" ,
+            text = " ΘΕΡΜΑΝΣΗ" ,
             id = R.drawable.ic_mode_heat,
             alt = "mode heat",
             onClick = { modeCallback("HEAT") },
@@ -126,7 +125,7 @@ fun ModeMenu(
             )
         )
         ModeButton(
-            text = "ΨΥΞΗ" ,
+            text = "     ΨΥΞΗ     " ,
             id = R.drawable.ic_mode_cold,
             alt = "mode cold",
             onClick = { modeCallback("COLD") },
@@ -138,8 +137,10 @@ fun ModeMenu(
             )
         )
     }
+        Spacer(modifier = Modifier.height(48.dp))
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(72.dp),
+        verticalAlignment= Alignment.CenterVertically,
         modifier = Modifier
             .wrapContentSize()
     ) {
@@ -186,19 +187,27 @@ fun FanMenu(
             onClick = {fanCallback("SILENT")  },
             text = "ΣΙΩΠΗΛΗ" ,
             enabled = true,
-            selected = currentFanMode == Fan.SILENT
+            selected = currentFanMode == Fan.SILENT,
+            modifier= Modifier
+                .size(200.dp, 80.dp)
         )
+        Spacer(modifier = Modifier.height(40.dp))
         StatefulTextButton(
             onClick = {fanCallback("NORMAL")  },
             text = "ΚΑΝΟΝΙΚΗ" ,
             enabled = true,
-            selected = currentFanMode == Fan.NORMAL
+            selected = currentFanMode == Fan.NORMAL,
+                    modifier= Modifier
+                    .size(200.dp, 80.dp)
         )
+        Spacer(modifier = Modifier.height(40.dp))
         StatefulTextButton(
             onClick = {fanCallback("TURBO")  },
             text = "TURBO" ,
             enabled = true,
-            selected = currentFanMode == Fan.TURBO
+            selected = currentFanMode == Fan.TURBO,
+            modifier= Modifier
+                .size(200.dp, 80.dp)
         )
     }
 
@@ -224,8 +233,11 @@ fun BlindsMenu(
             },
             text = "ΠΑΝΩ-ΚΑΤΩ" ,
             enabled = true,
-            switchChecked = currentBlindMode == Blinds.VERTICAL
+            switchChecked = currentBlindMode == Blinds.VERTICAL,
+            modifier= Modifier
+                .size(300.dp, 160.dp)
         )
+        Spacer(modifier = Modifier.height(24.dp))
         PlainButtonWithSwitchAndText(
             onClick = {
                 if (currentBlindMode == Blinds.HORIZONTAL)
@@ -235,7 +247,9 @@ fun BlindsMenu(
             },
             text = "ΔΕΞΙΑ-ΑΡΙΣΤΕΡΑ" ,
             enabled = true,
-            switchChecked = currentBlindMode == Blinds.HORIZONTAL
+            switchChecked = currentBlindMode == Blinds.HORIZONTAL,
+                    modifier= Modifier
+                    .size(300.dp, 160.dp)
         )
     }
 }
@@ -303,7 +317,8 @@ private fun BothAlarmsMenu(
             alarm = turnOnAlarm,
             isTurnOnAlarm = true,
             onAlarmStateChanged = onTurnOnAlarmStateChanged,
-            onNavigateToSingleAlarm = { changeMenuCallback("TIMER_ON") }
+            onNavigateToSingleAlarm = { changeMenuCallback("TIMER_ON")
+            }
         )
         AlarmSurface(
             alarm = turnOffAlarm,
@@ -321,36 +336,40 @@ private fun AlarmSurface(
     onAlarmStateChanged: (Boolean) -> Unit,
     onNavigateToSingleAlarm: () -> Unit,
 ) {
-    Surface(
-        shape = ACShapes.large,
-        color = Color(0xFFFFFFFF),
-        modifier = Modifier
-            .wrapContentSize()
-            .clickable { onNavigateToSingleAlarm() }
+    Box(
+        modifier = Modifier.size(width = 250.dp, height = 450.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Surface(
+            shape = ACShapes.large,
+            color = Color(0xFFFFFFFF),
             modifier = Modifier
-                .fillMaxHeight()
-                .wrapContentWidth()
-                .padding(16.dp)
+                .wrapContentSize()
+                .clickable { onNavigateToSingleAlarm() }
         ) {
-            Text(if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ")
-            Text(alarm.time.toString())
-            Text(alarm.repeat.toString())
-            Switch(
-                checked = alarm.state,
-                onCheckedChange = onAlarmStateChanged,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color(0xFF0085FF),
-                    checkedTrackColor = Color(0xFFD9D9D9),
-                    checkedBorderColor = Color(0xFF000000),
-                    uncheckedThumbColor = Color(0xFFBFBFBF),
-                    uncheckedTrackColor = Color(0x80D9D9D9),
-                    uncheckedBorderColor = Color(0xFF000000),
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentWidth()
+                    .padding(16.dp)
+            ) {
+                Text(if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ")
+                Text(alarm.time.toString())
+                Text(alarm.repeat.toString())
+                Switch(
+                    checked = alarm.state,
+                    onCheckedChange = onAlarmStateChanged,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color(0xFF0085FF),
+                        checkedTrackColor = Color(0xFFD9D9D9),
+                        checkedBorderColor = Color(0xFF000000),
+                        uncheckedThumbColor = Color(0xFFBFBFBF),
+                        uncheckedTrackColor = Color(0x80D9D9D9),
+                        uncheckedBorderColor = Color(0xFF000000),
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -372,6 +391,8 @@ private fun SingleAlarmMenu(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .wrapContentSize()
+            .fillMaxHeight()
+            .padding(16.dp)
     ) {
         PlainTextButton(
             text = alarm.time.toString(),
@@ -387,16 +408,27 @@ private fun SingleAlarmMenu(
                 ).show()
             },
             enabled = true,
+            modifier = Modifier
+                .padding(vertical=16.dp, horizontal = 32.dp)
+                .weight(1f)
         )
+        Spacer(modifier = Modifier.height(16.dp))
         PlainTextButton(
             text = alarm.repeat.toString(),
             onClick = { changeRepeatPopup = true },
             enabled = true,
+            modifier = Modifier
+                .padding(vertical=16.dp, horizontal = 32.dp)
+                .weight(1f)
         )
+        Spacer(modifier = Modifier.height(16.dp))
         PlainTextButton(
             text = "ΠΙΣΩ",
             onClick = onNavigateBack,
-            enabled = true
+            enabled = true,
+            modifier = Modifier
+                .padding(vertical=16.dp, horizontal = 32.dp)
+                .weight(1f)
         )
         if (changeRepeatPopup) {
             ChangeRepeatPopup(
@@ -424,7 +456,10 @@ private fun DayButton(
             containerColor = Color(0xFFFFB800),
             contentColor = Color(0xFF000000),
         ),
-        modifier = Modifier.wrapContentSize(),
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(vertical=16.dp, horizontal = 32.dp)
+        ,
     )
 }
 
@@ -456,18 +491,27 @@ private fun ChangeRepeatPopup(
                         onClick = { onAlarmRepeatChanged(AlarmRepeat.OneTimeRepeat) },
                         enabled = true,
                         selected = alarmRepeat is AlarmRepeat.OneTimeRepeat,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(vertical=16.dp, horizontal = 32.dp)
                     )
                     StatefulTextButton(
                         text = "ΚΑΘΕ ΜΕΡΑ",
                         onClick = { onAlarmRepeatChanged(AlarmRepeat.EverydayRepeat) },
                         enabled = true,
                         selected = alarmRepeat is AlarmRepeat.EverydayRepeat,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(vertical=16.dp, horizontal = 32.dp)
                     )
                     StatefulTextButton(
                         text = "ΠΡΟΧΩΡΗΜΕΝΕΣ",
                         onClick = { onAlarmRepeatChanged(AlarmRepeat.CustomRepeat(listOf())) },
                         enabled = true,
                         selected = alarmRepeat is AlarmRepeat.CustomRepeat,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(vertical=16.dp, horizontal = 32.dp)
                     )
                 }
                 if (alarmRepeat is AlarmRepeat.CustomRepeat) {
@@ -488,6 +532,9 @@ private fun ChangeRepeatPopup(
                     text = "ΟΚ",
                     onClick = onDismissRequest,
                     enabled = true,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(vertical=16.dp, horizontal = 32.dp)
                 )
             }
         }
@@ -502,7 +549,7 @@ fun ScreenMenu(
 ){
     Column(
         modifier = Modifier
-            .wrapContentSize()
+            .padding(start=32.dp)
     ){
         StatefulTextButton(
             onClick = {
@@ -511,6 +558,8 @@ fun ScreenMenu(
             text = "ΛΕΙΤΟΥΡΓΙΑ" ,
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.MODE,
+            modifier = Modifier
+                .size(400.dp, 80.dp)
         )
         StatefulTextButton(
             onClick = {
@@ -519,6 +568,8 @@ fun ScreenMenu(
             text = "ΕΝΤΑΣΗ" ,
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.FAN,
+            modifier = Modifier
+                .size(400.dp, 80.dp)
         )
         StatefulTextButton(
             onClick = {
@@ -527,6 +578,8 @@ fun ScreenMenu(
             text = "ΧΡΟΝΟΔΙΑΚΟΠΤΗΣ",
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.TIMER,
+            modifier = Modifier
+                .size(400.dp, 80.dp)
         )
         StatefulTextButton(
             onClick = {
@@ -535,6 +588,8 @@ fun ScreenMenu(
             text = "ΠΕΡΣΙΔΕΣ",
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.BLINDS,
+            modifier = Modifier
+                .size(400.dp, 80.dp)
         )
     }
 }
@@ -552,7 +607,9 @@ fun EcoButton(
         selectedColors = AcButtonColors(
             containerColor = Color(0xFF8CC640),
             contentColor = Color(0xFF000000),
-        )
+        ),
+        modifier = Modifier
+        .size(150.dp, 80.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -577,9 +634,13 @@ fun ChangeDeviceButton(
     changeDeviceCallback: (String) -> Unit
 ){
     PlainTextButton(
+
         text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
         onClick = { changeDeviceCallback("CHANGE") },
         enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
+        modifier = Modifier
+            .size(150.dp, 150.dp)
+
     )
 }
 @Composable
@@ -587,11 +648,15 @@ fun OffButton(
     onSwitchOnOff: () -> Unit,
     isOpen : Boolean,
 ){
+
     Box(
         modifier = Modifier
             .background(color = if (isOpen) Red40 else Green40, shape = CircleShape)
-            .size(120.dp)
+            .size(110.dp)
             .padding(16.dp)
+            .wrapContentHeight(),
+        contentAlignment = Alignment.Center
+
 
     ) {
         PlainIconButton(id =R.drawable.ic_on_off, alt ="off", onClick = { onSwitchOnOff() },
@@ -625,7 +690,7 @@ fun ACDetails(
 
     Box(
         modifier = Modifier
-            .size(size = 1000.dp)
+            .size(size = 1200.dp)
             .padding(40.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(
@@ -650,7 +715,7 @@ fun ACDetails(
                     )
                     Mode.COLD->Icon(
                         modifier = Modifier
-                            .padding(start = 36.dp),
+                            .padding(start = 12.dp),
                         id = R.drawable.ic_snow,
                         alt = "Cold Mode",
                         size = 350.dp,
@@ -671,7 +736,7 @@ fun ACDetails(
             } else {
                 Icon(
                 modifier = Modifier
-                    .padding(start = 72.dp, top=36.dp),
+                    .padding(start = 72.dp, top=24.dp),
                 id = R.drawable.ic_moon,
                 alt = "Sleep Mode",
                     size = 280.dp,
@@ -690,7 +755,7 @@ fun ACDetails(
                 if(uiState.acIsOn){
                 Icon(
                     id = R.drawable.ic_fan,
-                    alt = "Increment Temperature",
+                    alt = "Fan",
                     size = 40.dp,
                 ) //PLease do not execute me publically for this I had no other idea
                     when (uiState.fan){
@@ -700,7 +765,7 @@ fun ACDetails(
                                 alt = "Normal Mode",
                                 modifier = Modifier
                                     .alpha(if (index == 0) 1f else 0.5f)
-                                    .padding(top = 8.dp),
+                                    .padding(vertical=8.dp, horizontal = 4.dp),
                                 sizeVariation = SizeVariation.SMALL,
                             )
                         }
@@ -710,14 +775,14 @@ fun ACDetails(
                                 alt = "Normal Mode",
                                 modifier = Modifier
                                     .alpha(if (index == 2) 0.5f else 1f)
-                                    .padding(top = 8.dp),
+                                    .padding(vertical=8.dp, horizontal = 4.dp),
                                 sizeVariation = SizeVariation.SMALL,
                             )
                         }
                         Fan.TURBO-> repeat(3) {
                             Icon(
                                 modifier = Modifier
-                                    .padding(top = 8.dp),
+                                    .padding(vertical=8.dp, horizontal = 4.dp),
                                 id = R.drawable.ic_fan_square,
                                 alt = "Turbo Mode",
                                 sizeVariation = SizeVariation.SMALL,
@@ -1007,7 +1072,7 @@ fun MainScreenContent(
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(3f)
+                        .weight(5f)
 
                 ) {//AC info column
                     ACDetails(uiState= uiState)
@@ -1019,6 +1084,7 @@ fun MainScreenContent(
                         .fillMaxHeight()
                         .weight(1f)
                         .wrapContentSize()
+                        .padding(end=8.dp)
                         .clip(RoundedCornerShape(20.dp)),
 
                     ) { //Increment buttons column
@@ -1042,7 +1108,7 @@ fun MainScreenContent(
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f)
+                        .weight(2f)
                 ) {
                     ScreenMenu(changeMenu, uiState)
 
@@ -1052,7 +1118,7 @@ fun MainScreenContent(
                     horizontalAlignment= Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(2f)
+                        .weight(3f)
 
                 ) { //Main content column Idk how to make it
 
@@ -1090,15 +1156,18 @@ fun MainScreenContent(
                 ) { //Eco mode
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .padding(16.dp)
                             .weight(1f)
                     ) {
                         EcoButton(onEcoModeChanged, uiState)
                     }
                     Column(
+                        horizontalAlignment  = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
-                            .fillMaxSize()
                             .weight(1f)
+                            .padding(16.dp)
+
                     ) {
                         ChangeDeviceButton(changeMenu)
                     }
@@ -1108,7 +1177,7 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .padding(bottom=8.dp)
+                            .padding(bottom=32.dp)
                     ) { OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
                     }
 
@@ -1166,7 +1235,8 @@ fun ChangeAc(
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(top=16.dp),
     ) {
         Row(
             modifier = Modifier
@@ -1181,7 +1251,9 @@ fun ChangeAc(
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
                         .fillMaxSize()
-                        .weight(1.5f),
+                        .weight(1.5f)
+                        .padding(12.dp)
+
                 ) {
                     BackButton(
                         onNavigateBack = { onNavigateBack(currentAC) }
@@ -1192,13 +1264,15 @@ fun ChangeAc(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(8.5f),
+                    .weight(8.5f)
+                    .padding(top=16.dp),
             ) {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .wrapContentSize()
+
                 ) {
                     items(acList) { acName ->
                         // read as: for each item in `acList`, create the following stuff,
@@ -1263,6 +1337,7 @@ fun AddAc(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxHeight(0.2f)
+                .padding(12.dp)
         ){
             BackButton(
                 onNavigateBack = onNavigateBack
@@ -1285,7 +1360,7 @@ fun AddAc(
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
                     if (acList.indexOf(tempDeviceName) == -1){
-                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true )
+                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp) )
                         i += 1
                     }
                     j += 1
@@ -1301,6 +1376,7 @@ fun AddAc(
                 PlainButton(onClick = {}, enabled = true) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
                     ){
                         Text("ΟΝΟΜΑ")
                         BasicTextField(
@@ -1308,7 +1384,8 @@ fun AddAc(
                             textStyle = TextStyle.Default.copy(fontSize = 32.sp),
                             onValueChange = { newText ->
                                 newAcName = newText
-                            }
+                            },
+
                         )
                         Divider (
                             color = Color.Black, //TODO: MAKE CONFIGURABLE (NOT HARDCODED)
@@ -1316,11 +1393,12 @@ fun AddAc(
                                 .height(2.dp)
                                 .fillMaxHeight()
                                 .fillMaxWidth(0.8f)
+
                         )
                     }
                 }
 
-                PlainTextButton(text="ΠΡΟΣΘΗΚΗ", onClick= {onCreateNewAc(newAcName); newAcName = "" }, enabled =true )
+                PlainTextButton(text="ΠΡΟΣΘΗΚΗ", onClick= {onCreateNewAc(newAcName); newAcName = "" }, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp) )
             }
         }
     }
@@ -1360,7 +1438,7 @@ fun ACRow(
         enabled = true,
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .padding(16.dp), //TODO: dont hardcode
+            .padding(16.dp),
         id = R.drawable.ic_x,
         alt = "delete ac",
         onIconClick = {
@@ -1375,7 +1453,7 @@ fun ACRow(
             onDismiss = {openDialog = false},
             onReject = {openDialog = false},
             title = "Delete AC",
-            text = "Είστε σιγουρος ότι θέλετε να διαγράψετε την συσκευή $acName?"
+            text = "Είστε σίγουροι ότι θέλετε να διαγράψετε τη συσκευή $acName;"
         )
     }
 }
