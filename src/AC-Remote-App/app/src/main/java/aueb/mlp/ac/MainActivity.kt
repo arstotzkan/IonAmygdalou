@@ -6,7 +6,6 @@ import android.widget.TimePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import aueb.mlp.ac.model.ACManagerImpl
-import aueb.mlp.ac.model.AirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
@@ -63,11 +61,17 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
+<<<<<<< HEAD
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.SizeVariation
+=======
+import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
+>>>>>>> 1510a7b1013591f2cfd2d36b005094e6df280822
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
+import java.time.Duration
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -86,25 +90,13 @@ class MainActivity : ComponentActivity() {
                             brush = Brush.verticalGradient(
                                 colors = listOf(Color(0xFF74D0F8), Color(0xFFA6CCDD))
                             )
+
                         )
                 ) {
                     MainScreen(viewModel)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MicButton(){
-    //I am not deleting this because of the code in
-    Box(
-        modifier = Modifier
-            .background(color = Color.White, shape = CircleShape)
-            // .clickable(onClick = onClick)
-            .size(250.dp)
-            .padding(300.dp),
-    ) {
     }
 }
 
@@ -597,9 +589,10 @@ fun OffButton(
 ){
     Box(
         modifier = Modifier
-            .background(color = Red40, shape = CircleShape)
+            .background(color = if (isOpen) Red40 else Green40, shape = CircleShape)
             .size(120.dp)
             .padding(16.dp)
+
     ) {
         PlainIconButton(id =R.drawable.ic_on_off, alt ="off", onClick = { onSwitchOnOff() },
             enabled = true,
@@ -627,7 +620,7 @@ fun ACDetails(
             Mode.AUTO -> listOf(Color(0xFFE8E8F7), Color(0xFF89D8DD))
         }
     } else {
-        listOf(Color(0xFF575CDA), Color(0xFF5765E3))
+        listOf(Color(0xFF575CDA), Color(0xFF797DA8))
     }
 
     Box(
@@ -677,9 +670,11 @@ fun ACDetails(
                 }
             } else {
                 Icon(
+                modifier = Modifier
+                    .padding(start = 72.dp, top=36.dp),
                 id = R.drawable.ic_moon,
                 alt = "Sleep Mode",
-                    size = 380.dp,
+                    size = 280.dp,
                 )
             }
         }
@@ -688,7 +683,7 @@ fun ACDetails(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    //.fillMaxWidth()
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp),
             ) {
@@ -730,7 +725,7 @@ fun ACDetails(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                //Spacer(modifier = Modifier.weight(1f))
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.End
@@ -740,14 +735,14 @@ fun ACDetails(
 
                     Text(
                         text = format,
-                        style = TextStyle(color = Color.Black),
+                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
                         fontSize = 36.sp,
                         fontWeight = FontWeight(500),
 
                     )
                     Text(
                         text = uiState.acName,
-                        style = TextStyle(color = Color.Black),
+                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
                         fontSize = 24.sp,
                         fontWeight = FontWeight(500),
                     )
@@ -801,35 +796,105 @@ fun ACDetails(
                     .fillMaxWidth()
                     .weight(1f),
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            ) { if( !uiState.turnOnAlarmState && !uiState.turnOffAlarmState){
+                Spacer(modifier = Modifier.weight(3f))
+
+            }else if (uiState.turnOnAlarmState && uiState.turnOffAlarmState) {
+                Column () {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        val time = uiState.turnOffAlarmTime
+                        val currentTime = LocalDateTime.now()
+                        val targetTime =
+                            currentTime.withHour(time.hours).withMinute(time.minutes).withSecond(0)
+                                .withNano(0)
+                        val timeUntil = if (targetTime.isAfter(currentTime)) {
+                            Duration.between(currentTime, targetTime)
+                        } else {
+                            Duration.between(currentTime, targetTime.plusDays(1))
+                        }
+                        val hours = timeUntil.toHours()
+                        val minutes = timeUntil.toMinutes() % 60
+                        Text(
+                            text = " ΚΛΕΙΣΙΜΟ ΣΕ " + hours + "Ω : " + minutes + "Λ",
+                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight(500),
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 12.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+
+                        val time = uiState.turnOnAlarmTime
+                        val currentTime = LocalDateTime.now()
+                        val targetTime =
+                            currentTime.withHour(time.hours).withMinute(time.minutes).withSecond(0)
+                                .withNano(0)
+                        val timeUntil = if (targetTime.isAfter(currentTime)) {
+                            Duration.between(currentTime, targetTime)
+                        } else {
+                            Duration.between(currentTime, targetTime.plusDays(1))
+                        }
+                        val hours = timeUntil.toHours()
+                        val minutes = timeUntil.toMinutes() % 60
+                        Text(
+                            text = "ΑΝΟΙΓΜΑ  ΣΕ " + hours + "Ω : " + minutes + "Λ",
+                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight(500),
+                        )
+                    }
+                }
+                } else {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp),
+                        .padding(start = 12.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
 
                     val timerState = if (uiState.turnOffAlarmState) "ΚΛΕΙΣΙΜΟ" else "ΑΝΟΙΓΜΑ"
                     Text(
                         text = timerState,
-                        style = TextStyle(color = Color.Black),
+                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
                         fontSize = 24.sp,
                         fontWeight = FontWeight(500),
 
                         )
-                    val time= if (uiState.turnOffAlarmState) uiState.turnOffAlarmTime else uiState.turnOnAlarmTime
-                    val hours = time.hours
-                    //show in how many hours this will happen
-                    val minutes= time.minutes
+
+                    val time =
+                        if (uiState.turnOffAlarmState) uiState.turnOffAlarmTime else uiState.turnOnAlarmTime
+                    val currentTime = LocalDateTime.now()
+                    val targetTime =
+                        currentTime.withHour(time.hours).withMinute(time.minutes).withSecond(0)
+                            .withNano(0)
+                    val timeUntil = if (targetTime.isAfter(currentTime)) {
+                        Duration.between(currentTime, targetTime)
+                    } else {
+                        Duration.between(currentTime, targetTime.plusDays(1))
+                    }
+                    val hours = timeUntil.toHours()
+                    val minutes = timeUntil.toMinutes() % 60
                     Text(
                         text = "ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                        style = TextStyle(color = Color.Black),
+                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
                         fontSize = 24.sp,
                         fontWeight = FontWeight(500),
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(1f))
+
+                }
             }
         }
     }
@@ -872,7 +937,7 @@ fun MainScreen(
     if (uiState == null || uiState.activeMenu == Menu.CHANGE || uiState.activeMenu == Menu.ADDAC ) {
 
         ChangeAcScreen(
-            startValue = if (uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
+            startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
             currentAC = uiState?.acName,
             acList = acListState,
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
@@ -1038,11 +1103,12 @@ fun MainScreenContent(
                         ChangeDeviceButton(changeMenu)
                     }
                     Column(
-                        horizontalAlignment  = Alignment.End,
+                        horizontalAlignment  = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
+                            .padding(bottom=8.dp)
                     ) { OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
                     }
 
@@ -1304,12 +1370,12 @@ fun ACRow(
     )
 
     if (openDialog){
-        SimpleAlertDialog(
+        SimpleAlertDialogInGreek(
             onAccept = { deleteDeviceCallback(acName) },
             onDismiss = {openDialog = false},
             onReject = {openDialog = false},
             title = "Delete AC",
-            text = "Are you sure you want to delete $acName?"
+            text = "Είστε σιγουρος ότι θέλετε να διαγράψετε την συσκευή $acName?"
         )
     }
 }
