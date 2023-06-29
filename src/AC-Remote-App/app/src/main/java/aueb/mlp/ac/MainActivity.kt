@@ -106,70 +106,75 @@ fun ModeMenu(
     currentMode : Mode
 ) {
     //Text(currentMode.toString())
-    // TODO: ### replace with grid https://developer.android.com/jetpack/compose/lists#lazy-grids ###
     // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(72.dp),
-        verticalAlignment= Alignment.CenterVertically,
-        modifier = Modifier
-            .wrapContentSize()
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ModeButton(
-            text = " ΘΕΡΜΑΝΣΗ" ,
-            id = R.drawable.ic_mode_heat,
-            alt = "mode heat",
-            onClick = { modeCallback("HEAT") },
-            enabled = true, // TODO: don't hardcode as true
-            selected = currentMode == Mode.HEAT,
-            selectedColors = AcButtonColors(
-                containerColor = Color(0xFFDF6B00).copy(alpha= 0.7f),
-                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .weight(1f, fill = true),
+        ) {
+            ModeButton(
+                text = "ΘΕΡΜΑΝΣΗ",
+                id = R.drawable.ic_mode_heat,
+                alt = "mode heat",
+                onClick = { modeCallback("HEAT") },
+                enabled = true, // TODO: don't hardcode as true
+                selected = currentMode == Mode.HEAT,
+                selectedColors = AcButtonColors(
+                    containerColor = Color(0xFFDF6B00).copy(alpha = 0.7f),
+                    contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+                ),
             )
-        )
-        ModeButton(
-            text = "     ΨΥΞΗ     " ,
-            id = R.drawable.ic_mode_cold,
-            alt = "mode cold",
-            onClick = { modeCallback("COLD") },
-            enabled = true, // TODO: don't hardcode as true
-            selected = currentMode == Mode.COLD,
-            selectedColors = AcButtonColors(
-                containerColor = Color(0xFF80AFB9).copy(alpha= 0.75f),
-                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+            ModeButton(
+                text = "ΨΥΞΗ",
+                id = R.drawable.ic_mode_cold,
+                alt = "mode cold",
+                onClick = { modeCallback("COLD") },
+                enabled = true, // TODO: don't hardcode as true
+                selected = currentMode == Mode.COLD,
+                selectedColors = AcButtonColors(
+                    containerColor = Color(0xFF80AFB9).copy(alpha = 0.75f),
+                    contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+                ),
             )
-        )
-    }
-        Spacer(modifier = Modifier.height(48.dp))
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(72.dp),
-        verticalAlignment= Alignment.CenterVertically,
-        modifier = Modifier
-            .wrapContentSize()
-    ) {
-        ModeButton(
-            onClick = {modeCallback("DRY")  },
-            id = R.drawable.ic_mode_humidity,
-            alt = "mode humidity",
-            text = "ΑΦΥΓΡΑΝΣΗ" ,
-            enabled = true, // TODO: don't hardcode as true
-            selected = currentMode == Mode.DRY,
-            selectedColors = AcButtonColors(
-                containerColor = Color(0xFF57B9D8).copy(alpha= 0.75f),
-                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .weight(1f, fill = true),
+        ) {
+            ModeButton(
+                onClick = { modeCallback("DRY") },
+                id = R.drawable.ic_mode_humidity,
+                alt = "mode humidity",
+                text = "ΑΦΥΓΡΑΝΣΗ",
+                enabled = true, // TODO: don't hardcode as true
+                selected = currentMode == Mode.DRY,
+                selectedColors = AcButtonColors(
+                    containerColor = Color(0xFF57B9D8).copy(alpha = 0.75f),
+                    contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+                ),
             )
-        )
-        ModeButton(
-            onClick = {modeCallback("AUTO")  },
-            id = R.drawable.ic_mode_auto,
-            alt = "mode auto",
-            text = "ΑΥΤΟΜΑΤΗ" ,
-            enabled = true, // TODO: don't hardcode as true
-            selected = currentMode == Mode.AUTO,
-            selectedColors = AcButtonColors(
-                containerColor = Color(0xFFB9B9B9),
-                contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+            ModeButton(
+                onClick = { modeCallback("AUTO") },
+                id = R.drawable.ic_mode_auto,
+                alt = "mode auto",
+                text = "ΑΥΤΟΜΑΤΗ",
+                enabled = true, // TODO: don't hardcode as true
+                selected = currentMode == Mode.AUTO,
+                selectedColors = AcButtonColors(
+                    containerColor = Color(0xFFB9B9B9),
+                    contentColor = Color(0xFFEEEEEE), // TODO: turn to white?
+                ),
             )
-        )
+        }
     }
 }
 
@@ -178,12 +183,13 @@ fun FanMenu(
     fanCallback: (input: String) -> Unit,
     currentFanMode: Fan
 ) {
-    // TODO: ### enclose in a Column with proper spacing etc etc ###
     // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
-    //Text(currentFanMode.toString())
     Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .wrapContentSize()
+            .fillMaxHeight(1.0f)
+            .fillMaxWidth(0.4f)
     ){
         StatefulTextButton(
             onClick = {fanCallback("SILENT")  },
@@ -191,25 +197,29 @@ fun FanMenu(
             enabled = true,
             selected = currentFanMode == Fan.SILENT,
             modifier= Modifier
-                .size(200.dp, 80.dp)
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(16.dp)
         )
-        Spacer(modifier = Modifier.height(40.dp))
         StatefulTextButton(
             onClick = {fanCallback("NORMAL")  },
             text = "ΚΑΝΟΝΙΚΗ" ,
             enabled = true,
             selected = currentFanMode == Fan.NORMAL,
-                    modifier= Modifier
-                    .size(200.dp, 80.dp)
+            modifier= Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(16.dp)
         )
-        Spacer(modifier = Modifier.height(40.dp))
         StatefulTextButton(
             onClick = {fanCallback("TURBO")  },
             text = "TURBO" ,
             enabled = true,
             selected = currentFanMode == Fan.TURBO,
             modifier= Modifier
-                .size(200.dp, 80.dp)
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(16.dp)
         )
     }
 
@@ -220,11 +230,13 @@ fun BlindsMenu(
     blindCallback: (input: String) -> Unit,
     currentBlindMode: Blinds
 ){
-    //TODO: ADD SWITCHES
     // Maybe the buttons in this composable should always be enabled? We won't be able to access them if the AC is off
     Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .wrapContentSize()
+            .fillMaxHeight(0.8f)
+            .fillMaxWidth(0.5f)
     ){
         PlainButtonWithSwitchAndText(
             onClick = {
@@ -237,7 +249,9 @@ fun BlindsMenu(
             enabled = true,
             switchChecked = currentBlindMode == Blinds.VERTICAL,
             modifier= Modifier
-                .size(300.dp, 160.dp)
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(8.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         PlainButtonWithSwitchAndText(
@@ -250,8 +264,10 @@ fun BlindsMenu(
             text = "ΔΕΞΙΑ-ΑΡΙΣΤΕΡΑ" ,
             enabled = true,
             switchChecked = currentBlindMode == Blinds.HORIZONTAL,
-                    modifier= Modifier
-                    .size(300.dp, 160.dp)
+            modifier= Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(8.dp)
         )
     }
 }
@@ -313,10 +329,14 @@ private fun BothAlarmsMenu(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(8.dp)
     ) {
         AlarmSurface(
             alarm = turnOnAlarm,
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1.0f)
+                .padding(32.dp),
             isTurnOnAlarm = true,
             onAlarmStateChanged = onTurnOnAlarmStateChanged,
             onNavigateToSingleAlarm = { changeMenuCallback("TIMER_ON")
@@ -324,6 +344,10 @@ private fun BothAlarmsMenu(
         )
         AlarmSurface(
             alarm = turnOffAlarm,
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1.0f)
+                .padding(32.dp),
             isTurnOnAlarm = false,
             onAlarmStateChanged = onTurnOffAlarmStateChanged,
             onNavigateToSingleAlarm = { changeMenuCallback("TIMER_OFF") }
@@ -334,19 +358,21 @@ private fun BothAlarmsMenu(
 @Composable
 private fun AlarmSurface(
     alarm: Alarm,
+    modifier: Modifier = Modifier,
     isTurnOnAlarm: Boolean,
     onAlarmStateChanged: (Boolean) -> Unit,
     onNavigateToSingleAlarm: () -> Unit,
 ) {
 
     Box(
-        modifier = Modifier.size(width = 250.dp, height = 450.dp)
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
     ) {
         Surface(
             shape = ACShapes.large,
             color = Color(0xFFFFFFFF),
             modifier = Modifier
-                .wrapContentSize()
+                .fillMaxSize()
                 .clickable { onNavigateToSingleAlarm() }
         ) {
             Column(
@@ -558,7 +584,6 @@ fun ScreenMenu(
 ){
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(start = 40.dp, bottom = 24.dp),
     ){
         StatefulTextButton(
             onClick = {
@@ -622,14 +647,13 @@ fun EcoButton(
             contentColor = Color(0xFF000000),
         ),
         modifier = Modifier
-        .size(150.dp, 80.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(16.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(16.dp)
         ) {
             Icon(
                 id = R.drawable.ic_eco,
@@ -655,7 +679,7 @@ fun ChangeDeviceButton(
         onClick = { changeDeviceCallback("CHANGE") },
         enabled = true,
         modifier = Modifier
-            .size(150.dp, 150.dp)
+            .wrapContentSize()
             .padding(16.dp),
 
         textSizeVariation = TextSizeVariation.BODY_SMALL,
@@ -672,9 +696,7 @@ fun OffButton(
     Box(
         modifier = Modifier
             .background(color = if (isOpen) Red40 else Green40, shape = CircleShape)
-            .size(110.dp)
-            .padding(16.dp)
-            .wrapContentHeight(),
+            .size(125.dp),
         contentAlignment = Alignment.Center
 
 
@@ -710,8 +732,6 @@ fun ACDetails(
 
     Box(
         modifier = Modifier
-            .size(size = 1200.dp)
-            .padding(40.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(
                 brush = Brush.verticalGradient(
@@ -768,9 +788,8 @@ fun ACDetails(
         ) {
             Row(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    .padding(16.dp),
             ) {
                 if(uiState.acIsOn){
                     Row(
@@ -833,8 +852,8 @@ fun ACDetails(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.weight(1f))
@@ -874,8 +893,8 @@ fun ACDetails(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) { if( !uiState.turnOnAlarmState && !uiState.turnOffAlarmState){
                 Spacer(modifier = Modifier.weight(3f))
@@ -884,8 +903,7 @@ fun ACDetails(
                 Column () {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp),
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.Start
                     ) {
 
@@ -902,15 +920,14 @@ fun ACDetails(
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
                         AcText(
-                            text = " ΚΛΕΙΣΙΜΟ ΣΕ " + hours + "Ω : " + minutes + "Λ",
+                            text = "ΚΛΕΙΣΙΜΟ ΣΕ " + hours + "Ω : " + minutes + "Λ",
                             textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
                             color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
                     }
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp),
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.Start
                     ) {
 
@@ -927,7 +944,7 @@ fun ACDetails(
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
                         AcText(
-                            text = "ΑΝΟΙΓΜΑ  ΣΕ " + hours + "Ω : " + minutes + "Λ",
+                            text = "ΑΝΟΙΓΜΑ ΣΕ " + hours + "Ω : " + minutes + "Λ",
                             textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
                             color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
@@ -936,8 +953,7 @@ fun ACDetails(
                 } else {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp),
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.Start
                 ) {
 
@@ -983,24 +999,31 @@ fun ChangeTempButtons(
     onDecrementTemperatureFunc: () -> Unit,
     uiState: MainActivityUiState
 ){
-    PlainIconButton(
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .size(width = 150.dp, height = 150.dp),
-        id = R.drawable.ic_plus,
-        alt = "Increment Temperature",
-        onClick = onIncrementTemperatureFunc,
-        enabled = uiState.acIsOn,
-        sizeVariation = SizeVariation.LARGE,
-    )
-    PlainIconButton(
-        modifier = Modifier
-            .size(width = 150.dp, height = 150.dp),
-        id = R.drawable.ic_minus,
-        alt = "Decrement Temperature",
-        onClick = onDecrementTemperatureFunc,
-        enabled = uiState.acIsOn,
-        sizeVariation = SizeVariation.LARGE,
-    )
+            .fillMaxSize(),
+    ) {
+        PlainIconButton(
+            modifier = Modifier
+                .size(150.dp),
+            id = R.drawable.ic_plus,
+            alt = "Increment Temperature",
+            onClick = onIncrementTemperatureFunc,
+            enabled = uiState.acIsOn,
+            sizeVariation = SizeVariation.LARGE,
+        )
+        PlainIconButton(
+            modifier = Modifier
+                .size(150.dp),
+            id = R.drawable.ic_minus,
+            alt = "Decrement Temperature",
+            onClick = onDecrementTemperatureFunc,
+            enabled = uiState.acIsOn,
+            sizeVariation = SizeVariation.LARGE,
+        )
+    }
 }
 
 @Composable
@@ -1076,30 +1099,27 @@ fun MainScreenContent(
         ) {
             //First row with two columns
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
+                    .padding(24.dp),
 
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(5f)
+                        .weight(6f)
 
                 ) {//AC info column
                     ACDetails(uiState= uiState)
                 }
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                        .wrapContentSize()
-                        .padding(end=8.dp)
-                        .clip(RoundedCornerShape(20.dp)),
-
-                    ) { //Increment buttons column
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                ) {
 
                     ChangeTempButtons(
                         onIncrementTemperatureFunc = onIncrementTemperature,
@@ -1113,7 +1133,8 @@ fun MainScreenContent(
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(24.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) { //Menu column
@@ -1130,7 +1151,7 @@ fun MainScreenContent(
                     horizontalAlignment= Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(3f)
+                        .weight(4f)
 
                 ) { //Main content column Idk how to make it
 
@@ -1154,45 +1175,20 @@ fun MainScreenContent(
                             )
                         Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
                         //Maybe selecting/adding an AC needs its own activity??
-                        else -> {
-
-                        }
+                        else -> error("Invalid menu")
                     }
 
                 }
                 Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
-
                 ) { //Eco mode
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .weight(1f)
-                    ) {
-                        EcoButton(onEcoModeChanged, uiState)
-                    }
-                    Column(
-                        horizontalAlignment  = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-
-                    ) {
-                        ChangeDeviceButton(changeMenu)
-                    }
-                    Column(
-                        horizontalAlignment  = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                            .padding(bottom=32.dp)
-                    ) { OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
-                    }
-
+                    EcoButton(onEcoModeChanged, uiState)
+                    ChangeDeviceButton(changeMenu)
+                    OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
                 }
             }
         }

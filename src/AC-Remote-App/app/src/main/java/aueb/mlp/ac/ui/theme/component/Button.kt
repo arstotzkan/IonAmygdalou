@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
@@ -218,43 +218,53 @@ fun PlainIconButton(
 }
 
 @Composable
-fun ModeButton(
+fun RowScope.ModeButton(
     text: String,
     @DrawableRes id: Int,
     alt: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
     selected: Boolean,
     selectedColors: AcButtonColors = AcButtonColors.Selected,
 ) {
-    StatefulButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        enabledColors = enabledColors,
-        disabledColors = disabledColors,
-        selected = selected,
-        selectedColors = selectedColors,
+    Box(
+        modifier = Modifier.weight(1f, fill = true),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        Box(
             modifier = Modifier
-                .wrapContentSize()
-                .padding(24.dp)
+                .fillMaxSize()
+                .padding(
+                    horizontal = 50.dp,
+                    vertical = 20.dp,
+                ),
         ) {
-            AcText(
-                text = text,
-                textSizeVariation = TextSizeVariation.BODY_MEDIUM,
-            )
-            Icon(
-                id = id,
-                alt = alt,
-                sizeVariation = SizeVariation.SMALL,
-            )
+            StatefulButton(
+                onClick = onClick,
+                modifier = Modifier.fillMaxSize(),
+                enabled = enabled,
+                enabledColors = enabledColors,
+                disabledColors = disabledColors,
+                selected = selected,
+                selectedColors = selectedColors,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    AcText(
+                        text = text,
+                        textSizeVariation = TextSizeVariation.BODY_MEDIUM,
+                    )
+                    Icon(
+                        id = id,
+                        alt = alt,
+                        sizeVariation = SizeVariation.SMALL,
+                    )
+                }
+            }
         }
     }
 }
