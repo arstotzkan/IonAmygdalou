@@ -767,43 +767,44 @@ fun ACDetails(
                 modifier = Modifier
                     //.fillMaxWidth()
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
             ) {
                 if(uiState.acIsOn){
-                Icon(
-                    id = R.drawable.ic_fan,
-                    alt = "Fan",
-                    size = 40.dp,
-                ) //PLease do not execute me publically for this I had no other idea
-                    when (uiState.fan){
-                        Fan.SILENT-> repeat(3) { index ->
-                            Icon(
-                                id = R.drawable.ic_fan_square,
-                                alt = "Normal Mode",
-                                modifier = Modifier
-                                    .alpha(if (index == 0) 1f else 0.5f)
-                                    .padding(vertical=6.dp, horizontal = 4.dp),
-                                sizeVariation = SizeVariation.SMALL,
-                            )
-                        }
-                        Fan.NORMAL -> repeat(3) { index ->
-                            Icon(
-                                id = R.drawable.ic_fan_square,
-                                alt = "Normal Mode",
-                                modifier = Modifier
-                                    .alpha(if (index == 2) 0.5f else 1f)
-                                    .padding(vertical=8.dp, horizontal = 4.dp),
-                                sizeVariation = SizeVariation.SMALL,
-                            )
-                        }
-                        Fan.TURBO-> repeat(3) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(vertical=8.dp, horizontal = 4.dp),
-                                id = R.drawable.ic_fan_square,
-                                alt = "Turbo Mode",
-                                sizeVariation = SizeVariation.SMALL,
-                            )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            id = R.drawable.ic_fan,
+                            alt = "Fan",
+                            size = 40.dp,
+                        ) //PLease do not execute me publically for this I had no other idea
+                        when (uiState.fan) {
+                            Fan.SILENT -> repeat(3) { index ->
+                                Icon(
+                                    id = R.drawable.ic_fan_square,
+                                    alt = "Normal Mode",
+                                    modifier = Modifier
+                                        .alpha(if (index == 0) 1f else 0.5f),
+                                    sizeVariation = SizeVariation.SMALL,
+                                )
+                            }
+                            Fan.NORMAL -> repeat(3) { index ->
+                                Icon(
+                                    id = R.drawable.ic_fan_square,
+                                    alt = "Normal Mode",
+                                    modifier = Modifier
+                                        .alpha(if (index == 2) 0.5f else 1f),
+                                    sizeVariation = SizeVariation.SMALL,
+                                )
+                            }
+                            Fan.TURBO -> repeat(3) {
+                                Icon(
+                                    id = R.drawable.ic_fan_square,
+                                    alt = "Turbo Mode",
+                                    sizeVariation = SizeVariation.SMALL,
+                                )
+                            }
                         }
                     }
                 }
