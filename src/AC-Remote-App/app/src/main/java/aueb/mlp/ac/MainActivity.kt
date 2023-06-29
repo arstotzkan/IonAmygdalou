@@ -1372,8 +1372,7 @@ fun AddAc(
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
                     if (acList.indexOf(tempDeviceName) == -1){
-                        StatefulTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp), selected= (selectedDevice == tempDeviceName) )
-
+                        StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, selected = (selectedDevice == tempDeviceName)  )
                         i += 1
                     }
                     j += 1
