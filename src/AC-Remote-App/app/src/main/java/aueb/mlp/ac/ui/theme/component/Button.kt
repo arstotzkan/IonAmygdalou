@@ -54,13 +54,12 @@ fun PlainButton(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .clickable(onClick = { if (enabled) onClick() })
-            .padding(10.dp) // TODO: ### remove. do spacing the proper way ###
+            .padding(8.dp)
             .clip(shape = ACShapes.medium)
             .background(if (enabled) enabledColors.containerColor else disabledColors.containerColor)
             .then(modifier)
-            // moved after .then because first size is used
-            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
-            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
+//            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
+//            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
     ) {
         content()
     }
@@ -122,7 +121,7 @@ fun StatefulButton(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .clickable(onClick = { if (enabled) onClick() })
-            .padding(10.dp) // TODO: ### remove. do spacing the proper way ###
+            .padding(8.dp) // TODO: ### remove. do spacing the proper way ###
             .clip(shape = ACShapes.medium)
             .background(
                 if (!enabled)
@@ -133,8 +132,8 @@ fun StatefulButton(
             )
             .then(modifier)
             // moved after .then because first size is used
-            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
-            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
+//            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
+//            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
     ) {
         content()
     }
