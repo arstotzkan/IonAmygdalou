@@ -57,11 +57,4 @@ internal val ACTypography = Typography(
     bodySmall = baseTextStyle.copy(
         fontSize = 24.sp,
     ),
-    labelMedium = baseTextStyle.copy(
-        fontSize = 24.sp,
-        fontStyle = FontStyle.Italic,
-        letterSpacing = 0.3.sp,
-        textDecoration = TextDecoration.Underline,
-    ),
-    // ...
 )

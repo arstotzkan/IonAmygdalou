@@ -30,16 +30,6 @@ private fun AcTextPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun ErrorLabelPreview() {
-    ACRemoteAppTheme {
-        ErrorLabel(
-            text = "This is an error message"
-        )
-    }
-}
-
 enum class TextSizeVariation {
     BODY_SMALL, BODY_MEDIUM, BODY_LARGE, DISPLAY_SMALL, DISPLAY_MEDIUM, DISPLAY_LARGE,
 }
@@ -62,16 +52,5 @@ fun AcText(
                 TextSizeVariation.DISPLAY_LARGE -> displayLarge.copy(color = color)
             }
         }
-    )
-}
-
-@Composable
-fun ErrorLabel(
-    text: String,
-) {
-    Text(
-        text = text,
-        style = ACTypography.labelMedium,
-        color = MaterialTheme.colorScheme.error,
     )
 }
