@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
@@ -42,6 +43,7 @@ fun AcText(
 ) {
     Text(
         text = text,
+        textAlign = TextAlign.Center,
         style = with(ACTypography) {
             when(textSizeVariation) {
                 TextSizeVariation.BODY_SMALL -> bodySmall.copy(color = color)
