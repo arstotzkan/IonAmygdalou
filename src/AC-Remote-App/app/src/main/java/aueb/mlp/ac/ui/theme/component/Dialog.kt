@@ -17,24 +17,32 @@ fun SimpleAlertDialogInGreek(
     AlertDialog( //TODO: button letters should be larger
         onDismissRequest = onDismiss,
         confirmButton = {
-            LargePlainTextButton(
+            PlainTextButton(
                 onClick = onAccept,
                 enabled = true,
                 text="Ναι",
                 modifier = Modifier
-                    .fillMaxWidth(0.3f)
+                    .fillMaxWidth(0.3f),
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
             )
         },
         dismissButton = {
-            LargePlainTextButton(
+            PlainTextButton(
                 onClick = onReject,
                 enabled = true,
                 text="Όχι",
                 modifier = Modifier
-                    .fillMaxWidth(0.3f)
+                    .fillMaxWidth(0.3f),
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
             )
         },
-        title = { LargeText(text = title ) },
-        text = { LargeText(text = text) }
+        title = { AcText(
+            text = title,
+            textSizeVariation = TextSizeVariation.BODY_LARGE,
+        ) },
+        text = { AcText(
+            text = text,
+            textSizeVariation = TextSizeVariation.BODY_MEDIUM,
+        ) },
     )
 }

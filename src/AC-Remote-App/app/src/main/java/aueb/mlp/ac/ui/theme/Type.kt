@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.sp
 private val baseTextStyle = TextStyle(
     color = Color.Unspecified,
     fontSize = TextUnit.Unspecified,
-    fontWeight = FontWeight.Normal,
+    fontWeight = FontWeight.SemiBold,
     fontStyle = FontStyle.Normal,
     fontSynthesis = FontSynthesis.All,
     fontFamily = FontFamily.Default,
     // fontFeatureSettings = ,
-    letterSpacing = TextUnit.Unspecified,
+    letterSpacing = 0.5.sp,
     baselineShift = BaselineShift.None,
     // textGeometricTransform = ,
     localeList = LocaleList.current,
@@ -34,22 +34,27 @@ private val baseTextStyle = TextStyle(
     shadow = Shadow.None,
     textAlign = TextAlign.Left,
     textDirection = TextDirection.Content,
-    lineHeight = TextUnit.Unspecified,
+    lineHeight = 24.sp,
     textIndent = TextIndent.None,
 )
 
 internal val ACTypography = Typography(
-    bodyLarge = baseTextStyle.copy(
-        fontSize = 32.sp,
-        fontWeight = FontWeight.SemiBold,
-        letterSpacing = 0.5.sp,
-        lineHeight = 24.sp,
+    displayLarge = baseTextStyle.copy(
+        fontSize = 60.sp,
     ),
-    labelMedium = baseTextStyle.copy(
+    displayMedium = baseTextStyle.copy(
+        fontSize = 34.sp,
+    ),
+    displaySmall = baseTextStyle.copy(
         fontSize = 24.sp,
-        fontStyle = FontStyle.Italic,
-        letterSpacing = 0.3.sp,
-        textDecoration = TextDecoration.Underline,
     ),
-    // ...
+    bodyLarge = baseTextStyle.copy(
+        fontSize = 40.sp,
+    ),
+    bodyMedium = baseTextStyle.copy(
+        fontSize = 32.sp,
+    ),
+    bodySmall = baseTextStyle.copy(
+        fontSize = 24.sp,
+    ),
 )

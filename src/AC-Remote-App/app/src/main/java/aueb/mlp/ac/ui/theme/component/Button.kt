@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +74,8 @@ fun PlainButtonWithSwitchAndText(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
-    switchChecked: Boolean
+    switchChecked: Boolean,
+    textSizeVariation: TextSizeVariation = TextSizeVariation.BODY_MEDIUM,
 ){
     PlainButton(
         onClick = onClick,
@@ -89,7 +89,10 @@ fun PlainButtonWithSwitchAndText(
             modifier = Modifier
                 .wrapContentSize()
         ){
-            Text(text = text)
+            AcText(
+                text = text,
+                textSizeVariation = textSizeVariation,
+            )
             Switch(
                 checked = switchChecked,
                 onCheckedChange = {}
@@ -144,6 +147,7 @@ fun PlainTextButton(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    textSizeVariation: TextSizeVariation = TextSizeVariation.BODY_MEDIUM,
 ) {
     PlainButton(
         onClick = onClick,
@@ -152,47 +156,10 @@ fun PlainTextButton(
         enabledColors = enabledColors,
         disabledColors = disabledColors,
     ) {
-        Text(text = text)
-    }
-}
-
-@Composable
-fun LargePlainTextButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean,
-    enabledColors: AcButtonColors = AcButtonColors.Enabled,
-    disabledColors: AcButtonColors = AcButtonColors.Disabled,
-) {
-    PlainButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        enabledColors = enabledColors,
-        disabledColors = disabledColors,
-    ) {
-        LargeText(text = text)
-    }
-}
-
-@Composable
-fun PlainTextFieldButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean,
-    enabledColors: AcButtonColors = AcButtonColors.Enabled,
-    disabledColors: AcButtonColors = AcButtonColors.Disabled,
-) {
-    PlainButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        enabledColors = enabledColors,
-        disabledColors = disabledColors,
-    ) {
-        Text(text = text)
+        AcText(
+            text = text,
+            textSizeVariation = textSizeVariation,
+        )
     }
 }
 
@@ -206,6 +173,7 @@ fun StatefulTextButton(
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
     selected: Boolean,
     selectedColors: AcButtonColors = AcButtonColors.Selected,
+    textSizeVariation: TextSizeVariation = TextSizeVariation.BODY_MEDIUM,
 ) {
     StatefulButton(
         onClick = onClick,
@@ -216,7 +184,10 @@ fun StatefulTextButton(
         selected = selected,
         selectedColors = selectedColors,
     ) {
-        Text(text = text)
+        AcText(
+            text = text,
+            textSizeVariation = textSizeVariation,
+        )
     }
 }
 
@@ -275,7 +246,10 @@ fun ModeButton(
                 .wrapContentSize()
                 .padding(24.dp)
         ) {
-            Text(text = text)
+            AcText(
+                text = text,
+                textSizeVariation = TextSizeVariation.BODY_MEDIUM,
+            )
             Icon(
                 id = id,
                 alt = alt,
@@ -296,6 +270,7 @@ fun RowButton(
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
     sizeVariation: SizeVariation,
+    textSizeVariation: TextSizeVariation = TextSizeVariation.BODY_MEDIUM,
 ){
     PlainButton(
         onClick = onClick,
@@ -311,7 +286,10 @@ fun RowButton(
                 .wrapContentSize()
                 .padding(24.dp)
         ) {
-            Text(text = text)
+            AcText(
+                text = text,
+                textSizeVariation = textSizeVariation,
+            )
             Icon(
                 id = id,
                 alt = alt,
@@ -333,6 +311,7 @@ fun RowButtonWithIconCallback(
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
     sizeVariation: SizeVariation,
+    textSizeVariation: TextSizeVariation = TextSizeVariation.BODY_MEDIUM,
 ){
     PlainButton(
         onClick = onClick,
@@ -347,10 +326,9 @@ fun RowButtonWithIconCallback(
             modifier = Modifier
                 .fillMaxWidth(1f)
         ) {
-            Text(
+            AcText(
                 text = text,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                textSizeVariation = textSizeVariation,
             )
             PlainIconButton(
                 id = id,

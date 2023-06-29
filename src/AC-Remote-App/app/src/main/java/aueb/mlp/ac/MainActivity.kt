@@ -3,6 +3,7 @@ package aueb.mlp.ac
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -27,10 +28,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +45,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +55,7 @@ import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
+import aueb.mlp.ac.ui.theme.component.AcText
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.ModeButton
 import aueb.mlp.ac.ui.theme.component.PlainButton
@@ -62,11 +64,11 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
-//import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.SizeVariation
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
+import aueb.mlp.ac.ui.theme.component.TextSizeVariation
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -336,6 +338,7 @@ private fun AlarmSurface(
     onAlarmStateChanged: (Boolean) -> Unit,
     onNavigateToSingleAlarm: () -> Unit,
 ) {
+
     Box(
         modifier = Modifier.size(width = 250.dp, height = 450.dp)
     ) {
@@ -354,9 +357,17 @@ private fun AlarmSurface(
                     .wrapContentWidth()
                     .padding(16.dp)
             ) {
-                Text(if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ")
-                Text(alarm.time.toString())
-                Text(alarm.repeat.toString())
+                AcText(
+                    text = if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ",
+                    textSizeVariation = TextSizeVariation.BODY_LARGE,
+                )
+                AcText(
+                    text = alarm.time.toString(),
+                    textSizeVariation = TextSizeVariation.BODY_LARGE,
+                )
+                AcText(
+                    text = alarm.repeat.toString(),
+                )
                 Switch(
                     checked = alarm.state,
                     onCheckedChange = onAlarmStateChanged,
@@ -391,8 +402,6 @@ private fun SingleAlarmMenu(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .wrapContentSize()
-            .fillMaxHeight()
-            .padding(16.dp)
     ) {
         PlainTextButton(
             text = alarm.time.toString(),
@@ -534,7 +543,8 @@ private fun ChangeRepeatPopup(
                     enabled = true,
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(vertical=16.dp, horizontal = 32.dp)
+                        .padding(vertical=16.dp, horizontal = 32.dp),
+                    textSizeVariation = TextSizeVariation.BODY_LARGE,
                 )
             }
         }
@@ -623,7 +633,10 @@ fun EcoButton(
                 alt = "eco mode",
                 sizeVariation = SizeVariation.SMALL,
             )
-            Text("ECO")
+            AcText(
+                text = "ECO",
+                textSizeVariation = TextSizeVariation.BODY_SMALL,
+            )
         }
     }
 }
@@ -639,8 +652,9 @@ fun ChangeDeviceButton(
         onClick = { changeDeviceCallback("CHANGE") },
         enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
         modifier = Modifier
-            .size(150.dp, 150.dp)
+            .size(150.dp, 150.dp),
 
+        textSizeVariation = TextSizeVariation.BODY_SMALL,
     )
 }
 @Composable
@@ -797,19 +811,16 @@ fun ACDetails(
                 ) {
                     val currentTime = LocalTime.now()
                     val format = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-                    Text(
+                    val color = if (uiState.acIsOn) Color.Black else Color.White
+                    AcText(
                         text = format,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight(500),
-
+                        textSizeVariation = TextSizeVariation.DISPLAY_MEDIUM,
+                        color = color,
                     )
-                    Text(
+                    AcText(
                         text = uiState.acName,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = color,
                     )
                 }
             }
@@ -830,11 +841,10 @@ fun ACDetails(
                     } else {
                         " "
                     }
-                    Text(
+                    AcText(
                         text = tempText,
-                        style = TextStyle(color = Color.White),
-                        fontSize = 60.sp,
-                        fontWeight = FontWeight(500)
+                        textSizeVariation = TextSizeVariation.DISPLAY_LARGE,
+                        color = Color.White,
                     )
                     val modeText = if (uiState.acIsOn) {
                         when (uiState.mode) {
@@ -846,11 +856,10 @@ fun ACDetails(
                     } else {
                         ""
                     }
-                    Text(
+                    AcText(
                         text = modeText,
-                        style = TextStyle(color = Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = Color.White,
                     )
                 }
 
@@ -885,11 +894,10 @@ fun ACDetails(
                         }
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
-                        Text(
+                        AcText(
                             text = " ΚΛΕΙΣΙΜΟ ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight(500),
+                            textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                            color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
                     }
                     Column(
@@ -911,11 +919,10 @@ fun ACDetails(
                         }
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
-                        Text(
+                        AcText(
                             text = "ΑΝΟΙΓΜΑ  ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight(500),
+                            textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                            color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
                     }
                 }
@@ -928,12 +935,10 @@ fun ACDetails(
                 ) {
 
                     val timerState = if (uiState.turnOffAlarmState) "ΚΛΕΙΣΙΜΟ" else "ΑΝΟΙΓΜΑ"
-                    Text(
+                    AcText(
                         text = timerState,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
-
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
 
                     val time =
@@ -949,11 +954,10 @@ fun ACDetails(
                     }
                     val hours = timeUntil.toHours()
                     val minutes = timeUntil.toMinutes() % 60
-                    Text(
+                    AcText(
                         text = "ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = if (uiState.acIsOn) Color.Black else Color.White,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -1005,6 +1009,7 @@ fun MainScreen(
             startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
             currentAC = uiState?.acName,
             acList = acListState,
+            addedDevicesList = uiState?.addedDevices ?: ArrayList<String>(),
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
             onCreateNewAc = mainActivityViewModel::createNewAc,
             onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
@@ -1194,6 +1199,7 @@ fun ChangeAcScreen(
     startValue: String,
     currentAC: String?,
     acList: List<String>,
+    addedDevicesList: List<String>,
     onSetCurrentAcByName: (String) -> Unit,
     onCreateNewAc: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
@@ -1213,6 +1219,7 @@ fun ChangeAcScreen(
 
         "ADD_AC" -> AddAc(
             acList = acList,
+            addedDevicesList = addedDevicesList,
             onCreateNewAc = onCreateNewAc,
             onNavigateBack = { submenu = "CHANGE_AC" },
         )
@@ -1272,7 +1279,6 @@ fun ChangeAc(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .wrapContentSize()
-
                 ) {
                     items(acList) { acName ->
                         // read as: for each item in `acList`, create the following stuff,
@@ -1312,6 +1318,7 @@ fun ChangeAc(
                 modifier = Modifier
                     .fillMaxWidth(0.95f),
                 sizeVariation = SizeVariation.LARGE,
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
             )
         }
     }
@@ -1322,11 +1329,16 @@ fun AddAc(
     // add `acList` parameter if needed. maybe it's better to not show ac list in 'add ac' screen,
     // it might get confusing seeing the ac list in two places ('change ac' and 'add ac'), idk
     acList: List<String>,
+    addedDevicesList: List<String>,
     onNavigateBack: () -> Unit, // called when 'back' button is clicked
     onCreateNewAc: (String) -> Unit,
 ) {
     var newAcName by remember { mutableStateOf("") }
+    var selectedDevice  by remember { mutableStateOf("") }
+    var addedDevices  by remember { mutableStateOf(addedDevicesList) }
+    val context = LocalContext.current
 
+    println("TEST TEST TEST $addedDevices , $acList")
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
@@ -1360,7 +1372,8 @@ fun AddAc(
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
                     if (acList.indexOf(tempDeviceName) == -1){
-                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp) )
+                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp), selected= (selectedDevice = tempDeviceName) )
+                        )
                         i += 1
                     }
                     j += 1
@@ -1378,7 +1391,10 @@ fun AddAc(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
                     ){
-                        Text("ΟΝΟΜΑ")
+                        AcText(
+                            text = "ΟΝΟΜΑ",
+                            textSizeVariation = TextSizeVariation.BODY_LARGE,
+                        )
                         BasicTextField(
                             value = newAcName,
                             textStyle = TextStyle.Default.copy(fontSize = 32.sp),
@@ -1398,7 +1414,31 @@ fun AddAc(
                     }
                 }
 
-                PlainTextButton(text="ΠΡΟΣΘΗΚΗ", onClick= {onCreateNewAc(newAcName); newAcName = "" }, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp) )
+                PlainTextButton(text="ΠΡΟΣΘΗΚΗ",
+                    onClick= {
+                        var message = "";
+
+                        if (acList.indexOf(newAcName) == -1)
+                            if (newAcName !== "" && selectedDevice !== ""){
+                                onCreateNewAc(newAcName);
+                                newAcName = "";
+                                addedDevices += selectedDevice;
+                                selectedDevice = "";
+                                message = "Συνδεθήκαμε με το κλιματιστικό"
+                            } else if (selectedDevice == ""){
+                                message = "Δεν έχετε διαλέξει συσκευή"
+                            } else{
+                                message = "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας"
+                            }
+                        else
+                            message = "Υπάρχει ήδη μία συσκευή με αυτό το αναγνωριστικό"
+
+
+                        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+                        toast.show()
+                    },
+                    enabled =true,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical=32.dp) )
             }
         }
     }
@@ -1406,7 +1446,6 @@ fun AddAc(
 
     // TODO: your stuff here...
 }
-
 
 @Composable
 fun BackButton(
@@ -1445,11 +1484,12 @@ fun ACRow(
             openDialog = true
         },
         sizeVariation = SizeVariation.LARGE,
+        textSizeVariation = TextSizeVariation.BODY_LARGE,
     )
 
     if (openDialog){
         SimpleAlertDialogInGreek(
-            onAccept = { deleteDeviceCallback(acName) },
+            onAccept = {openDialog = false;deleteDeviceCallback(acName) },
             onDismiss = {openDialog = false},
             onReject = {openDialog = false},
             title = "Delete AC",
