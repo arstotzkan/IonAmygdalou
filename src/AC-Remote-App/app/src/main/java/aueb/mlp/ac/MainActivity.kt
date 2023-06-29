@@ -556,11 +556,10 @@ private fun ChangeRepeatPopup(
 fun ScreenMenu(
     changeMenuCallback: (input: String) -> Unit,
     uiState: MainActivityUiState
-
 ){
     Column(
-        modifier = Modifier
-            .padding(start=32.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(start = 40.dp, bottom = 24.dp),
     ){
         StatefulTextButton(
             onClick = {
@@ -570,7 +569,8 @@ fun ScreenMenu(
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.MODE,
             modifier = Modifier
-                .size(400.dp, 80.dp)
+                .fillMaxWidth()
+                .weight(0.25f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -580,7 +580,8 @@ fun ScreenMenu(
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.FAN,
             modifier = Modifier
-                .size(400.dp, 80.dp)
+                .fillMaxWidth()
+                .weight(0.25f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -590,7 +591,8 @@ fun ScreenMenu(
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.TIMER,
             modifier = Modifier
-                .size(400.dp, 80.dp)
+                .fillMaxWidth()
+                .weight(0.25f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -600,7 +602,8 @@ fun ScreenMenu(
             enabled = uiState.acIsOn,
             selected = uiState.activeMenu == Menu.BLINDS,
             modifier = Modifier
-                .size(400.dp, 80.dp)
+                .fillMaxWidth()
+                .weight(0.25f, fill = true),
         )
     }
 }
