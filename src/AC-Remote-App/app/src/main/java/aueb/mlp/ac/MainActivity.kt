@@ -1370,7 +1370,7 @@ fun AddAc(
                 var i = 1
                 var j = 1
                 while (i <= 3) {
-                    val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
+                    val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j"
                     if (acList.indexOf(tempDeviceName) == -1 && addedDevices.indexOf(tempDeviceName) == -1){
                         StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, selected = (selectedDevice == tempDeviceName)  )
                         i += 1
