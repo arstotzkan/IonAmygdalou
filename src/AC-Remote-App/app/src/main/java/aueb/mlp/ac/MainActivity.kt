@@ -54,7 +54,6 @@ import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.AcText
 import aueb.mlp.ac.ui.theme.component.Icon
-import aueb.mlp.ac.ui.theme.component.LargeText
 import aueb.mlp.ac.ui.theme.component.ModeButton
 import aueb.mlp.ac.ui.theme.component.PlainButton
 import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
@@ -941,6 +940,7 @@ fun MainScreen(
             startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
             currentAC = uiState?.acName,
             acList = acListState,
+            addedDevicesList = uiState?.addedDevices ?: ArrayList<String>(),
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
             onCreateNewAc = mainActivityViewModel::createNewAc,
             onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
@@ -1126,6 +1126,7 @@ fun ChangeAcScreen(
     startValue: String,
     currentAC: String?,
     acList: List<String>,
+    addedDevicesList: List<String>,
     onSetCurrentAcByName: (String) -> Unit,
     onCreateNewAc: (String) -> Unit,
     onDeleteExistingAcByName: (String) -> Unit,
@@ -1145,6 +1146,7 @@ fun ChangeAcScreen(
 
         "ADD_AC" -> AddAc(
             acList = acList,
+            addedDevicesList = addedDevicesList,
             onCreateNewAc = onCreateNewAc,
             onNavigateBack = { submenu = "CHANGE_AC" },
         )
@@ -1250,13 +1252,16 @@ fun AddAc(
     // add `acList` parameter if needed. maybe it's better to not show ac list in 'add ac' screen,
     // it might get confusing seeing the ac list in two places ('change ac' and 'add ac'), idk
     acList: List<String>,
+    addedDevicesList: List<String>,
     onNavigateBack: () -> Unit, // called when 'back' button is clicked
     onCreateNewAc: (String) -> Unit,
 ) {
     var newAcName by remember { mutableStateOf("") }
     var selectedDevice  by remember { mutableStateOf("") }
+    var addedDevices  by remember { mutableStateOf(addedDevicesList) }
     val context = LocalContext.current
 
+    println("TEST TEST TEST $addedDevices , $acList")
     Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
@@ -1285,10 +1290,10 @@ fun AddAc(
                     .weight(7f),
             ) {
                 var i = 1
-                var j = acList.size
+                var j = 1
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
-                    if (acList.indexOf(tempDeviceName) == -1){
+                    if (acList.indexOf(tempDeviceName) == -1 && addedDevices.indexOf(tempDeviceName) == -1 ){
                         StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, selected = (selectedDevice == tempDeviceName)  )
                         i += 1
                     }
@@ -1329,17 +1334,21 @@ fun AddAc(
 
                 PlainTextButton(text="ΠΡΟΣΘΗΚΗ",
                     onClick= {
+                        if (acList.indexOf(newAcName) == -1)
+                            if (newAcName !== "" && selectedDevice !== ""){
+                                onCreateNewAc(newAcName);
+                                newAcName = "";
+                                addedDevices += selectedDevice;
+                                selectedDevice = "";
+                                Toast.makeText(context, "Συνδεθήκαμε με το κλιματιστικό", Toast.LENGTH_SHORT).show()
+                            } else if (selectedDevice == ""){
+                                Toast.makeText(context, ("Δεν έχετε διαλέξει συσκευή"), Toast.LENGTH_SHORT).show()
+                            } else{
+                                Toast.makeText(context, "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας", Toast.LENGTH_SHORT).show()
+                            }
+                        else
+                            Toast.makeText(context, "Υπάρχει ήδη μία συσκευή με αυτό το αναγνωριστικό", Toast.LENGTH_SHORT).show()
 
-                        if (newAcName !== "" && selectedDevice !== ""){
-                            onCreateNewAc(newAcName);
-                            newAcName = "";
-                            selectedDevice = "";
-                            Toast.makeText(context, "Συνδεθήκαμε με το κλιματιστικό", Toast.LENGTH_SHORT).show()
-                        } else if (selectedDevice == ""){
-                            Toast.makeText(context, ("Δεν έχετε διαλέξει συσκευή"), Toast.LENGTH_SHORT).show()
-                        } else{
-                            Toast.makeText(context, "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας", Toast.LENGTH_SHORT).show()
-                        }
                     },
                     enabled =true )
             }
@@ -1393,7 +1402,7 @@ fun ACRow(
 
     if (openDialog){
         SimpleAlertDialogInGreek(
-            onAccept = { deleteDeviceCallback(acName) },
+            onAccept = {openDialog = false;deleteDeviceCallback(acName) },
             onDismiss = {openDialog = false},
             onReject = {openDialog = false},
             title = "Delete AC",

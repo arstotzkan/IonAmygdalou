@@ -67,4 +67,5 @@ data class MainActivityUiState(
     val turnOffAlarmTime: Time = Time(0, 0),
     val turnOnAlarmRepeat: AlarmRepeat = AlarmRepeat.OneTimeRepeat,
     val turnOffAlarmRepeat: AlarmRepeat = AlarmRepeat.OneTimeRepeat,
+    val addedDevices: ArrayList<String> = ArrayList<String>()
 )
