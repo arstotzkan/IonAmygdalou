@@ -6,7 +6,6 @@ import android.widget.TimePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import aueb.mlp.ac.model.ACManagerImpl
-import aueb.mlp.ac.model.AirConditioner
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
 import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
@@ -63,7 +61,7 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
-import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
+import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -933,7 +931,7 @@ fun MainScreen(
     if (uiState == null || uiState.activeMenu == Menu.CHANGE || uiState.activeMenu == Menu.ADDAC ) {
 
         ChangeAcScreen(
-            startValue = if (uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
+            startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
             currentAC = uiState?.acName,
             acList = acListState,
             onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
@@ -1363,12 +1361,12 @@ fun ACRow(
     )
 
     if (openDialog){
-        SimpleAlertDialog(
+        SimpleAlertDialogInGreek(
             onAccept = { deleteDeviceCallback(acName) },
             onDismiss = {openDialog = false},
             onReject = {openDialog = false},
             title = "Delete AC",
-            text = "Are you sure you want to delete $acName?"
+            text = "Είστε σιγουρος ότι θέλετε να διαγράψετε την συσκευή $acName?"
         )
     }
 }
