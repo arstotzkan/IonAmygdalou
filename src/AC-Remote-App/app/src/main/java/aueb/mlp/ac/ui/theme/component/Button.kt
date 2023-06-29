@@ -335,8 +335,6 @@ fun RowButtonWithIconCallback(
                 alt = alt,
                 onClick = onIconClick,
                 enabled = enabled,
-                modifier = Modifier
-                    .fillMaxWidth(0.2f),
                 sizeVariation = sizeVariation,
             )
         }
