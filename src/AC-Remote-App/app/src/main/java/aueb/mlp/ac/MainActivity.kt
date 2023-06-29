@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -1334,21 +1336,26 @@ fun AddAc(
 
                 PlainTextButton(text="ΠΡΟΣΘΗΚΗ",
                     onClick= {
+                        var message = "";
+
                         if (acList.indexOf(newAcName) == -1)
                             if (newAcName !== "" && selectedDevice !== ""){
                                 onCreateNewAc(newAcName);
                                 newAcName = "";
                                 addedDevices += selectedDevice;
                                 selectedDevice = "";
-                                Toast.makeText(context, "Συνδεθήκαμε με το κλιματιστικό", Toast.LENGTH_SHORT).show()
+                                message = "Συνδεθήκαμε με το κλιματιστικό"
                             } else if (selectedDevice == ""){
-                                Toast.makeText(context, ("Δεν έχετε διαλέξει συσκευή"), Toast.LENGTH_SHORT).show()
+                                message = "Δεν έχετε διαλέξει συσκευή"
                             } else{
-                                Toast.makeText(context, "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας", Toast.LENGTH_SHORT).show()
+                                message = "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας"
                             }
                         else
-                            Toast.makeText(context, "Υπάρχει ήδη μία συσκευή με αυτό το αναγνωριστικό", Toast.LENGTH_SHORT).show()
+                            message = "Υπάρχει ήδη μία συσκευή με αυτό το αναγνωριστικό"
 
+
+                        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+                        toast.show()
                     },
                     enabled =true )
             }
@@ -1358,7 +1365,6 @@ fun AddAc(
 
     // TODO: your stuff here...
 }
-
 
 @Composable
 fun BackButton(
