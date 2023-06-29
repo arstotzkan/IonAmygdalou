@@ -15,9 +15,6 @@ fun SimpleAlertDialogInGreek(
     text: String
 ) {
     AlertDialog( //TODO: button letters should be larger
-        modifier = Modifier
-            .fillMaxWidth(1f)
-            .fillMaxHeight(0.6f),
         onDismissRequest = onDismiss,
         confirmButton = {
             LargePlainTextButton(
