@@ -3,6 +3,7 @@ package aueb.mlp.ac
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -54,6 +55,7 @@ import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.Icon
+import aueb.mlp.ac.ui.theme.component.LargeText
 import aueb.mlp.ac.ui.theme.component.ModeButton
 import aueb.mlp.ac.ui.theme.component.PlainButton
 import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
@@ -61,12 +63,8 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
-<<<<<<< HEAD
-import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.SizeVariation
-=======
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
->>>>>>> 1510a7b1013591f2cfd2d36b005094e6df280822
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -1108,7 +1106,7 @@ fun MainScreenContent(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f)
-                            .padding(bottom=8.dp)
+                            .padding(bottom = 8.dp)
                     ) { OffButton(onSwitchOnOff=onSwitchOnOff , uiState.acIsOn)
                     }
 
@@ -1252,6 +1250,8 @@ fun AddAc(
     onCreateNewAc: (String) -> Unit,
 ) {
     var newAcName by remember { mutableStateOf("") }
+    var selectedDevice  by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -1281,11 +1281,11 @@ fun AddAc(
                     .weight(7f),
             ) {
                 var i = 1
-                var j = 1
+                var j = acList.size
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j "
                     if (acList.indexOf(tempDeviceName) == -1){
-                        PlainTextButton(text=tempDeviceName, onClick= {newAcName = tempDeviceName}, enabled =true )
+                        StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, selected = (selectedDevice == tempDeviceName)  )
                         i += 1
                     }
                     j += 1
@@ -1320,7 +1320,21 @@ fun AddAc(
                     }
                 }
 
-                PlainTextButton(text="ΠΡΟΣΘΗΚΗ", onClick= {onCreateNewAc(newAcName); newAcName = "" }, enabled =true )
+                PlainTextButton(text="ΠΡΟΣΘΗΚΗ",
+                    onClick= {
+
+                        if (newAcName !== "" && selectedDevice !== ""){
+                            onCreateNewAc(newAcName);
+                            newAcName = "";
+                            selectedDevice = "";
+                            Toast.makeText(context, "Συνδεθήκαμε με το κλιματιστικό", Toast.LENGTH_SHORT).show()
+                        } else if (selectedDevice == ""){
+                            Toast.makeText(context, ("Δεν έχετε διαλέξει συσκευή"), Toast.LENGTH_SHORT).show()
+                        } else{
+                            Toast.makeText(context, "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    enabled =true )
             }
         }
     }
