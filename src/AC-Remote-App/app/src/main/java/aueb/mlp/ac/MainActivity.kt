@@ -3,7 +3,6 @@ package aueb.mlp.ac
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -30,6 +29,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
@@ -74,6 +75,8 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 class MainActivity : ComponentActivity() {
 
@@ -444,7 +447,7 @@ private fun SingleAlarmMenu(
             },
             enabled = true,
             modifier = Modifier
-                .padding(vertical=16.dp, horizontal = 32.dp)
+                .padding(vertical = 16.dp, horizontal = 32.dp)
                 .weight(1f)
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -453,7 +456,7 @@ private fun SingleAlarmMenu(
             onClick = { changeRepeatPopup = true },
             enabled = true,
             modifier = Modifier
-                .padding(vertical=16.dp, horizontal = 32.dp)
+                .padding(vertical = 16.dp, horizontal = 32.dp)
                 .weight(1f)
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -462,7 +465,7 @@ private fun SingleAlarmMenu(
             onClick = onNavigateBack,
             enabled = true,
             modifier = Modifier
-                .padding(vertical=16.dp, horizontal = 32.dp)
+                .padding(vertical = 16.dp, horizontal = 32.dp)
                 .weight(1f)
         )
         if (changeRepeatPopup) {
@@ -493,7 +496,7 @@ private fun DayButton(
         ),
         modifier = Modifier
             .wrapContentSize()
-            .padding(vertical=16.dp, horizontal = 32.dp)
+            .padding(vertical = 16.dp, horizontal = 32.dp)
         ,
     )
 }
@@ -528,7 +531,7 @@ private fun ChangeRepeatPopup(
                         selected = alarmRepeat is AlarmRepeat.OneTimeRepeat,
                         modifier = Modifier
                             .wrapContentSize()
-                            .padding(vertical=16.dp, horizontal = 32.dp)
+                            .padding(vertical = 16.dp, horizontal = 32.dp)
                     )
                     StatefulTextButton(
                         text = "ΚΑΘΕ ΜΕΡΑ",
@@ -537,7 +540,7 @@ private fun ChangeRepeatPopup(
                         selected = alarmRepeat is AlarmRepeat.EverydayRepeat,
                         modifier = Modifier
                             .wrapContentSize()
-                            .padding(vertical=16.dp, horizontal = 32.dp)
+                            .padding(vertical = 16.dp, horizontal = 32.dp)
                     )
                     StatefulTextButton(
                         text = "ΠΡΟΧΩΡΗΜΕΝΕΣ",
@@ -546,7 +549,7 @@ private fun ChangeRepeatPopup(
                         selected = alarmRepeat is AlarmRepeat.CustomRepeat,
                         modifier = Modifier
                             .wrapContentSize()
-                            .padding(vertical=16.dp, horizontal = 32.dp)
+                            .padding(vertical = 16.dp, horizontal = 32.dp)
                     )
                 }
                 if (alarmRepeat is AlarmRepeat.CustomRepeat) {
@@ -569,7 +572,7 @@ private fun ChangeRepeatPopup(
                     enabled = true,
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(vertical=16.dp, horizontal = 32.dp),
+                        .padding(vertical = 16.dp, horizontal = 32.dp),
                     textSizeVariation = TextSizeVariation.BODY_LARGE,
                 )
             }
@@ -1246,12 +1249,12 @@ fun ChangeAc(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top=16.dp),
+            .padding(top = 16.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(7f),
+                .weight(3f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ){
@@ -1275,7 +1278,7 @@ fun ChangeAc(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(8.5f)
-                    .padding(top=16.dp),
+                    .padding(top = 16.dp),
             ) {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -1339,11 +1342,13 @@ fun AddAc(
     var newAcName by remember { mutableStateOf("") }
     var selectedDevice  by remember { mutableStateOf("") }
     var addedDevices  by remember { mutableStateOf(addedDevicesList) }
+    var snackbarVisible by remember { mutableStateOf(false) }
+    var message by remember { mutableStateOf("") };
+
     val context = LocalContext.current
 
     println("TEST TEST TEST $addedDevices , $acList")
     Column(
-        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -1399,7 +1404,9 @@ fun AddAc(
                         )
                         BasicTextField(
                             value = newAcName,
-                            textStyle = TextStyle.Default.copy(fontSize = 32.sp),
+                            textStyle = TextStyle.Default.copy(fontSize = 32.sp, textAlign = TextAlign.Center),
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f),
                             onValueChange = { newText ->
                                 newAcName = newText
                             },
@@ -1418,7 +1425,7 @@ fun AddAc(
 
                 PlainTextButton(text="ΠΡΟΣΘΗΚΗ",
                     onClick= {
-                        var message = "";
+                        snackbarVisible = true;
 
                         if (acList.indexOf(newAcName) == -1)
                             if (newAcName !== "" && selectedDevice !== ""){
@@ -1426,25 +1433,53 @@ fun AddAc(
                                 newAcName = "";
                                 addedDevices += selectedDevice;
                                 selectedDevice = "";
-                                message = "Συνδεθήκαμε με το κλιματιστικό"
+                                message = "Η προσθήκη κλιματιστικού ήταν επιτυχής"
                             } else if (selectedDevice == ""){
-                                message = "Δεν έχετε διαλέξει συσκευή"
+                                message = "Δεν έχετε διαλέξει κλιματιστικό"
                             } else{
-                                message = "Δεν έχετε δώσει αναγνωριστικό στην συσκευή σας"
+                                message = "Δεν έχετε δώσει αναγνωριστικό στο κλιματιστικό σας"
                             }
                         else
-                            message = "Υπάρχει ήδη μία συσκευή με αυτό το αναγνωριστικό"
+                            message = "Υπάρχει ήδη ένα κλιματιστικό με αυτό το αναγνωριστικό"
 
+                        Timer().schedule(3000) {
+                            snackbarVisible = false
+                        }
 
-                        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
-                        toast.show()
                     },
                     enabled =true,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical=32.dp) )
+
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+        ){
+            if (snackbarVisible){
+                Snackbar(
+                    action = {
+                    },
+                    modifier = Modifier
+                        .fillMaxHeight(0.75f)
+
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ){
+                        AcText(
+                            text = message,
+                        )
+                    }
+                }
             }
         }
     }
-
 
     // TODO: your stuff here...
 }
