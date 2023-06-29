@@ -30,7 +30,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +52,7 @@ import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
+import aueb.mlp.ac.ui.theme.component.AcText
 import aueb.mlp.ac.ui.theme.component.Icon
 import aueb.mlp.ac.ui.theme.component.LargeText
 import aueb.mlp.ac.ui.theme.component.ModeButton
@@ -67,6 +66,7 @@ import aueb.mlp.ac.ui.theme.component.SizeVariation
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
+import aueb.mlp.ac.ui.theme.component.TextSizeVariation
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -334,9 +334,17 @@ private fun AlarmSurface(
                 .wrapContentWidth()
                 .padding(16.dp)
         ) {
-            Text(if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ")
-            Text(alarm.time.toString())
-            Text(alarm.repeat.toString())
+            AcText(
+                text = if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ",
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
+            )
+            AcText(
+                text = alarm.time.toString(),
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
+            )
+            AcText(
+                text = alarm.repeat.toString(),
+            )
             Switch(
                 checked = alarm.state,
                 onCheckedChange = onAlarmStateChanged,
@@ -486,6 +494,7 @@ private fun ChangeRepeatPopup(
                     text = "ΟΚ",
                     onClick = onDismissRequest,
                     enabled = true,
+                    textSizeVariation = TextSizeVariation.BODY_LARGE,
                 )
             }
         }
@@ -564,7 +573,10 @@ fun EcoButton(
                 alt = "eco mode",
                 sizeVariation = SizeVariation.SMALL,
             )
-            Text("ECO")
+            AcText(
+                text = "ECO",
+                textSizeVariation = TextSizeVariation.BODY_SMALL,
+            )
         }
     }
 }
@@ -578,6 +590,7 @@ fun ChangeDeviceButton(
         text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
         onClick = { changeDeviceCallback("CHANGE") },
         enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
+        textSizeVariation = TextSizeVariation.BODY_SMALL,
     )
 }
 @Composable
@@ -730,19 +743,16 @@ fun ACDetails(
                 ) {
                     val currentTime = LocalTime.now()
                     val format = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-                    Text(
+                    val color = if (uiState.acIsOn) Color.Black else Color.White
+                    AcText(
                         text = format,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight(500),
-
+                        textSizeVariation = TextSizeVariation.DISPLAY_MEDIUM,
+                        color = color,
                     )
-                    Text(
+                    AcText(
                         text = uiState.acName,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = color,
                     )
                 }
             }
@@ -763,11 +773,10 @@ fun ACDetails(
                     } else {
                         " "
                     }
-                    Text(
+                    AcText(
                         text = tempText,
-                        style = TextStyle(color = Color.White),
-                        fontSize = 60.sp,
-                        fontWeight = FontWeight(500)
+                        textSizeVariation = TextSizeVariation.DISPLAY_LARGE,
+                        color = Color.White,
                     )
                     val modeText = if (uiState.acIsOn) {
                         when (uiState.mode) {
@@ -779,11 +788,10 @@ fun ACDetails(
                     } else {
                         ""
                     }
-                    Text(
+                    AcText(
                         text = modeText,
-                        style = TextStyle(color = Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = Color.White,
                     )
                 }
 
@@ -818,11 +826,10 @@ fun ACDetails(
                         }
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
-                        Text(
+                        AcText(
                             text = " ΚΛΕΙΣΙΜΟ ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight(500),
+                            textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                            color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
                     }
                     Column(
@@ -844,11 +851,10 @@ fun ACDetails(
                         }
                         val hours = timeUntil.toHours()
                         val minutes = timeUntil.toMinutes() % 60
-                        Text(
+                        AcText(
                             text = "ΑΝΟΙΓΜΑ  ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                            style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight(500),
+                            textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                            color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
                     }
                 }
@@ -861,12 +867,10 @@ fun ACDetails(
                 ) {
 
                     val timerState = if (uiState.turnOffAlarmState) "ΚΛΕΙΣΙΜΟ" else "ΑΝΟΙΓΜΑ"
-                    Text(
+                    AcText(
                         text = timerState,
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
-
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = if (uiState.acIsOn) Color.Black else Color.White,
                         )
 
                     val time =
@@ -882,11 +886,10 @@ fun ACDetails(
                     }
                     val hours = timeUntil.toHours()
                     val minutes = timeUntil.toMinutes() % 60
-                    Text(
+                    AcText(
                         text = "ΣΕ " + hours + "Ω : " + minutes + "Λ",
-                        style = if (uiState.acIsOn) TextStyle(color = Color.Black) else TextStyle(color=Color.White),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight(500),
+                        textSizeVariation = TextSizeVariation.DISPLAY_SMALL,
+                        color = if (uiState.acIsOn) Color.Black else Color.White,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -1236,6 +1239,7 @@ fun ChangeAc(
                 modifier = Modifier
                     .fillMaxWidth(0.95f),
                 sizeVariation = SizeVariation.LARGE,
+                textSizeVariation = TextSizeVariation.BODY_LARGE,
             )
         }
     }
@@ -1302,7 +1306,10 @@ fun AddAc(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ){
-                        Text("ΟΝΟΜΑ")
+                        AcText(
+                            text = "ΟΝΟΜΑ",
+                            textSizeVariation = TextSizeVariation.BODY_LARGE,
+                        )
                         BasicTextField(
                             value = newAcName,
                             textStyle = TextStyle.Default.copy(fontSize = 32.sp),
@@ -1381,6 +1388,7 @@ fun ACRow(
             openDialog = true
         },
         sizeVariation = SizeVariation.LARGE,
+        textSizeVariation = TextSizeVariation.BODY_LARGE,
     )
 
     if (openDialog){
