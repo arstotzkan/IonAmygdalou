@@ -61,12 +61,8 @@ import aueb.mlp.ac.ui.theme.component.PlainIconButton
 import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
-<<<<<<< HEAD
-import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
 import aueb.mlp.ac.ui.theme.component.SizeVariation
-=======
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialogInGreek
->>>>>>> 1510a7b1013591f2cfd2d36b005094e6df280822
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
