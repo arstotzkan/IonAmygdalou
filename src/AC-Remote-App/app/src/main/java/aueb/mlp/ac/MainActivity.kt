@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
@@ -1252,7 +1253,7 @@ fun ChangeAc(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(7f),
+                .weight(3f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ){
@@ -1400,7 +1401,9 @@ fun AddAc(
                         )
                         BasicTextField(
                             value = newAcName,
-                            textStyle = TextStyle.Default.copy(fontSize = 32.sp),
+                            textStyle = TextStyle.Default.copy(fontSize = 32.sp, textAlign = TextAlign.Center),
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f),
                             onValueChange = { newText ->
                                 newAcName = newText
                             },
