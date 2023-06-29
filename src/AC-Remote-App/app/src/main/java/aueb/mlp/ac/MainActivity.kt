@@ -650,11 +650,14 @@ fun ChangeDeviceButton(
 
         text = "ΑΛΛΑΞΕ ΣΥΣΚΕΥΗ",
         onClick = { changeDeviceCallback("CHANGE") },
-        enabled = true, //panta tha prepei na mporeis na allakseis syskeuh
+        enabled = true,
         modifier = Modifier
-            .size(150.dp, 150.dp),
+            .size(150.dp, 150.dp)
+            .padding(16.dp),
 
         textSizeVariation = TextSizeVariation.BODY_SMALL,
+
+
     )
 }
 @Composable
@@ -779,7 +782,7 @@ fun ACDetails(
                                 alt = "Normal Mode",
                                 modifier = Modifier
                                     .alpha(if (index == 0) 1f else 0.5f)
-                                    .padding(vertical=8.dp, horizontal = 4.dp),
+                                    .padding(vertical=6.dp, horizontal = 4.dp),
                                 sizeVariation = SizeVariation.SMALL,
                             )
                         }
@@ -1372,7 +1375,7 @@ fun AddAc(
                 while (i <= 3) {
                     val tempDeviceName = "ΚΛΙΜΑΤΙΣΤΙΚΟ $j"
                     if (acList.indexOf(tempDeviceName) == -1 && addedDevices.indexOf(tempDeviceName) == -1){
-                        StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, selected = (selectedDevice == tempDeviceName)  )
+                        StatefulTextButton(text=tempDeviceName, onClick= {selectedDevice = tempDeviceName}, enabled =true, modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp), selected = (selectedDevice == tempDeviceName)  )
                         i += 1
                     }
                     j += 1
