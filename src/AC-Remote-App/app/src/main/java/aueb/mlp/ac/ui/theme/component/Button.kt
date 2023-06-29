@@ -95,7 +95,7 @@ fun PlainButtonWithSwitchAndText(
             )
             Switch(
                 checked = switchChecked,
-                onCheckedChange = {}
+                onCheckedChange = { _: Boolean -> onClick() },
             )
         }
     }
