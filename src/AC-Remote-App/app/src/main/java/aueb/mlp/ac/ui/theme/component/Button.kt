@@ -230,6 +230,7 @@ fun PlainIconButton(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    sizeVariation: SizeVariation,
 ) {
     PlainButton(
         onClick = onClick,
@@ -241,6 +242,7 @@ fun PlainIconButton(
         Icon(
             id = id,
             alt = alt,
+            sizeVariation = sizeVariation,
         )
     }
 }
@@ -278,6 +280,7 @@ fun ModeButton(
             Icon(
                 id = id,
                 alt = alt,
+                sizeVariation = SizeVariation.SMALL,
             )
         }
     }
@@ -293,6 +296,7 @@ fun RowButton(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    sizeVariation: SizeVariation,
 ){
     PlainButton(
         onClick = onClick,
@@ -312,6 +316,7 @@ fun RowButton(
             Icon(
                 id = id,
                 alt = alt,
+                sizeVariation = sizeVariation,
             )
         }
     }
@@ -328,6 +333,7 @@ fun RowButtonWithIconCallback(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
+    sizeVariation: SizeVariation,
 ){
     PlainButton(
         onClick = onClick,
@@ -353,7 +359,8 @@ fun RowButtonWithIconCallback(
                 onClick = onIconClick,
                 enabled = enabled,
                 modifier = Modifier
-                    .fillMaxWidth(0.2f)
+                    .fillMaxWidth(0.2f),
+                sizeVariation = sizeVariation,
             )
         }
     }

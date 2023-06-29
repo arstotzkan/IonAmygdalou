@@ -64,6 +64,7 @@ import aueb.mlp.ac.ui.theme.component.PlainTextButton
 import aueb.mlp.ac.ui.theme.component.RowButton
 import aueb.mlp.ac.ui.theme.component.RowButtonWithIconCallback
 import aueb.mlp.ac.ui.theme.component.SimpleAlertDialog
+import aueb.mlp.ac.ui.theme.component.SizeVariation
 import aueb.mlp.ac.ui.theme.component.StatefulButton
 import aueb.mlp.ac.ui.theme.component.StatefulTextButton
 import java.time.DayOfWeek
@@ -571,6 +572,7 @@ fun EcoButton(
             Icon(
                 id = R.drawable.ic_eco,
                 alt = "eco mode",
+                sizeVariation = SizeVariation.SMALL,
             )
             Text("ECO")
         }
@@ -601,7 +603,8 @@ fun OffButton(
     ) {
         PlainIconButton(id =R.drawable.ic_on_off, alt ="off", onClick = { onSwitchOnOff() },
             enabled = true,
-            enabledColors = if (isOpen) AcButtonColors(containerColor =Red40, contentColor = Color.White) else AcButtonColors(containerColor =Green40, contentColor = Color.White)
+            enabledColors = if (isOpen) AcButtonColors(containerColor =Red40, contentColor = Color.White) else AcButtonColors(containerColor =Green40, contentColor = Color.White),
+            sizeVariation = SizeVariation.LARGE,
 
 
         )
@@ -648,38 +651,35 @@ fun ACDetails(
             if (uiState.acIsOn){
                 when(uiState.mode){
                     Mode.HEAT->Icon(
-                        modifier = Modifier
-                            .size(380.dp),
                         id = R.drawable.ic_sun,
                         alt = "Heat Mode",
+                        size = 380.dp,
                     )
                     Mode.COLD->Icon(
                         modifier = Modifier
-                            .size(350.dp)
                             .padding(start = 36.dp),
                         id = R.drawable.ic_snow,
                         alt = "Cold Mode",
+                        size = 350.dp,
                     )
                     Mode.DRY->Icon(
                         modifier = Modifier
-                            .size(380.dp)
                             .padding(end = 48.dp),
                         id = R.drawable.ic_humid,
                         alt = "Dry Mode",
+                        size = 380.dp,
                     )
                     Mode.AUTO->Icon(
-                        modifier = Modifier
-                            .size(380.dp),
                         id = R.drawable.ic_auto,
                         alt = "Auto Mode",
+                        size = 380.dp,
                     )
                 }
             } else {
                 Icon(
-                modifier = Modifier
-                    .size(380.dp),
                 id = R.drawable.ic_moon,
                 alt = "Sleep Mode",
+                    size = 380.dp,
                 )
             }
         }
@@ -694,10 +694,9 @@ fun ACDetails(
             ) {
                 if(uiState.acIsOn){
                 Icon(
-                    modifier = Modifier
-                        .size(width = 40.dp, height = 40.dp),
                     id = R.drawable.ic_fan,
                     alt = "Increment Temperature",
+                    size = 40.dp,
                 ) //PLease do not execute me publically for this I had no other idea
                     when (uiState.fan){
                         Fan.SILENT-> repeat(3) { index ->
@@ -705,9 +704,9 @@ fun ACDetails(
                                 id = R.drawable.ic_fan_square,
                                 alt = "Normal Mode",
                                 modifier = Modifier
-                                    .size(width = 30.dp, height = 30.dp)
                                     .alpha(if (index == 0) 1f else 0.5f)
-                                    .padding(top = 8.dp)
+                                    .padding(top = 8.dp),
+                                sizeVariation = SizeVariation.SMALL,
                             )
                         }
                         Fan.NORMAL -> repeat(3) { index ->
@@ -715,18 +714,18 @@ fun ACDetails(
                                 id = R.drawable.ic_fan_square,
                                 alt = "Normal Mode",
                                 modifier = Modifier
-                                    .size(width = 30.dp, height = 30.dp)
                                     .alpha(if (index == 2) 0.5f else 1f)
-                                    .padding(top = 8.dp)
+                                    .padding(top = 8.dp),
+                                sizeVariation = SizeVariation.SMALL,
                             )
                         }
                         Fan.TURBO-> repeat(3) {
                             Icon(
                                 modifier = Modifier
-                                    .size(width = 30.dp, height = 30.dp)
                                     .padding(top = 8.dp),
                                 id = R.drawable.ic_fan_square,
                                 alt = "Turbo Mode",
+                                sizeVariation = SizeVariation.SMALL,
                             )
                         }
                     }
@@ -850,6 +849,7 @@ fun ChangeTempButtons(
         alt = "Increment Temperature",
         onClick = onIncrementTemperatureFunc,
         enabled = uiState.acIsOn,
+        sizeVariation = SizeVariation.LARGE,
     )
     PlainIconButton(
         modifier = Modifier
@@ -858,6 +858,7 @@ fun ChangeTempButtons(
         alt = "Decrement Temperature",
         onClick = onDecrementTemperatureFunc,
         enabled = uiState.acIsOn,
+        sizeVariation = SizeVariation.LARGE,
     )
 }
 
@@ -1169,7 +1170,8 @@ fun ChangeAc(
                 enabled = true,
                 onClick = onNavigateToCreateNewAc,
                 modifier = Modifier
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth(0.95f),
+                sizeVariation = SizeVariation.LARGE,
             )
         }
     }
@@ -1273,6 +1275,7 @@ fun BackButton(
         alt = "Decrement Temperature",
         onClick = onNavigateBack,
         enabled = true,
+        sizeVariation = SizeVariation.LARGE,
     )
 }
 
@@ -1296,7 +1299,8 @@ fun ACRow(
         alt = "delete ac",
         onIconClick = {
             openDialog = true
-        }
+        },
+        sizeVariation = SizeVariation.LARGE,
     )
 
     if (openDialog){
