@@ -351,6 +351,7 @@ private fun AlarmSurface(
     isTurnOnAlarm: Boolean,
     onAlarmStateChanged: (Boolean) -> Unit,
     onNavigateToSingleAlarm: () -> Unit,
+    colors: AcButtonColors = AcButtonColors.Enabled,
 ) {
 
     Box(
@@ -359,7 +360,7 @@ private fun AlarmSurface(
     ) {
         Surface(
             shape = ACShapes.large,
-            color = Color(0xFFFFFFFF),
+            color = colors.containerColor,
             modifier = Modifier
                 .fillMaxSize()
                 .clickable { onNavigateToSingleAlarm() }
@@ -375,13 +376,16 @@ private fun AlarmSurface(
                 AcText(
                     text = if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ",
                     textSizeVariation = TextSizeVariation.BODY_LARGE,
+                    color = colors.contentColor,
                 )
                 AcText(
                     text = alarm.time.toString(),
                     textSizeVariation = TextSizeVariation.BODY_LARGE,
+                    color = colors.contentColor,
                 )
                 AcText(
                     text = alarm.repeat.toString(),
+                    color = colors.contentColor,
                 )
                 AcSwitch(
                     checked = alarm.state,
