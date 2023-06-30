@@ -83,18 +83,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ACRemoteAppTheme {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(Color(0xFF74D0F8), Color(0xFFA6CCDD))
-                            )
-
-                        )
-                ) {
-                    MainScreen(viewModel)
-                }
+                MainScreen(viewModel)
             }
         }
     }
@@ -1028,35 +1017,58 @@ fun MainScreen(
 
     if (uiState == null || uiState.activeMenu == Menu.CHANGE || uiState.activeMenu == Menu.ADDAC ) {
 
-        ChangeAcScreen(
-            startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
-            currentAC = uiState?.acName,
-            acList = acListState,
-            addedDevicesList = uiState?.addedDevices ?: ArrayList<String>(),
-            onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
-            onCreateNewAc = mainActivityViewModel::createNewAc,
-            onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF74D0F8), Color(0xFFA6CCDD))
+                    )
+                )
+        ) {
+            ChangeAcScreen(
+                startValue = if (uiState == null || uiState?.activeMenu == Menu.CHANGE) "CHANGE_AC" else "ADD_AC",
+                currentAC = uiState?.acName,
+                acList = acListState,
+                addedDevicesList = uiState?.addedDevices ?: ArrayList<String>(),
+                onSetCurrentAcByName = mainActivityViewModel::setCurrentAcByName,
+                onCreateNewAc = mainActivityViewModel::createNewAc,
+                onDeleteExistingAcByName = mainActivityViewModel::deleteAcByName,
+            )
+        }
     } else {
-        MainScreenContent(
-            uiState = uiState,
-            onSwitchOnOff = {mainActivityViewModel.toggleOnOff()},
-            onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
-            onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
-            onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
-            onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
-            changeMenu = {menu: String -> mainActivityViewModel.changeMenu(menu)},
-            onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
-            onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
-            onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
-            onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
-            onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
-            onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
-            onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
-            onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
-            onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
-            onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = when (uiState.acIsOn) {
+                            true -> listOf(Color(0xFF74D0F8), Color(0xFFA6CCDD))
+                            false -> listOf(Color(0xFF7977E7), Color(0xFFADB5F8))
+                        }
+                    )
+                )
+        ) {
+            MainScreenContent(
+                uiState = uiState,
+                onSwitchOnOff = { mainActivityViewModel.toggleOnOff() },
+                onIncrementTemperature = { mainActivityViewModel.incrementTemperature() },
+                onDecrementTemperature = { mainActivityViewModel.decrementTemperature() },
+                onModeChanged = { mode: String -> mainActivityViewModel.setMode(mode) },
+                onFanChanged = { mode: String -> mainActivityViewModel.setFan(mode) },
+                changeMenu = { menu: String -> mainActivityViewModel.changeMenu(menu) },
+                onBlindsChanged = { mode: String -> mainActivityViewModel.setBlinds(mode) },
+                onEcoModeChanged = { mainActivityViewModel.toggleEcoMode() },
+                onTurnOnAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOnAlarm() },
+                onTurnOffAlarmStateChanged = { _: Boolean -> mainActivityViewModel.toggleTurnOffAlarm() },
+                onTurnOnAlarmTimeChanged = mainActivityViewModel::setTurnOnAlarmTime,
+                onTurnOffAlarmTimeChanged = mainActivityViewModel::setTurnOffAlarmTime,
+                onTurnOnAlarmRepeatChanged = mainActivityViewModel::setTurnOnAlarmRepeat,
+                onTurnOffAlarmRepeatChanged = mainActivityViewModel::setTurnOffAlarmRepeat,
+                onToggleTurnOnAlarmDay = mainActivityViewModel::toggleTurnOnAlarmDay,
+                onToggleTurnOffAlarmDay = mainActivityViewModel::toggleTurnOffAlarmDay,
+            )
+        }
     }
 }
 
