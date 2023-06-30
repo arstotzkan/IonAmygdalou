@@ -1167,8 +1167,9 @@ fun MainScreenContent(
                                 onToggleTurnOffAlarmDay = onToggleTurnOffAlarmDay,
                             )
                         Menu.BLINDS -> BlindsMenu(onBlindsChanged, uiState.blinds)
+                        Menu.MAIN -> { } // when the AC is off
                         //Maybe selecting/adding an AC needs its own activity??
-                        else -> error("Invalid menu")
+                        else -> error("Invalid menu: ${uiState.activeMenu}")
                     }
 
                 }
