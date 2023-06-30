@@ -48,7 +48,10 @@ fun PlainButton(
     enabled: Boolean,
     enabledColors: AcButtonColors = AcButtonColors.Enabled,
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
-    content: @Composable () -> Unit,
+    contentColorSelector: () -> Color = {
+        if (enabled) enabledColors.contentColor else disabledColors.contentColor
+    },
+    content: @Composable (() -> Color) -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -61,7 +64,7 @@ fun PlainButton(
 //            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
 //            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
     ) {
-        content()
+        content(contentColorSelector)
     }
 }
 
@@ -83,7 +86,7 @@ fun PlainButtonWithSwitchAndText(
         enabled = enabled,
         enabledColors = enabledColors,
         disabledColors = disabledColors,
-    ) {
+    ) { contentColorSelector ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -92,6 +95,7 @@ fun PlainButtonWithSwitchAndText(
             AcText(
                 text = text,
                 textSizeVariation = textSizeVariation,
+                color = contentColorSelector(),
             )
             Switch(
                 checked = switchChecked,
@@ -115,7 +119,12 @@ fun StatefulButton(
     disabledColors: AcButtonColors = AcButtonColors.Disabled,
     selected: Boolean,
     selectedColors: AcButtonColors = AcButtonColors.Selected,
-    content: @Composable () -> Unit,
+    contentColorSelector: () -> Color = {
+        if (!enabled) disabledColors.contentColor else {
+            if (selected) selectedColors.contentColor else enabledColors.contentColor
+        }
+    },
+    content: @Composable (() -> Color) -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -135,7 +144,7 @@ fun StatefulButton(
 //            .wrapContentHeight() // TODO: ### remove. do size the proper way ###
 //            .size(300.dp, 100.dp) // TODO: ### remove. do size the proper way ###
     ) {
-        content()
+        content(contentColorSelector)
     }
 }
 
@@ -155,10 +164,11 @@ fun PlainTextButton(
         enabled = enabled,
         enabledColors = enabledColors,
         disabledColors = disabledColors,
-    ) {
+    ) { contentColorSelector ->
         AcText(
             text = text,
             textSizeVariation = textSizeVariation,
+            color = contentColorSelector(),
         )
     }
 }
@@ -183,10 +193,11 @@ fun StatefulTextButton(
         disabledColors = disabledColors,
         selected = selected,
         selectedColors = selectedColors,
-    ) {
+    ) { contentColorSelector ->
         AcText(
             text = text,
             textSizeVariation = textSizeVariation,
+            color = contentColorSelector(),
         )
     }
 }
@@ -208,11 +219,12 @@ fun PlainIconButton(
         enabled = enabled,
         enabledColors = enabledColors,
         disabledColors = disabledColors,
-    ) {
-        Icon(
+    ) { _ ->
+        AcIcon(
             id = id,
             alt = alt,
             sizeVariation = sizeVariation,
+            // tint = contentColorSelector(),
         )
     }
 }
@@ -249,7 +261,7 @@ fun RowScope.ModeButton(
                 disabledColors = disabledColors,
                 selected = selected,
                 selectedColors = selectedColors,
-            ) {
+            ) { contentColorSelector ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -257,11 +269,13 @@ fun RowScope.ModeButton(
                     AcText(
                         text = text,
                         textSizeVariation = TextSizeVariation.BODY_MEDIUM,
+                        color = contentColorSelector(),
                     )
-                    Icon(
+                    AcIcon(
                         id = id,
                         alt = alt,
                         sizeVariation = SizeVariation.SMALL,
+                        tint = contentColorSelector(),
                     )
                 }
             }
@@ -288,7 +302,7 @@ fun RowButton(
         enabled = enabled,
         enabledColors = enabledColors,
         disabledColors = disabledColors,
-    ) {
+    ) { contentColorSelector ->
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -299,8 +313,9 @@ fun RowButton(
             AcText(
                 text = text,
                 textSizeVariation = textSizeVariation,
+                color = contentColorSelector(),
             )
-            Icon(
+            AcIcon(
                 id = id,
                 alt = alt,
                 sizeVariation = sizeVariation,
@@ -329,7 +344,7 @@ fun RowButtonWithIconCallback(
         enabled = enabled,
         enabledColors = enabledColors,
         disabledColors = disabledColors,
-    ) {
+    ) { contentColorSelector ->
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -339,6 +354,7 @@ fun RowButtonWithIconCallback(
             AcText(
                 text = text,
                 textSizeVariation = textSizeVariation,
+                color = contentColorSelector(),
             )
             PlainIconButton(
                 id = id,

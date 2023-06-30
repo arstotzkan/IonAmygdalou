@@ -57,7 +57,7 @@ import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
 import aueb.mlp.ac.ui.theme.component.AcText
-import aueb.mlp.ac.ui.theme.component.Icon
+import aueb.mlp.ac.ui.theme.component.AcIcon
 import aueb.mlp.ac.ui.theme.component.ModeButton
 import aueb.mlp.ac.ui.theme.component.PlainButton
 import aueb.mlp.ac.ui.theme.component.PlainButtonWithSwitchAndText
@@ -653,19 +653,21 @@ fun EcoButton(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(16.dp)
-    ) {
+    ) { contentColorSelector ->
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
+            AcIcon(
                 id = R.drawable.ic_eco,
                 alt = "eco mode",
                 sizeVariation = SizeVariation.SMALL,
+                tint = contentColorSelector(),
             )
             AcText(
                 text = "ECO",
                 textSizeVariation = TextSizeVariation.BODY_SMALL,
+                color = contentColorSelector(),
             )
         }
     }
@@ -751,33 +753,33 @@ fun ACDetails(
 
             if (uiState.acIsOn){
                 when(uiState.mode){
-                    Mode.HEAT->Icon(
+                    Mode.HEAT->AcIcon(
                         id = R.drawable.ic_sun,
                         alt = "Heat Mode",
                         size = 380.dp,
                     )
-                    Mode.COLD->Icon(
+                    Mode.COLD->AcIcon(
                         modifier = Modifier
                             .padding(start = 12.dp),
                         id = R.drawable.ic_snow,
                         alt = "Cold Mode",
                         size = 350.dp,
                     )
-                    Mode.DRY->Icon(
+                    Mode.DRY->AcIcon(
                         modifier = Modifier
                             .padding(end = 48.dp),
                         id = R.drawable.ic_humid,
                         alt = "Dry Mode",
                         size = 380.dp,
                     )
-                    Mode.AUTO->Icon(
+                    Mode.AUTO->AcIcon(
                         id = R.drawable.ic_auto,
                         alt = "Auto Mode",
                         size = 380.dp,
                     )
                 }
             } else {
-                Icon(
+                AcIcon(
                 modifier = Modifier
                     .padding(start = 72.dp, top=24.dp),
                 id = R.drawable.ic_moon,
@@ -799,14 +801,14 @@ fun ACDetails(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Icon(
+                        AcIcon(
                             id = R.drawable.ic_fan,
                             alt = "Fan",
                             size = 40.dp,
                         ) //PLease do not execute me publically for this I had no other idea
                         when (uiState.fan) {
                             Fan.SILENT -> repeat(3) { index ->
-                                Icon(
+                                AcIcon(
                                     id = R.drawable.ic_fan_square,
                                     alt = "Normal Mode",
                                     modifier = Modifier
@@ -815,7 +817,7 @@ fun ACDetails(
                                 )
                             }
                             Fan.NORMAL -> repeat(3) { index ->
-                                Icon(
+                                AcIcon(
                                     id = R.drawable.ic_fan_square,
                                     alt = "Normal Mode",
                                     modifier = Modifier
@@ -824,7 +826,7 @@ fun ACDetails(
                                 )
                             }
                             Fan.TURBO -> repeat(3) {
-                                Icon(
+                                AcIcon(
                                     id = R.drawable.ic_fan_square,
                                     alt = "Turbo Mode",
                                     sizeVariation = SizeVariation.SMALL,
@@ -1393,7 +1395,7 @@ fun AddAc(
                     .fillMaxSize()
                     .weight(7f),
             ) {
-                PlainButton(onClick = {}, enabled = true) {
+                PlainButton(onClick = {}, enabled = true) { contentColorSelector ->
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
@@ -1401,10 +1403,13 @@ fun AddAc(
                         AcText(
                             text = "ΟΝΟΜΑ",
                             textSizeVariation = TextSizeVariation.BODY_LARGE,
+                            color = contentColorSelector(),
                         )
                         BasicTextField(
                             value = newAcName,
-                            textStyle = TextStyle.Default.copy(fontSize = 32.sp, textAlign = TextAlign.Center),
+                            textStyle = TextStyle.Default.copy(fontSize = 32.sp, textAlign = TextAlign.Center,
+                                color = contentColorSelector(),
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth(0.8f),
                             onValueChange = { newText ->
@@ -1413,7 +1418,7 @@ fun AddAc(
 
                         )
                         Divider (
-                            color = Color.Black, //TODO: MAKE CONFIGURABLE (NOT HARDCODED)
+                            color = contentColorSelector(),
                             modifier = Modifier
                                 .height(2.dp)
                                 .fillMaxHeight()
