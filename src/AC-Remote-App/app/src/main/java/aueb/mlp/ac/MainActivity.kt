@@ -27,12 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +52,7 @@ import aueb.mlp.ac.ui.theme.Red40
 import aueb.mlp.ac.ui.theme.ACShapes
 import aueb.mlp.ac.ui.theme.Green40
 import aueb.mlp.ac.ui.theme.component.AcButtonColors
+import aueb.mlp.ac.ui.theme.component.AcSwitch
 import aueb.mlp.ac.ui.theme.component.AcText
 import aueb.mlp.ac.ui.theme.component.AcIcon
 import aueb.mlp.ac.ui.theme.component.ModeButton
@@ -397,17 +394,9 @@ private fun AlarmSurface(
                 AcText(
                     text = alarm.repeat.toString(),
                 )
-                Switch(
+                AcSwitch(
                     checked = alarm.state,
                     onCheckedChange = onAlarmStateChanged,
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color(0xFF0085FF),
-                        checkedTrackColor = Color(0xFFD9D9D9),
-                        checkedBorderColor = Color(0xFF000000),
-                        uncheckedThumbColor = Color(0xFFBFBFBF),
-                        uncheckedTrackColor = Color(0x80D9D9D9),
-                        uncheckedBorderColor = Color(0xFF000000),
-                    )
                 )
             }
         }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,7 +96,7 @@ fun PlainButtonWithSwitchAndText(
                 textSizeVariation = textSizeVariation,
                 color = contentColorSelector(),
             )
-            Switch(
+            AcSwitch(
                 checked = switchChecked,
                 onCheckedChange = { _: Boolean -> onClick() },
             )
