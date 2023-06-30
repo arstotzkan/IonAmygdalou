@@ -846,8 +846,7 @@ fun ACDetails(
             }
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp),
+                    .weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.weight(1f))
