@@ -104,7 +104,8 @@ fun ModeMenu(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .weight(1f, fill = true),
         ) {
             ModeButton(
@@ -136,7 +137,8 @@ fun ModeMenu(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .weight(1f, fill = true),
         ) {
             ModeButton(
@@ -224,7 +226,7 @@ fun BlindsMenu(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxHeight(0.8f)
+            .fillMaxHeight(1f)
             .fillMaxWidth(0.5f)
     ){
         PlainButtonWithSwitchAndText(
@@ -242,7 +244,7 @@ fun BlindsMenu(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         PlainButtonWithSwitchAndText(
             onClick = {
                 if (currentBlindMode == Blinds.HORIZONTAL)
@@ -325,7 +327,7 @@ private fun BothAlarmsMenu(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1.0f)
-                .padding(32.dp),
+                .padding(16.dp),
             isTurnOnAlarm = true,
             onAlarmStateChanged = onTurnOnAlarmStateChanged,
             onNavigateToSingleAlarm = { changeMenuCallback("TIMER_ON")
@@ -336,7 +338,7 @@ private fun BothAlarmsMenu(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1.0f)
-                .padding(32.dp),
+                .padding(16.dp),
             isTurnOnAlarm = false,
             onAlarmStateChanged = onTurnOffAlarmStateChanged,
             onNavigateToSingleAlarm = { changeMenuCallback("TIMER_OFF") }
@@ -371,7 +373,7 @@ private fun AlarmSurface(
                 modifier = Modifier
                     .fillMaxHeight()
                     .wrapContentWidth()
-                    .padding(16.dp)
+                    .padding(8.dp)
             ) {
                 AcText(
                     text = if (isTurnOnAlarm) "ΑΝΟΙΞΕ" else "ΚΛΕΙΣΕ",
@@ -568,7 +570,7 @@ fun ScreenMenu(
     uiState: MainActivityUiState
 ){
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ){
         StatefulTextButton(
             onClick = {
@@ -579,7 +581,7 @@ fun ScreenMenu(
             selected = uiState.activeMenu == Menu.MODE,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.25f, fill = true),
+                .weight(0.3f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -590,7 +592,7 @@ fun ScreenMenu(
             selected = uiState.activeMenu == Menu.FAN,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.25f, fill = true),
+                .weight(0.3f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -601,7 +603,7 @@ fun ScreenMenu(
             selected = uiState.activeMenu == Menu.TIMER,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.25f, fill = true),
+                .weight(0.3f, fill = true),
         )
         StatefulTextButton(
             onClick = {
@@ -612,7 +614,7 @@ fun ScreenMenu(
             selected = uiState.activeMenu == Menu.BLINDS,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.25f, fill = true),
+                .weight(0.3f, fill = true),
         )
     }
 }
@@ -683,7 +685,9 @@ fun OffButton(
     Box(
         modifier = Modifier
             .background(color = if (isOpen) Red40 else Green40, shape = CircleShape)
-            .size(125.dp),
+            .wrapContentSize()
+            .wrapContentHeight()
+            .padding(16.dp),
         contentAlignment = Alignment.Center
 
 
@@ -736,16 +740,19 @@ fun ACDetails(
             if (uiState.acIsOn){
                 when(uiState.mode){
                     Mode.HEAT->AcIcon(
+                        modifier = Modifier
+                            .padding(start = 12.dp, top=20.dp)
+                            .fillMaxSize(),
                         id = R.drawable.ic_sun,
                         alt = "Heat Mode",
-                        size = 380.dp,
+                        size = 400.dp,
                     )
                     Mode.COLD->AcIcon(
                         modifier = Modifier
-                            .padding(start = 12.dp),
+                            .padding(start = 8.dp),
                         id = R.drawable.ic_snow,
                         alt = "Cold Mode",
-                        size = 350.dp,
+                        size = 400.dp,
                     )
                     Mode.DRY->AcIcon(
                         modifier = Modifier
@@ -763,7 +770,7 @@ fun ACDetails(
             } else {
                 AcIcon(
                 modifier = Modifier
-                    .padding(start = 72.dp, top=24.dp),
+                    .padding(start = 80.dp, top= 36.dp),
                 id = R.drawable.ic_moon,
                 alt = "Sleep Mode",
                     size = 280.dp,
@@ -775,8 +782,8 @@ fun ACDetails(
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp),
+                    .weight(1.2f)
+                    .padding(8.dp),
             ) {
                 if(uiState.acIsOn){
                     Row(
@@ -817,9 +824,8 @@ fun ACDetails(
                         }
                     }
                 }
-                //Spacer(modifier = Modifier.weight(1f))
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                     horizontalAlignment = Alignment.End
                 ) {
                     val currentTime = LocalTime.now()
@@ -843,7 +849,6 @@ fun ACDetails(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -993,7 +998,8 @@ fun ChangeTempButtons(
     ) {
         PlainIconButton(
             modifier = Modifier
-                .size(150.dp),
+                .fillMaxWidth()
+                .weight(0.5f),
             id = R.drawable.ic_plus,
             alt = "Increment Temperature",
             onClick = onIncrementTemperatureFunc,
@@ -1002,7 +1008,8 @@ fun ChangeTempButtons(
         )
         PlainIconButton(
             modifier = Modifier
-                .size(150.dp),
+                .fillMaxWidth()
+                .weight(0.5f),
             id = R.drawable.ic_minus,
             alt = "Decrement Temperature",
             onClick = onDecrementTemperatureFunc,

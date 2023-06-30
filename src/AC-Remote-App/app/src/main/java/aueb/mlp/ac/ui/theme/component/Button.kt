@@ -267,7 +267,7 @@ fun RowScope.ModeButton(
                 ) {
                     AcText(
                         text = text,
-                        textSizeVariation = TextSizeVariation.BODY_MEDIUM,
+                        textSizeVariation = TextSizeVariation.BODY_SMALL,
                         color = contentColorSelector(),
                     )
                     AcIcon(
