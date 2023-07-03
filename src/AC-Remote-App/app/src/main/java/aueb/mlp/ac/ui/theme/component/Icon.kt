@@ -1,15 +1,16 @@
-package aueb.mlp.ac.ui.component
+package aueb.mlp.ac.ui.theme.component
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import aueb.mlp.ac.R
 import aueb.mlp.ac.ui.theme.ACRemoteAppTheme
@@ -21,17 +22,12 @@ private fun IconPreview() {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Icon(
+            AcIcon(
                 R.drawable.ic_placeholder,
                 alt = "placeholder",
                 sizeVariation = SizeVariation.SMALL,
             )
-            Icon(
-                R.drawable.ic_placeholder,
-                alt = "placeholder",
-                sizeVariation = SizeVariation.MEDIUM,
-            )
-            Icon(
+            AcIcon(
                 R.drawable.ic_placeholder,
                 alt = "placeholder",
                 sizeVariation = SizeVariation.LARGE,
@@ -41,28 +37,41 @@ private fun IconPreview() {
 }
 
 enum class SizeVariation {
-    LARGE, MEDIUM, SMALL,
+    SMALL, LARGE,
 }
 
 @Composable
-fun Icon(
+fun AcIcon(
     @DrawableRes id: Int,
     alt: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
-    sizeVariation: SizeVariation = SizeVariation.MEDIUM,
+    size: Dp,
+    tint: Color = Color.Unspecified,
 ) {
-    Image(
+    Icon(
         painter = painterResource(id = id),
         contentDescription = alt,
-        modifier = modifier
-            .clickable(onClick = onClick)
-            .size(
-                when (sizeVariation) {
-                    SizeVariation.SMALL -> 24.dp
-                    SizeVariation.MEDIUM -> 32.dp
-                    SizeVariation.LARGE -> 40.dp
-                }
-            ),
+        modifier = modifier.size(size),
+        tint = tint,
+    )
+}
+
+@Composable
+fun AcIcon(
+    @DrawableRes id: Int,
+    alt: String,
+    modifier: Modifier = Modifier,
+    sizeVariation: SizeVariation,
+    tint: Color = Color.Unspecified,
+) {
+    AcIcon(
+        id = id,
+        alt = alt,
+        modifier = modifier,
+        size = when (sizeVariation) {
+            SizeVariation.SMALL -> 32.dp
+            SizeVariation.LARGE -> 64.dp
+        },
+        tint = tint,
     )
 }
